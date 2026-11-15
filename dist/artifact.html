@@ -222,6 +222,9 @@ a:hover{color:var(--coral)}
 .ev-list{display:flex;flex-direction:column;gap:16px}
 .event-card.past .event-date{background:var(--ivory-2);color:var(--ink)}
 .event-card.past .event-body h2{color:var(--ink)}
+.event-card .feat{margin:0 0 6px;font-family:var(--font-sans-display);font-weight:600;font-size:11px;
+  letter-spacing:var(--tracking-caps);text-transform:uppercase;color:var(--coral-deep)}
+.event-card.featured{box-shadow:var(--shadow-pop)}
 .event-card .cardlink{font-family:var(--font-sans-display);font-weight:600;font-size:14px;color:var(--coral-deep)}
 .event-card .ev-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 16px}
 .event-card .ev-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:0 0 20px}
@@ -487,13 +490,14 @@ a:hover{color:var(--coral)}
         <a href="#/events" style="font-family:var(--font-sans-display);font-weight:600;font-size:15px;text-decoration:none">View all events →</a>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
-        <a class="event-card" href="https://luma.com/claude-bkhq" target="_blank" rel="noopener">
-          <div class="event-date"><div class="d">22</div><div class="m">OCT</div></div>
+        <a class="event-card featured" href="https://luma.com/claude-011f" target="_blank" rel="noopener">
+          <div class="event-date"><div class="d">17</div><div class="m">NOV</div></div>
           <div class="event-body">
-            <p class="when">Thursday 22 October · 18:00–21:00 · The Animation School, Woodstock</p>
-            <h3>Claude in Animation &amp; VFX</h3>
-            <p>Short talks by SA animation and VFX professionals on how they use Claude in their pipelines, then open discussion.</p>
-            <span class="cardlink">RSVP on Luma →</span>
+            <p class="feat">Featured</p>
+            <p class="when">Tuesday 17 November · 18:00–21:00 · Roamwork Harrington, District Six</p>
+            <h3>Build your first agent workshop</h3>
+            <p>Claude Community × stub. Alexander Oloo, CTO of stub, explains what an agent is, builds one live, then helps you build your own with Claude Code. API credits included.</p>
+            <span class="cardlink">Join the waitlist on Luma →</span>
           </div>
         </a>
         <a class="event-card" href="https://luma.com/claude-riwn" target="_blank" rel="noopener">
@@ -506,11 +510,11 @@ a:hover{color:var(--coral)}
           </div>
         </a>
         <a class="event-card past" href="#/events/past">
-          <div class="event-date"><div class="d">11</div><div class="m">SEP</div></div>
+          <div class="event-date"><div class="d">22</div><div class="m">OCT</div></div>
           <div class="event-body">
-            <p class="when">Most recent · Friday 11 September</p>
-            <h3>Claude Build with Fable 5.1</h3>
-            <p>A build night at Roamwork with laptops open and Fable 5.1 on every screen.</p>
+            <p class="when">Most recent · Thursday 22 October</p>
+            <h3>Claude in Animation &amp; VFX</h3>
+            <p>Short talks by SA animation and VFX professionals on how they use Claude in their pipelines, then open discussion.</p>
             <span class="cardlink">See past events →</span>
           </div>
         </a>
@@ -644,14 +648,15 @@ a:hover{color:var(--coral)}
       </div>
 
       <div class="ev-list" id="ev-upcoming" role="tabpanel" data-ev-list="upcoming">
-        <div class="event-card lg">
-          <div class="event-date"><div class="d">22</div><div class="m">OCT</div></div>
+        <div class="event-card lg featured">
+          <div class="event-date"><div class="d">17</div><div class="m">NOV</div></div>
           <div class="event-body">
-            <p class="when">Thursday 22 October 2026 · 18:00–21:00 · In person</p>
-            <h2>Claude in Animation &amp; VFX</h2>
-            <p>An evening of short talks by SA animation and VFX professionals on how they use Claude in their pipelines — rigging setups, blendshape systems, render wrangling, the hundred small scripts that keep a show moving — followed by open discussion. For animators, VFX artists, TDs, pipeline engineers and students. No Claude experience needed.</p>
-            <div class="ev-meta"><span class="pill">The Animation School, 42 Searle St, Woodstock</span><span class="pill">Talks</span></div>
-            <div class="ev-actions"><a class="ccb ccb-md ccb-primary" href="https://luma.com/claude-bkhq" target="_blank" rel="noopener">RSVP on Luma</a></div>
+            <p class="feat">Featured</p>
+            <p class="when">Tuesday 17 November 2026 · 18:00–21:00 · In person</p>
+            <h2>Build your first agent workshop</h2>
+            <p>Claude Community × stub. Alexander Oloo, CTO and co-founder of stub, explains what an agent actually is, builds one live, then helps you build your own with Claude Code. Every participant gets Anthropic API credits. Bring a laptop with Claude Code installed, access to the Claude Console to load your credits, a charger, and one repetitive task you'd like to automate. No prior agent experience needed. Doors 18:00, then setup, kickoff and demo, build time, show and tell, and networking until 21:00.</p>
+            <div class="ev-meta"><span class="pill">Roamwork Harrington, 50 Harrington St, District Six</span><span class="pill">Workshop</span><span class="pill">Full · waitlist open</span></div>
+            <div class="ev-actions"><a class="ccb ccb-md ccb-primary" href="https://luma.com/claude-011f" target="_blank" rel="noopener">Join the waitlist on Luma</a></div>
           </div>
         </div>
         <div class="event-card lg">
@@ -668,6 +673,15 @@ a:hover{color:var(--coral)}
       </div>
 
       <div class="ev-list" id="ev-past" role="tabpanel" data-ev-list="past" hidden>
+        <div class="event-card lg past">
+          <div class="event-date"><div class="d">22</div><div class="m">OCT</div></div>
+          <div class="event-body">
+            <p class="when">Thursday 22 October 2026 · In person</p>
+            <h2>Claude in Animation &amp; VFX</h2>
+            <p>Short talks by SA animation and VFX professionals on how they use Claude in their pipelines — rigging setups, blendshape systems, render wrangling, the hundred small scripts that keep a show moving — followed by open discussion.</p>
+            <span class="pill">The Animation School, 42 Searle St, Woodstock</span>
+          </div>
+        </div>
         <div class="event-card lg past">
           <div class="event-date"><div class="d">11</div><div class="m">SEP</div></div>
           <div class="event-body">
