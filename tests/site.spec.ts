@@ -4,12 +4,20 @@ import AxeBuilder from "@axe-core/playwright";
 // Every page of the site. Add new pages here.
 const pages = ["/", "/events/", "/gallery/", "/demos/", "/speak/", "/partner/", "/join/", "/privacy/", "/styleguide/", "/404.html"];
 
+function isLuma(url: string) {
+  try {
+    return ["luma.com", "lu.ma"].includes(new URL(url).hostname);
+  } catch {
+    return false;
+  }
+}
+
 /** Fail the test on any browser console error, including blocked-by-CSP messages. */
 function watchConsole(page: Page) {
   const errors: string[] = [];
   page.on("console", (msg) => {
     // Luma's own frame logs its own errors; only this site's are ours to fix.
-    if (msg.type() === "error" && !msg.location().url.includes("luma.com")) errors.push(msg.text());
+    if (msg.type() === "error" && !isLuma(msg.location().url)) errors.push(msg.text());
   });
   page.on("pageerror", (error) => errors.push(String(error)));
   return errors;
