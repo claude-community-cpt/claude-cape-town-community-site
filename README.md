@@ -96,6 +96,9 @@ If you add a form, list what it collects on the [privacy notice](src/pages/priva
   fixes wait for a person. The rules are in `renovate.json`.
 - CodeQL (`.github/workflows/codeql.yml`) scans the code and the workflows on
   every pull request.
+- `.github/workflows/security.yml` stops a pull request that adds a package
+  with a known vulnerability, checks that installed packages are genuine, and
+  checks the workflow files themselves for unsafe patterns.
 - Never commit contact details, attendee lists or keys. See [SECURITY.md](SECURITY.md).
 
 ## Short links
