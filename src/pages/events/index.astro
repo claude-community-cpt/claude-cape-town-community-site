@@ -130,9 +130,6 @@ const years = [...new Set(past.map((e) => year(e.data.start)))];
     gap: var(--space-2);
     justify-items: start;
   }
-  .summary {
-    max-width: 46rem;
-  }
   .up-info h3 a {
     color: var(--text);
     text-decoration: none;
@@ -147,6 +144,12 @@ const years = [...new Set(past.map((e) => year(e.data.start)))];
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-4) var(--space-5);
+  }
+  /* Beside the details, the buttons sit level with the event's title. */
+  @media (min-width: 60.01rem) {
+    .up-head .actions {
+      margin-top: 2.1rem;
+    }
   }
   .empty,
   .more {
