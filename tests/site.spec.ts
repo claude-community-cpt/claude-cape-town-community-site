@@ -200,6 +200,20 @@ test("the next event box and the Claude radio caption are links", async ({ page 
   await expect(page.locator("a.nowplaying")).toHaveAttribute("href", "https://www.youtube.com/watch?v=tRsQsTMvPNg");
 });
 
+test("the Luma frame is wide enough to use and the sticker spins when clicked", async ({ page }) => {
+  await page.goto("/events/");
+  const frame = page.locator("iframe.luma").first();
+  if (await frame.count()) {
+    const size = (await frame.boundingBox())!;
+    expect(size.width).toBeGreaterThan(Math.min(page.viewportSize()!.width - 60, 600));
+  }
+  await page.goto("/");
+  const sticker = page.locator("button.sticker");
+  await sticker.scrollIntoViewIfNeeded();
+  await sticker.click();
+  await expect(sticker).toHaveClass(/is-spinning/);
+});
+
 test("each ambassador card is one link to their LinkedIn profile", async ({ page }) => {
   await page.goto("/");
   const cards = page.locator("a.host");

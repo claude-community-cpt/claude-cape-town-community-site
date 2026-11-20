@@ -421,6 +421,21 @@ textarea.field-input {
 .sticker img {
   display: block;
 }
+/* A sticker that is a button spins once when clicked. */
+button.sticker {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.sticker.is-spinning img {
+  animation: sticker-spin 800ms var(--ease-out);
+}
+@keyframes sticker-spin {
+  to {
+    rotate: 360deg;
+  }
+}
 
 /* ── Luma embed ─────────────────────────────────────────────── */
 /* Luma's frame cannot tell us how tall its content is, so the height is set
@@ -429,6 +444,7 @@ textarea.field-input {
 .luma-box {
   container-type: inline-size;
   /* About as wide as Luma's own two-column layout, centred. */
+  width: 100%;
   max-width: 54rem;
   margin-inline: auto;
 }

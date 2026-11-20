@@ -203,12 +203,16 @@ const hosts = [
         <p class="lede">Come to an event and meet the people building with Claude in Cape Town.</p>
         <p><a class="btn btn-solid btn-lg" href="/join/">How to join</a></p>
       </div>
-      <span class="sticker">
+      <button class="sticker" type="button" data-spin aria-label="Spin the sticker">
         <Image src={sheep} alt="" width={260} />
-      </span>
+      </button>
     </div>
   </section>
 </Base>
+
+<script>
+  import "../scripts/stickers";
+</script>
 
 <style>
   /* ── Hero ── */

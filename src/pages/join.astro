@@ -32,7 +32,7 @@ const ways = [
 
 <Base title="Join" description="How to join Cape Town's Claude community: come to a free event and meet people building with Claude near you.">
   <PageHead coral title="Join the community" lede="There is nothing to sign up for. Come to an event and you are part of it.">
-    <span class="sticker"><Image src={sheep} alt="" width={150} loading="eager" /></span>
+    <button class="sticker" type="button" data-spin aria-label="Spin the sticker"><Image src={sheep} alt="" width={150} loading="eager" /></button>
   </PageHead>
   <section class="wrap body">
     <ul class="ways">
@@ -58,6 +58,10 @@ const ways = [
     </p>
   </section>
 </Base>
+
+<script>
+  import "../scripts/stickers";
+</script>
 
 <style>
   .body {
