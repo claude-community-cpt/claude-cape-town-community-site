@@ -1,10 +1,15 @@
 ---
 title: Claude Kickoff Build
 start: 2026-08-27T18:00:00+02:00
+end: 2026-08-27T20:30:00+02:00
 format: Meetup
 summary: "The first Claude Community Cape Town meetup: talks, demos, Claude Butter cookies and a room full of people building with Claude."
 venue:
-  name: Cape Town
+  name: Roamwork Harrington
+  address: 50 Harrington St, District Six
+luma:
+  url: https://luma.com/claude-m4se
+  embedId: evt-WwlZ4OIipck0Vyk
 slides:
   - title: "Claude Code talk (PDF)"
     url: /talks/2026-08-27-claude-code-talk.pdf

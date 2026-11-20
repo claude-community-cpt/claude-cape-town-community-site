@@ -42,7 +42,7 @@ const schema = {
     },
   },
   organizer: { "@type": "Organization", name: SITE.name, url: Astro.site?.href },
-  ...(data.luma && {
+  ...(data.luma && !past && {
     offers: { "@type": "Offer", price: 0, priceCurrency: "ZAR", url: data.luma.url, availability: "https://schema.org/InStock" },
   }),
 };
@@ -81,14 +81,20 @@ const schema = {
 
       <aside class="side">
         {
-          !past && data.luma && (
+          data.luma && (
             <div class="stack">
-              <h2 class="title">Register</h2>
+              <h2 class="title">{past ? "On Luma" : "Register"}</h2>
               {data.luma.embedId && <LumaEmbed embedId={data.luma.embedId} title={data.title} />}
               <p>
-                <a class="btn btn-primary" href={data.luma.url} target="_blank" rel="noopener">
-                  {data.luma.label ?? "Register on Luma"}
-                </a>
+                {past ? (
+                  <a class="textlink" href={data.luma.url} target="_blank" rel="noopener">
+                    View on Luma
+                  </a>
+                ) : (
+                  <a class="btn btn-primary" href={data.luma.url} target="_blank" rel="noopener">
+                    {data.luma.label ?? "Register on Luma"}
+                  </a>
+                )}
               </p>
             </div>
           )

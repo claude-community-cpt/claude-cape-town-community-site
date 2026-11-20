@@ -30,11 +30,11 @@ const href = `/events/${event.id}/`;
       {!past && data.status && <span class="pill pill-outline">{data.status}</span>}
     </div>
     {
-      (data.slides.length > 0 || data.photos || data.gallery || (!past && data.luma)) && (
+      (data.slides.length > 0 || data.photos || data.gallery || data.luma) && (
         <p class="links small">
-          {!past && data.luma && (
+          {data.luma && (
             <a href={data.luma.url} target="_blank" rel="noopener">
-              {data.luma.label ?? "Register on Luma"}
+              {past ? "View on Luma" : (data.luma.label ?? "Register on Luma")}
             </a>
           )}
           {data.slides.map((s) => (
