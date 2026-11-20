@@ -23,7 +23,8 @@ ended (the site rebuilds every night).
    venue:
      name: Roamwork Harrington
      address: 50 Harrington St, District Six   # optional
-   status: Registration required       # optional, shown while upcoming
+   status: Waitlist open                # optional, shown while upcoming. Every event needs
+                                        # registration, so do not say that here
    luma:
      url: https://luma.com/claude-i36b
      embedId: evt-cMvmoNRY1FBSDYH      # optional, see below

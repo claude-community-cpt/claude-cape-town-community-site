@@ -6,7 +6,7 @@ import FormShell from "../components/FormShell.astro";
 
 <Base title="Give a talk" description="Share what you've learnt building with Claude. Ten minutes, a real workflow, a live demo. First-time speakers welcome.">
   <PageHead title="Share what you've learnt" lede="Ten minutes, a real workflow, a live demo. That's a talk. First-time speakers welcome. We'll help you shape it." />
-  <section class="wrap-narrow body">
+  <section class="wrap body">
     <dl class="kinds">
       <div>
         <dt class="title">Talks and demos</dt>
@@ -29,14 +29,27 @@ import FormShell from "../components/FormShell.astro";
 </Base>
 
 <style>
+  /* What we are looking for on the left, the form on the right. */
   .body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+    gap: var(--space-6) clamp(2rem, 6vw, 5rem);
+    align-items: start;
     padding-bottom: var(--section);
   }
   .kinds {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-    gap: var(--space-5);
-    margin: 0 0 var(--space-6);
+    gap: var(--space-6);
+    margin: 0;
+  }
+  @media (max-width: 56rem) {
+    .body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .kinds {
+      grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+      gap: var(--space-5);
+    }
   }
   .kinds div {
     padding-top: var(--space-4);

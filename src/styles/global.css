@@ -423,14 +423,29 @@ textarea.field-input {
 }
 
 /* ── Luma embed ─────────────────────────────────────────────── */
+/* Luma's frame cannot tell us how tall its content is, so the height is set
+   from its width: Luma stacks everything in one column when narrow and uses
+   two columns when wide. Measured against real events with room to spare. */
+.luma-box {
+  container-type: inline-size;
+}
 .luma {
   display: block;
   width: 100%;
-  max-width: 600px;
-  height: 450px;
+  height: 1020px;
   border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   background: var(--bg-alt);
+}
+@container (min-width: 30rem) {
+  .luma {
+    height: 880px;
+  }
+}
+@container (min-width: 48rem) {
+  .luma {
+    height: 620px;
+  }
 }
 
 /* ── Scroll reveal ──────────────────────────────────────────── */

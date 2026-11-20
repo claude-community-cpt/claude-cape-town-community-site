@@ -57,8 +57,10 @@ const yearNow = new Date().getFullYear();
   }
   .cols {
     display: grid;
-    grid-template-columns: minmax(16rem, 2fr) 1fr 1fr;
-    gap: clamp(2rem, 5vw, 5rem);
+    /* The link columns are as wide as their words, so the last one ends on
+       the right edge of the page like everything above it. */
+    grid-template-columns: minmax(16rem, 1fr) auto auto;
+    gap: clamp(2rem, 7vw, 7rem);
   }
   .about p + p {
     margin-top: var(--space-3);
@@ -119,6 +121,7 @@ const yearNow = new Date().getFullYear();
   @media (max-width: 44rem) {
     .cols {
       grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
     }
     .about {
       grid-column: 1 / -1;

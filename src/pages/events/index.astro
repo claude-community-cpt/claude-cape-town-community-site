@@ -30,20 +30,22 @@ const years = [...new Set(past.map((e) => year(e.data.start)))];
       {
         upcoming.map((event) => (
           <article class="up">
-            <div class="up-info">
+            <div class="up-head">
               <div class="date-chip" aria-hidden="true">
                 <b>{day(event.data.start)}</b>
                 <span>{month(event.data.start)}</span>
               </div>
-              <p class="small muted">
-                <time datetime={event.data.start.toISOString()}>{longDate(event.data.start)}</time>, {timeRange(event)}
-              </p>
-              <h3 class="heading"><a href={`/events/${event.id}/`}>{event.data.title}</a></h3>
-              <p class="muted">{event.data.summary}</p>
-              <div class="pills">
-                <span class="pill">{event.data.format}</span>
-                <span class="pill pill-outline">{whereLine(event)}</span>
-                {event.data.status && <span class="pill pill-outline">{event.data.status}</span>}
+              <div class="up-info">
+                <p class="small muted">
+                  <time datetime={event.data.start.toISOString()}>{longDate(event.data.start)}</time>, {timeRange(event)}
+                </p>
+                <h3 class="heading"><a href={`/events/${event.id}/`}>{event.data.title}</a></h3>
+                <p class="muted summary">{event.data.summary}</p>
+                <div class="pills">
+                  <span class="pill">{event.data.format}</span>
+                  <span class="pill pill-outline">{whereLine(event)}</span>
+                  {event.data.status && <span class="pill pill-outline">{event.data.status}</span>}
+                </div>
               </div>
               <p class="actions">
                 {event.data.luma && (
@@ -107,21 +109,29 @@ const years = [...new Set(past.map((e) => year(e.data.start)))];
   .upcoming {
     padding-top: var(--space-5);
   }
+  /* The event's details in one row, then Luma's registration at full width. */
   .up {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 600px);
-    gap: clamp(1.5rem, 4vw, 4rem);
-    align-items: start;
+    gap: var(--space-6);
     padding-block: var(--space-7);
     border-top: 1px solid var(--line);
   }
   .upcoming h2 + .up {
     margin-top: var(--space-6);
   }
+  .up-head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: var(--space-5) var(--space-6);
+    align-items: start;
+  }
   .up-info {
     display: grid;
-    gap: var(--space-3);
+    gap: var(--space-2);
     justify-items: start;
+  }
+  .summary {
+    max-width: 46rem;
   }
   .up-info h3 a {
     color: var(--text);
@@ -137,7 +147,6 @@ const years = [...new Set(past.map((e) => year(e.data.start)))];
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-4) var(--space-5);
-    margin-top: var(--space-3);
   }
   .empty,
   .more {
@@ -167,8 +176,19 @@ const years = [...new Set(past.map((e) => year(e.data.start)))];
     gap: var(--space-6);
   }
   @media (max-width: 60rem) {
-    .up {
-      grid-template-columns: 1fr;
+    .up-head {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+    .up-head .actions {
+      grid-column: 2;
+    }
+  }
+  @media (max-width: 30rem) {
+    .up-head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .up-head .actions {
+      grid-column: 1;
     }
   }
   @media (max-width: 44rem) {
