@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import Scene from "../components/Scene.astro";
 import EventRow from "../components/EventRow.astro";
-import { getEvents, day, month, longDate, timeRange, whereLine } from "../lib";
+import { SITE, getEvents, day, month, longDate, timeRange, whereLine } from "../lib";
 import tessa from "../assets/hosts/tessa.png";
 import daniel from "../assets/hosts/daniel.jpg";
 import iconMeetup from "../assets/brand/icon-highfive.svg";
@@ -30,8 +30,8 @@ const reasons = [
 ];
 
 const hosts = [
-  { img: tessa, name: "Tessa", role: "AI Enablement Lead @ Origami", url: "https://www.linkedin.com/in/tessa-verster/" },
-  { img: daniel, name: "Daniel", role: "SysDev & DevSecOps @ JUMO", url: "https://www.linkedin.com/in/daniel-schwartz-3a4654101/" },
+  { img: tessa, name: "Tessa", role: "AI Enablement Lead @ Origami", url: SITE.hosts[0].linkedin },
+  { img: daniel, name: "Daniel", role: "SysDev & DevSecOps @ JUMO", url: SITE.hosts[1].linkedin },
 ];
 ---
 

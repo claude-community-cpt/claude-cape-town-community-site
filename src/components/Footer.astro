@@ -28,6 +28,11 @@ const yearNow = new Date().getFullYear();
       <h2 class="wordmark">Elsewhere</h2>
       <ul>
         <li><a href={SITE.lumaCalendar} target="_blank" rel="noopener">Luma calendar</a></li>
+        {SITE.discord && (
+          <li>
+            <a href={SITE.discord} target="_blank" rel="noopener">Discord</a>
+          </li>
+        )}
         <li><a href="https://github.com/claude-community-cpt" target="_blank" rel="noopener">GitHub</a></li>
         <li><a href="https://claude.com/product/claude-code" target="_blank" rel="noopener">Claude Code</a></li>
         <li><a href="https://docs.anthropic.com/" target="_blank" rel="noopener">Documentation</a></li>

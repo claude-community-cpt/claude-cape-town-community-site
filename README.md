@@ -80,7 +80,8 @@ Each form has a hidden trap field and ignores submissions made within a few
 seconds of the page loading, which stops most bots.
 
 There is no join form and no newsletter sign-up. The Join page links out
-instead; set `discord` and `linkedin` in `src/lib.ts` to show those buttons.
+instead; the Discord invite and the hosts' LinkedIn profiles are in `SITE` in
+`src/lib.ts`.
 Never publish a WhatsApp invite link.
 
 If you add a form, list what it collects on the [privacy notice](src/pages/privacy.astro).

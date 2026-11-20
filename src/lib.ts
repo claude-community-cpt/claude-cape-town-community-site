@@ -10,9 +10,13 @@ export const SITE = {
     "Cape Town's Claude community. Free meetups, workshops and build days for people who make things with Claude and Claude Code.",
   lumaCalendar: "https://luma.com/claudecommunity",
   ambassadors: "https://claude.com/community/ambassadors",
-  /** Community links shown on the Join page. Leave empty to hide the button. Never a WhatsApp invite. */
-  discord: "",
-  linkedin: "",
+  /** Shown on the Join page. Leave empty to hide the button. Never a WhatsApp invite. */
+  discord: "https://discord.gg/svgeUnK2j7",
+  /** The hosts' public LinkedIn profiles, used wherever the site says "message a host". */
+  hosts: [
+    { name: "Tessa", linkedin: "https://www.linkedin.com/in/tessa-verster/" },
+    { name: "Daniel", linkedin: "https://www.linkedin.com/in/daniel-schwartz-3a4654101/" },
+  ],
   repo: "https://github.com/claude-community-cpt/claude-cape-town-community-site",
 } as const;
 
