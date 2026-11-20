@@ -1,8 +1,10 @@
 # Design system
 
 How the Claude Community Cape Town website looks and sounds, and how to build
-new pages that fit. The live version, with every piece rendered, is at
-[claudecapetown.com/styleguide/](https://claudecapetown.com/styleguide/).
+new pages that fit. To see every piece rendered, run `npm run dev` and open
+`http://localhost:4321/styleguide/`. The style guide is a working reference for
+people and for Claude when preparing a pull request; it is not part of the
+published site.
 
 - **Tokens** (colours, type, space, motion): `src/styles/tokens.css`
 - **Shared styles and components** (buttons, pills, cards, fields): `src/styles/global.css`

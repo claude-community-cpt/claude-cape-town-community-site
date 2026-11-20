@@ -2,7 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 // Every page of the site. Add new pages here.
-const pages = ["/", "/events/", "/speak/", "/partner/", "/join/", "/privacy/", "/styleguide/", "/404.html"];
+const pages = ["/", "/events/", "/speak/", "/partner/", "/join/", "/privacy/", "/404.html"];
 
 function isLuma(url: string) {
   try {

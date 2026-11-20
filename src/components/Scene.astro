@@ -209,9 +209,11 @@ const cloth =
   .berry {
     position: absolute;
     bottom: 1.1rem;
-    width: clamp(22px, 2.6vw, 34px);
+    width: clamp(30px, 3.4vw, 46px);
     height: auto;
     image-rendering: pixelated;
+    /* A rim in the page colour lifts the fruit off the dotted ground. */
+    filter: drop-shadow(2px 0 0 var(--bg)) drop-shadow(-2px 0 0 var(--bg)) drop-shadow(0 2px 0 var(--bg)) drop-shadow(0 -2px 0 var(--bg));
     transition: opacity 0.3s ease;
     pointer-events: none;
   }
@@ -231,6 +233,7 @@ const cloth =
     width: clamp(72px, 9vw, 120px);
     height: auto;
     image-rendering: pixelated;
+    filter: drop-shadow(2px 0 0 var(--bg)) drop-shadow(-2px 0 0 var(--bg)) drop-shadow(0 2px 0 var(--bg)) drop-shadow(0 -2px 0 var(--bg));
     will-change: transform;
     pointer-events: none;
   }

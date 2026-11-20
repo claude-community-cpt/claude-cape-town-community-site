@@ -1,6 +1,18 @@
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 
+// The style guide (src/dev/styleguide.astro) shows every colour, type size and
+// component. It is a working reference, so it exists only while running
+// `npm run dev` (at /styleguide/) and is never part of the published site.
+const devStyleguide = {
+  name: "dev-styleguide",
+  hooks: {
+    "astro:config:setup": ({ command, injectRoute }) => {
+      if (command === "dev") injectRoute({ pattern: "/styleguide", entrypoint: "./src/dev/styleguide.astro" });
+    },
+  },
+};
+
 // The site is plain static files served by GitHub Pages at the domain in public/CNAME.
 export default defineConfig({
   site: "https://claudecapetown.com",
@@ -14,9 +26,10 @@ export default defineConfig({
     "/demos": "/events/",
   },
   integrations: [
+    devStyleguide,
     sitemap({
       // Utility pages that should not show up in search.
-      filter: (page) => !/\/(styleguide|mixer|gallery|demos|404)\/?$/.test(page),
+      filter: (page) => !/\/(mixer|gallery|demos|404)\/?$/.test(page),
     }),
   ],
   build: {
