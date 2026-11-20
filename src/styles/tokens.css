@@ -1,0 +1,114 @@
+/* ─────────────────────────────────────────────────────────────
+   Claude Community Cape Town: design tokens
+   The single source of truth for colour, type, space and motion.
+   DESIGN.md explains when to use each one; /styleguide/ shows them live.
+
+   Light and dark are one set of tokens. Every colour that changes is
+   written once with light-dark(light, dark), and the browser picks a side
+   from `color-scheme`. That follows the visitor's system setting unless
+   they use the switch in the header, which sets data-theme on <html>.
+   ───────────────────────────────────────────────────────────── */
+
+@font-face {
+  font-family: "Anthropic Sans Display";
+  src: url("/fonts/AnthropicSansDisplay-Semibold.woff2") format("woff2");
+  font-weight: 500 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Anthropic Serif Display";
+  src: url("/fonts/AnthropicSerifDisplay-Light.woff2") format("woff2");
+  font-weight: 200 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light dark;
+
+  /* ── Brand palette (fixed, from the Claude Community kit) ── */
+  --coral: #d97757;
+  --coral-deep: #c5633f;
+  --ivory: #faf9f5;
+  --ink: #141413;
+
+  /* ── Semantic colours (use these in components) ── */
+  --bg: light-dark(#faf9f5, #1a1917);
+  --bg-alt: light-dark(#f0eee5, #242320);
+  --surface: light-dark(#ffffff, #2a2926);
+  --text: light-dark(#141413, #faf9f5);
+  --text-muted: light-dark(rgb(20 20 19 / 0.72), rgb(250 249 245 / 0.74));
+  --text-faint: light-dark(rgb(20 20 19 / 0.6), rgb(250 249 245 / 0.62));
+  --line: light-dark(rgb(20 20 19 / 0.12), rgb(250 249 245 / 0.14));
+  --line-strong: light-dark(#141413, #faf9f5);
+  --accent: var(--coral);
+  --accent-hover: var(--coral-deep);
+  --accent-tint: light-dark(#f4ded2, #3c2b22);
+  /* Coral is too light for small text on ivory. Use this for links and labels. */
+  --accent-text: light-dark(#a44e2d, #e69377);
+  /* Text and marks that sit on a coral surface. Ink in both themes. */
+  --on-accent: var(--ink);
+  --dither: light-dark(rgb(20 20 19 / 0.62), rgb(250 249 245 / 0.5));
+  --sticker-edge: #ffffff;
+  --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent-text);
+
+  /* ── Type families ── */
+  --font-display: "Anthropic Serif Display", "Lora Variable", Georgia, serif; /* big statements, weight 300 */
+  --font-label: "Anthropic Sans Display", "Poppins", ui-sans-serif, system-ui, sans-serif; /* labels, buttons, weight 600 */
+  --font-body: "Poppins", ui-sans-serif, system-ui, sans-serif; /* UI and short text */
+  --font-serif: "Lora Variable", Georgia, serif; /* longer reading text */
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace; /* ambient captions only */
+
+  /* ── Type scale (fluid between phone and desktop) ── */
+  --text-hero: clamp(3.5rem, 2rem + 9.5vw, 9.5rem);
+  --text-display: clamp(2.5rem, 1.6rem + 4vw, 4.5rem);
+  --text-heading: clamp(1.75rem, 1.4rem + 1.6vw, 2.75rem);
+  --text-title: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --text-lede: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+  --text-body: 1rem;
+  --text-small: 0.875rem;
+  --text-label: 0.75rem;
+  --leading-display: 1.04;
+  --leading-heading: 1.15;
+  --leading-body: 1.6;
+  --tracking-caps: 0.09em; /* the CLAUDE COMMUNITY wordmark only */
+
+  /* ── Space ── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --gutter: clamp(1.25rem, 5vw, 4rem);
+  --section: clamp(4rem, 9vw, 8rem);
+  --measure: 62ch; /* longest comfortable line of body text */
+  --page: 76rem; /* widest content */
+
+  /* ── Shape ── */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-sticker: 18px;
+  --radius-pill: 999px;
+  --shadow-card: 0 1px 2px light-dark(rgb(20 20 19 / 0.05), rgb(0 0 0 / 0.3)),
+    0 8px 24px light-dark(rgb(20 20 19 / 0.07), rgb(0 0 0 / 0.35));
+  --shadow-sticker: 0 8px 22px rgb(20 20 19 / 0.22);
+
+  /* ── Motion ── */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --speed-quick: 140ms;
+  --speed-move: 420ms;
+  --speed-scene: 900ms;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}

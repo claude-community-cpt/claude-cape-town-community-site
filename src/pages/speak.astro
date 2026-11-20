@@ -1,0 +1,48 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHead from "../components/PageHead.astro";
+import FormShell from "../components/FormShell.astro";
+---
+
+<Base title="Give a talk" description="Share what you've learnt building with Claude. Ten minutes, a real workflow, a live demo. First-time speakers welcome.">
+  <PageHead title="Share what you've learnt" lede="Ten minutes, a real workflow, a live demo. That's a talk. First-time speakers welcome. We'll help you shape it." />
+  <section class="wrap-narrow body">
+    <dl class="kinds">
+      <div>
+        <dt class="title">Talks and demos</dt>
+        <dd class="muted">10 to 15 minutes on how you use Claude in real work.</dd>
+      </div>
+      <div>
+        <dt class="title">Lightning shares</dt>
+        <dd class="muted">5 minutes, one lesson, one thing you built.</dd>
+      </div>
+    </dl>
+    <FormShell id="speak-form" submit="Raise your hand" doneTitle="Thanks, your pitch is in." doneText="We'll be in touch before the next meetup.">
+      <label class="field"><span class="field-label">Your name</span>
+        <input class="field-input" type="text" name="name" placeholder="Your name" autocomplete="name" /></label>
+      <label class="field"><span class="field-label">Email</span>
+        <input class="field-input" type="email" name="email" placeholder="you@example.com" autocomplete="email" required /></label>
+      <label class="field"><span class="field-label">What would you talk about?</span>
+        <input class="field-input" type="text" name="topic" placeholder="One line is enough" /></label>
+    </FormShell>
+  </section>
+</Base>
+
+<style>
+  .body {
+    padding-bottom: var(--section);
+  }
+  .kinds {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: var(--space-5);
+    margin: 0 0 var(--space-6);
+  }
+  .kinds div {
+    padding-top: var(--space-4);
+    border-top: 2px solid var(--coral);
+  }
+  .kinds dd {
+    margin: var(--space-1) 0 0;
+  }
+</style>

@@ -1,0 +1,449 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import Scene from "../components/Scene.astro";
+import EventRow from "../components/EventRow.astro";
+import NewsletterForm from "../components/NewsletterForm.astro";
+import { getEvents, day, month, longDate, timeRange, whereLine } from "../lib";
+import tessa from "../assets/hosts/tessa.png";
+import daniel from "../assets/hosts/daniel.jpg";
+import iconMeetup from "../assets/brand/icon-highfive.svg";
+import iconTalk from "../assets/brand/icon-conversation.svg";
+import iconLab from "../assets/brand/icon-impactlab.svg";
+import globe from "../assets/brand/globe-doodle.png";
+import sheep from "../assets/brand/sticker-pixel-sheep.png";
+
+const { upcoming, past } = await getEvents();
+const [next, ...later] = upcoming;
+
+const formats = [
+  { icon: iconTalk, name: "Conversations", text: "Open-format discussion. Bring questions, compare workflows, talk through what's working. The lowest-pressure way in." },
+  { icon: iconMeetup, name: "Meetups", text: "Talks, demos, and networking. See what Cape Town builders are shipping with Claude, then go meet them." },
+  { icon: globe, name: "Workshops", text: "Laptops open, hands on keyboards. Learn by building and leave with something working." },
+  { icon: iconLab, name: "Impact Labs", text: "Working sessions that point Claude at real community problems. Ship something that matters in an afternoon." },
+];
+
+const reasons = [
+  { name: "Real community", text: "Meet developers, founders, and creators in person. People who build with AI, in your city." },
+  { name: "Learn from peers", text: "See how others use Claude and Claude Code in real workflows. Share tips, skills, and lessons learnt." },
+  { name: "Ship better work", text: "Get feedback on your projects, find collaborators, and ship higher quality work faster." },
+  { name: "Hands-on sessions", text: "Live workshops, demo nights, and build hours. Learn by doing, not by watching." },
+];
+
+const hosts = [
+  { img: tessa, name: "Tessa", role: "AI Enablement Lead @ Origami", url: "https://www.linkedin.com/in/tessa-verster/" },
+  { img: daniel, name: "Daniel", role: "SysDev & DevSecOps @ JUMO", url: "https://www.linkedin.com/in/daniel-schwartz-3a4654101/" },
+];
+---
+
+<Base>
+  <section class="hero">
+    <div class="wrap hero-copy">
+      <h1 class="hero-title"><span>Hello,</span> <span>Cape Town</span></h1>
+      <p class="lede">
+        Free meetups, workshops and build days for people who make things with Claude. In person, from the City Bowl
+        to the Winelands.
+      </p>
+      <p class="actions">
+        <a class="btn btn-primary btn-lg" href="/events/">See what's on</a>
+        <a class="textlink" href="/join/">Join the community</a>
+      </p>
+    </div>
+    <Scene />
+  </section>
+
+  {
+    next && (
+      <section class="section section-coral next" aria-labelledby="next-title">
+        <div class="wrap next-grid">
+          <div class="next-main">
+            <p class="wordmark">Next up</p>
+            <h2 class="display" id="next-title">
+              <a href={`/events/${next.id}/`}>{next.data.title}</a>
+            </h2>
+            <p class="lede">{next.data.summary}</p>
+            <p class="actions">
+              {next.data.luma && (
+                <a class="btn btn-solid btn-lg" href={next.data.luma.url} target="_blank" rel="noopener">
+                  {next.data.luma.label ?? "Register on Luma"}
+                </a>
+              )}
+              <a class="textlink" href={`/events/${next.id}/`}>Event details</a>
+            </p>
+          </div>
+          <dl class="ticket">
+            <div class="ticket-date" aria-hidden="true">
+              <b>{day(next.data.start)}</b>
+              <span>{month(next.data.start)}</span>
+            </div>
+            <div>
+              <dt>When</dt>
+              <dd>{longDate(next.data.start)}<br />{timeRange(next)}</dd>
+            </div>
+            <div>
+              <dt>Where</dt>
+              <dd>{whereLine(next)}</dd>
+            </div>
+            <div>
+              <dt>Format</dt>
+              <dd>{next.data.format}{next.data.status && `. ${next.data.status}.`}</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    later.length > 0 && (
+      <section class="section" aria-labelledby="later-title">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 class="heading" id="later-title">Also coming up</h2>
+            <a class="textlink" href="/events/">All events</a>
+          </div>
+          <div class="rows">
+            {later.map((event) => <EventRow event={event} />)}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section section-alt" aria-labelledby="formats-title">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="stack">
+          <h2 class="heading" id="formats-title">Four ways we gather</h2>
+          <p class="lede">Pick the one that suits you. Every event is free and open to everyone.</p>
+        </div>
+      </div>
+      <ul class="formats">
+        {
+          formats.map((f) => (
+            <li class="reveal">
+              <span class="format-icon">
+                <Image src={f.icon} alt="" width={72} height={72} />
+              </span>
+              <h3 class="title">{f.name}</h3>
+              <p class="muted">{f.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="why-title">
+    <div class="wrap why">
+      <h2 class="display" id="why-title">Why come along?</h2>
+      <dl class="reasons">
+        {
+          reasons.map((r) => (
+            <div class="reveal">
+              <dt class="title">{r.name}</dt>
+              <dd class="muted">{r.text}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  {
+    past.length > 0 && (
+      <section class="section section-alt" aria-labelledby="past-title">
+        <div class="wrap">
+          <div class="section-head">
+            <div class="stack">
+              <h2 class="heading" id="past-title">Thank you, Cape Town</h2>
+              <p class="lede">Where we have been so far, with the slides and photos.</p>
+            </div>
+            <a class="textlink" href="/events/#past">All past events</a>
+          </div>
+          <div class="rows">
+            {past.slice(0, 3).map((event) => <EventRow event={event} />)}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section" aria-labelledby="hosts-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="heading" id="hosts-title">Your hosts</h2>
+      </div>
+      <ul class="hosts">
+        {
+          hosts.map((h) => (
+            <li class="card host">
+              <Image src={h.img} alt="" width={104} height={104} densities={[1, 2]} />
+              <div>
+                <h3 class="title">{h.name}</h3>
+                <p class="small muted">{h.role}</p>
+                <p class="small">
+                  <a href={h.url} target="_blank" rel="noopener">
+                    {h.name} on LinkedIn
+                  </a>
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="newsletter" aria-labelledby="newsletter-title">
+    <div class="wrap stack">
+      <h2 class="heading" id="newsletter-title">One email a month</h2>
+      <p class="lede">Upcoming events, demos from the community, and what people are building.</p>
+      <NewsletterForm />
+    </div>
+  </section>
+
+  <section class="section section-coral join" aria-labelledby="join-title">
+    <div class="wrap join-grid">
+      <div class="stack">
+        <h2 class="display" id="join-title">Come and build with us</h2>
+        <p class="lede">Join the WhatsApp group and meet the people building with Claude in Cape Town.</p>
+        <p><a class="btn btn-solid btn-lg" href="/join/">Apply to join</a></p>
+      </div>
+      <span class="sticker">
+        <Image src={sheep} alt="" width={260} />
+      </span>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ── Hero ── */
+  .hero {
+    padding-top: clamp(3rem, 8vw, 7rem);
+  }
+  .hero-copy {
+    display: grid;
+    gap: clamp(1.25rem, 2.5vw, 2rem);
+  }
+  .hero-title span {
+    display: block;
+  }
+  .hero-title span:last-child {
+    margin-left: clamp(1.5rem, 9vw, 9rem);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4) var(--space-5);
+  }
+  /* One orchestrated moment on load: the greeting rises, then the scene fades up. */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-title span,
+    .hero-copy .lede,
+    .hero-copy .actions {
+      animation: rise var(--speed-scene) var(--ease-out) both;
+    }
+    .hero-title span:last-child {
+      animation-delay: 110ms;
+    }
+    .hero-copy .lede {
+      animation-delay: 260ms;
+    }
+    .hero-copy .actions {
+      animation-delay: 360ms;
+    }
+    .hero :global(.scene) {
+      animation: scene-in 1.4s var(--ease-out) 420ms both;
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      translate: 0 1.5rem;
+    }
+  }
+  @keyframes scene-in {
+    from {
+      opacity: 0;
+      translate: 0 2.5rem;
+    }
+  }
+
+  /* ── Next up ── */
+  .next-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(16rem, 1fr);
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+  }
+  .next-main {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .next-main h2 a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .next-main h2 a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+  .ticket {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: var(--space-6);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-lg);
+    rotate: 1.5deg;
+    transition: rotate var(--speed-move) var(--ease-out);
+  }
+  .ticket:hover {
+    rotate: 0deg;
+  }
+  .ticket-date {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    padding-bottom: var(--space-4);
+    border-bottom: 2px dashed var(--ink);
+  }
+  .ticket-date b {
+    font: 300 clamp(3.5rem, 7vw, 5.5rem) / 0.9 var(--font-display);
+  }
+  .ticket-date span {
+    font: 600 1.25rem var(--font-label);
+  }
+  .ticket dt {
+    font: 600 var(--text-label) var(--font-label);
+  }
+  .ticket dd {
+    margin: 0;
+  }
+
+  .rows > :global(.event-row:last-child) {
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* ── Formats ── */
+  .formats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .formats li {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+  }
+  .format-icon {
+    display: grid;
+    place-items: center;
+    width: 6.5rem;
+    height: 6.5rem;
+    margin-bottom: var(--space-2);
+    border-radius: var(--radius-lg);
+    background: var(--coral);
+    transition: rotate var(--speed-move) var(--ease-out);
+  }
+  .formats li:nth-child(odd) .format-icon {
+    rotate: -3deg;
+  }
+  .formats li:nth-child(even) .format-icon {
+    rotate: 2deg;
+  }
+  .formats li:hover .format-icon {
+    rotate: 0deg;
+  }
+  .format-icon img {
+    width: 4.5rem;
+    height: 4.5rem;
+    object-fit: contain;
+  }
+
+  /* ── Why ── */
+  .why {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: start;
+  }
+  .why h2 {
+    position: sticky;
+    top: 6.5rem;
+  }
+  .reasons {
+    margin: 0;
+  }
+  .reasons > div {
+    display: grid;
+    gap: var(--space-2);
+    padding-block: var(--space-5);
+    border-top: 1px solid var(--line);
+  }
+  .reasons > div:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .reasons dd {
+    margin: 0;
+    max-width: var(--measure);
+  }
+
+  /* ── Hosts ── */
+  .hosts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+    gap: var(--space-5);
+    max-width: 56rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .host {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+  }
+  .host img {
+    flex: none;
+    width: 6.5rem;
+    height: 6.5rem;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .host div {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  /* ── Join ── */
+  .join-grid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-7);
+    flex-wrap: wrap;
+  }
+  .join .sticker {
+    --tilt: 6deg;
+    margin-inline: auto;
+  }
+
+  @media (max-width: 52rem) {
+    .next-grid,
+    .why {
+      grid-template-columns: 1fr;
+    }
+    .why h2 {
+      position: static;
+    }
+    .ticket {
+      rotate: 0deg;
+    }
+  }
+</style>

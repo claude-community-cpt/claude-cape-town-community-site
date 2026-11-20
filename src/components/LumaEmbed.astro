@@ -1,0 +1,18 @@
+---
+// Luma's registration frame for one event. `embedId` is the evt-... id from
+// Luma's "Embed event" snippet (Share, then Embed, on the event's manage page).
+interface Props {
+  embedId: string;
+  title: string;
+}
+const { embedId, title } = Astro.props;
+---
+
+<iframe
+  class="luma"
+  src={`https://luma.com/embed/event/${embedId}/simple`}
+  title={`Register on Luma: ${title}`}
+  width="600"
+  height="450"
+  loading="lazy"
+  allow="fullscreen; payment"></iframe>

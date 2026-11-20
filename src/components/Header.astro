@@ -1,0 +1,286 @@
+---
+import Spark from "./Spark.astro";
+
+const links = [
+  { href: "/events/", label: "Events" },
+  { href: "/gallery/", label: "Gallery" },
+  { href: "/demos/", label: "Demos" },
+  { href: "/speak/", label: "Speak" },
+  { href: "/partner/", label: "Support" },
+];
+const here = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand" href="/" aria-label="Claude Community Cape Town, home">
+      <Spark size={26} />
+      <span class="lock">
+        <span class="wordmark">Claude Community</span>
+        <span class="city">Cape Town</span>
+      </span>
+    </a>
+
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav">
+      <span class="menu-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Menu</span>
+    </button>
+
+    <nav id="site-nav" class="nav" aria-label="Main">
+      <ul>
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} aria-current={here.startsWith(l.href) ? "page" : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-btn" type="button" aria-label="Switch between light and dark">
+          <span aria-hidden="true">◐</span>
+        </button>
+        <a class="btn btn-primary btn-sm" href="/join/">Join</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const root = document.documentElement;
+  const dark = window.matchMedia("(prefers-color-scheme: dark)");
+
+  function current(): "light" | "dark" {
+    const set = root.getAttribute("data-theme");
+    if (set === "light" || set === "dark") return set;
+    return dark.matches ? "dark" : "light";
+  }
+
+  function apply(next: "light" | "dark") {
+    // Choosing what the system already uses means "follow the system again".
+    const system = dark.matches ? "dark" : "light";
+    try {
+      if (next === system) localStorage.removeItem("cc-theme");
+      else localStorage.setItem("cc-theme", next);
+    } catch {}
+    if (next === system) root.removeAttribute("data-theme");
+    else root.setAttribute("data-theme", next);
+  }
+
+  document.querySelector<HTMLButtonElement>(".theme-btn")?.addEventListener("click", (event) => {
+    const next = current() === "dark" ? "light" : "dark";
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!document.startViewTransition || reduce) return apply(next);
+
+    // The new theme spreads out from the switch in a circle.
+    const btn = event.currentTarget as HTMLElement;
+    const box = btn.getBoundingClientRect();
+    const x = box.left + box.width / 2;
+    const y = box.top + box.height / 2;
+    const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    root.classList.add("theme-switching");
+    const transition = document.startViewTransition(() => apply(next));
+    transition.ready.then(() => {
+      root.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+        { duration: 520, easing: "cubic-bezier(.22,1,.36,1)", pseudoElement: "::view-transition-new(root)" },
+      );
+    });
+    transition.finished.finally(() => root.classList.remove("theme-switching"));
+  });
+
+  const menuBtn = document.querySelector<HTMLButtonElement>(".menu-btn");
+  const header = document.querySelector<HTMLElement>(".site-header");
+  menuBtn?.addEventListener("click", () => {
+    const open = menuBtn.getAttribute("aria-expanded") !== "true";
+    menuBtn.setAttribute("aria-expanded", String(open));
+    header?.classList.toggle("is-open", open);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && header?.classList.contains("is-open")) menuBtn?.click();
+  });
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    min-height: 4.25rem;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .brand :global(.spark) {
+    color: var(--coral);
+    transition: rotate var(--speed-scene) var(--ease-out);
+  }
+  .brand:hover :global(.spark) {
+    rotate: 90deg;
+  }
+  .lock {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+  .city {
+    font: 300 1.125rem/1.1 var(--font-display);
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+  }
+  .nav ul {
+    display: flex;
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .nav li a {
+    position: relative;
+    padding: 0.4rem 0;
+    color: var(--text);
+    font-size: var(--text-small);
+    text-decoration: none;
+  }
+  /* A coral underline that draws in from the left. */
+  .nav li a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--coral);
+    scale: 0 1;
+    transform-origin: left;
+    transition: scale var(--speed-move) var(--ease-out);
+  }
+  .nav li a:hover::after,
+  .nav li a[aria-current="page"]::after {
+    scale: 1 1;
+  }
+  .nav li a[aria-current="page"] {
+    font-weight: 600;
+  }
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .theme-btn,
+  .menu-btn {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      border-color var(--speed-quick),
+      rotate var(--speed-move) var(--ease-out);
+  }
+  .theme-btn:hover {
+    border-color: var(--line-strong);
+    rotate: 180deg;
+  }
+  .menu-btn {
+    display: none;
+  }
+  .menu-icon,
+  .menu-icon::before {
+    display: block;
+    width: 1rem;
+    height: 2px;
+    background: currentColor;
+    transition:
+      translate var(--speed-quick),
+      rotate var(--speed-quick);
+  }
+  .menu-icon {
+    translate: 0 -3px;
+  }
+  .menu-icon::before {
+    content: "";
+    translate: 0 6px;
+  }
+  .is-open .menu-icon {
+    translate: 0 0;
+    rotate: 45deg;
+  }
+  .is-open .menu-icon::before {
+    translate: 0 0;
+    rotate: -90deg;
+  }
+
+  @media (max-width: 52rem) {
+    :global(.js) .menu-btn {
+      display: grid;
+    }
+    .bar {
+      flex-wrap: wrap;
+    }
+    .nav {
+      flex-basis: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-4);
+      padding-bottom: var(--space-5);
+    }
+    :global(.js) .nav {
+      display: none;
+    }
+    :global(.js) .is-open .nav {
+      display: flex;
+      animation: menu-in var(--speed-move) var(--ease-out);
+    }
+    .nav ul {
+      flex-direction: column;
+      gap: 0;
+    }
+    .nav li a {
+      display: block;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--line);
+      font: 300 1.5rem/1.2 var(--font-display);
+    }
+    .nav li a::after {
+      display: none;
+    }
+    .nav li a[aria-current="page"] {
+      color: var(--accent-text);
+      font-weight: 300;
+    }
+    .nav-actions {
+      justify-content: space-between;
+    }
+  }
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      translate: 0 -0.5rem;
+    }
+  }
+</style>

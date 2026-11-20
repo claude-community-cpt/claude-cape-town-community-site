@@ -1,0 +1,112 @@
+---
+// One event as a row: date chip, title, when and where, and its links.
+import { type EventEntry, day, month, longDate, timeRange, whereLine, endOf } from "../lib";
+
+interface Props {
+  event: EventEntry;
+  /** Heading level for the title, so the page outline stays in order. */
+  level?: 2 | 3;
+}
+const { event, level = 3 } = Astro.props;
+const { data } = event;
+const past = endOf(event) < new Date();
+const Title = `h${level}` as "h2" | "h3";
+const href = `/events/${event.id}/`;
+---
+
+<article class:list={["event-row", { "is-past": past }]}>
+  <div class:list={["date-chip", { "is-past": past }]} aria-hidden="true">
+    <b>{day(data.start)}</b><span>{month(data.start)}</span>
+  </div>
+  <div class="body">
+    <p class="when small muted">
+      <time datetime={data.start.toISOString()}>{longDate(data.start)}</time>{!past && `, ${timeRange(event)}`}
+    </p>
+    <Title class="title"><a href={href}>{data.title}</a></Title>
+    <p class="summary muted">{data.summary}</p>
+    <div class="pills">
+      <span class="pill">{data.format}</span>
+      <span class="pill pill-outline">{whereLine(event)}</span>
+      {!past && data.status && <span class="pill pill-outline">{data.status}</span>}
+    </div>
+    {
+      (data.slides.length > 0 || data.photos || data.gallery || (!past && data.luma)) && (
+        <p class="links small">
+          {!past && data.luma && (
+            <a href={data.luma.url} target="_blank" rel="noopener">
+              {data.luma.label ?? "Register on Luma"}
+            </a>
+          )}
+          {data.slides.map((s) => (
+            <a href={s.url} target="_blank" rel="noopener">
+              {s.title}
+            </a>
+          ))}
+          {data.gallery && <a href={`${href}#photos`}>Photos</a>}
+          {data.photos && (
+            <a href={data.photos} target="_blank" rel="noopener">
+              Full photo album
+            </a>
+          )}
+        </p>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .event-row {
+    position: relative;
+    display: flex;
+    gap: var(--space-5);
+    align-items: flex-start;
+    padding-block: var(--space-5);
+    border-top: 1px solid var(--line);
+  }
+  .body {
+    min-width: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+  .title a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  /* The whole row is the link to the event page. */
+  .title a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+  .event-row:hover .title a {
+    text-decoration: underline;
+    text-decoration-color: var(--coral);
+    text-decoration-thickness: 2px;
+  }
+  .date-chip {
+    transition: rotate var(--speed-move) var(--ease-out);
+  }
+  .event-row:hover .date-chip {
+    rotate: -4deg;
+  }
+  .summary {
+    max-width: var(--measure);
+  }
+  .pills {
+    margin-top: var(--space-1);
+  }
+  .links {
+    position: relative; /* above the row link */
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    margin-top: var(--space-1);
+    font-weight: 500;
+  }
+  @media (max-width: 30rem) {
+    .event-row {
+      gap: var(--space-4);
+    }
+  }
+</style>

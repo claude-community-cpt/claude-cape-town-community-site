@@ -1,0 +1,55 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import PageHead from "../components/PageHead.astro";
+import FormShell from "../components/FormShell.astro";
+import sheep from "../assets/brand/sticker-pixel-sheep.png";
+import { SITE } from "../lib";
+---
+
+<Base title="Join" description="Join Cape Town's Claude community: a WhatsApp group, a monthly newsletter, and people building with Claude near you.">
+  <PageHead coral title="Join the community" lede="A WhatsApp group, a monthly newsletter, and a room full of people building with Claude in Cape Town.">
+    <span class="sticker"><Image src={sheep} alt="" width={150} loading="eager" /></span>
+  </PageHead>
+  <section class="wrap-narrow body stack">
+    <p class="lede">
+      Tell us a little about yourself. We read every application and add new members to the WhatsApp group by hand. Events
+      stay open to everyone on <a href={SITE.lumaCalendar} target="_blank" rel="noopener">Luma</a>, member or not.
+    </p>
+    <FormShell id="join-form" submit="Apply to join" doneTitle="Thanks, your application is in." doneText="We read every application and add new members to the WhatsApp group. See you at the next meetup.">
+      <label class="field"><span class="field-label">Your name</span>
+        <input class="field-input" type="text" name="name" placeholder="Your name" autocomplete="name" required /></label>
+      <label class="field"><span class="field-label">Email</span>
+        <input class="field-input" type="email" name="email" placeholder="you@example.com" autocomplete="email" required /></label>
+      <label class="field"><span class="field-label">WhatsApp number</span>
+        <input class="field-input" type="tel" name="phone" placeholder="+27 82 123 4567" autocomplete="tel" inputmode="tel" required /></label>
+      <label class="field"><span class="field-label">What do you build? (optional)</span>
+        <input class="field-input" type="text" name="about" placeholder="(a demo, an artefact, a coded prototype)" /></label>
+      <label class="field"><span class="field-label">Why do you want to join the community?</span>
+        <textarea class="field-input" name="why" rows="4" placeholder="A sentence or two is enough" required></textarea></label>
+      <label class="field-check"><input type="checkbox" name="newsletter" value="yes" />
+        <span>Also send me the monthly newsletter: upcoming events, demos and what the community is building. Unsubscribe any time.</span></label>
+    </FormShell>
+  </section>
+</Base>
+
+<style>
+  .body {
+    padding-block: var(--space-8) var(--section);
+  }
+  :global(.page-head) :global(.wrap) {
+    position: relative;
+  }
+  .sticker {
+    --tilt: 7deg;
+    position: absolute;
+    right: 0;
+    bottom: -5.5rem;
+    margin: 0;
+  }
+  @media (max-width: 52rem) {
+    .sticker {
+      display: none;
+    }
+  }
+</style>

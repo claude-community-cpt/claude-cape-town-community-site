@@ -1,0 +1,40 @@
+---
+// Monthly newsletter sign-up. Posts to Kit; see src/scripts/forms.ts.
+import { SITE } from "../lib";
+---
+
+<form class="newsletter" id="nl-form" novalidate>
+  <label class="field">
+    <span class="field-label">Name</span>
+    <input class="field-input" type="text" name="name" placeholder="Your name" autocomplete="name" />
+  </label>
+  <label class="field">
+    <span class="field-label">Email</span>
+    <input class="field-input" type="email" name="email" placeholder="you@example.com" autocomplete="email" required />
+  </label>
+  <label class="field-trap" aria-hidden="true">Leave this empty <input type="text" name="company_url" tabindex="-1" autocomplete="off" /></label>
+  <button class="btn btn-primary" type="submit" data-busy="Signing up…">Sign me up</button>
+</form>
+<p class="form-note" id="nl-form-done" hidden>Almost there. Check your inbox and confirm your email to get on the list.</p>
+<p class="form-note" id="nl-form-error" role="alert" hidden>
+  That didn't go through. Try again, or <a href={SITE.lumaCalendar} target="_blank" rel="noopener">subscribe on Luma</a>.
+</p>
+
+<script>
+  import "../scripts/forms";
+</script>
+
+<style>
+  .newsletter {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto;
+    gap: var(--space-3);
+    align-items: end;
+    max-width: 44rem;
+  }
+  @media (max-width: 40rem) {
+    .newsletter {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,195 @@
+---
+import { render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import LumaEmbed from "../../components/LumaEmbed.astro";
+import Gallery from "../../components/Gallery.astro";
+import { getEvents, endOf, day, month, longDate, timeRange, whereLine, SITE, type EventEntry } from "../../lib";
+
+export async function getStaticPaths() {
+  const { all } = await getEvents();
+  return all.map((event) => ({ params: { id: event.id }, props: { event } }));
+}
+
+interface Props {
+  event: EventEntry;
+}
+const { event } = Astro.props;
+const { data } = event;
+const { Content } = await render(event);
+const past = endOf(event) < new Date();
+const url = new URL(`/events/${event.id}/`, Astro.site).href;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Event",
+  name: data.title,
+  description: data.summary,
+  startDate: data.start.toISOString(),
+  endDate: endOf(event).toISOString(),
+  eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+  eventStatus: "https://schema.org/EventScheduled",
+  isAccessibleForFree: true,
+  url,
+  image: new URL("/og.png", Astro.site).href,
+  location: {
+    "@type": "Place",
+    name: data.venue.name,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: data.venue.address,
+      addressLocality: "Cape Town",
+      addressCountry: "ZA",
+    },
+  },
+  organizer: { "@type": "Organization", name: SITE.name, url: Astro.site?.href },
+  ...(data.luma && {
+    offers: { "@type": "Offer", price: 0, priceCurrency: "ZAR", url: data.luma.url, availability: "https://schema.org/InStock" },
+  }),
+};
+---
+
+<Base title={data.title} description={data.summary} schema={[schema]}>
+  <article>
+    <header class="event-head">
+      <div class="wrap">
+        <p class="small back"><a href={past ? "/events/#past" : "/events/"}>All events</a></p>
+        <div class="head-grid">
+          <div class:list={["date-chip", "big", { "is-past": past }]} aria-hidden="true">
+            <b>{day(data.start)}</b>
+            <span>{month(data.start)}</span>
+          </div>
+          <div class="stack">
+            <h1 class="display">{data.title}</h1>
+            <p class="lede">
+              <time datetime={data.start.toISOString()}>{longDate(data.start)}</time>{data.end && `, ${timeRange(event)}`}
+              <br />
+              {whereLine(event)}
+            </p>
+            <div class="pills">
+              <span class="pill">{data.format}</span>
+              {past ? <span class="pill pill-outline">Past event</span> : data.status && <span class="pill pill-outline">{data.status}</span>}
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="wrap event-body">
+      <div class="prose">
+        <Content />
+      </div>
+
+      <aside class="side">
+        {
+          !past && data.luma && (
+            <div class="stack">
+              <h2 class="title">Register</h2>
+              {data.luma.embedId && <LumaEmbed embedId={data.luma.embedId} title={data.title} />}
+              <p>
+                <a class="btn btn-primary" href={data.luma.url} target="_blank" rel="noopener">
+                  {data.luma.label ?? "Register on Luma"}
+                </a>
+              </p>
+            </div>
+          )
+        }
+        {
+          (data.slides.length > 0 || data.photos) && (
+            <div class="stack">
+              <h2 class="title">From the day</h2>
+              <ul class="resources">
+                {data.slides.map((s) => (
+                  <li>
+                    <a href={s.url} target="_blank" rel="noopener">
+                      {s.title}
+                    </a>
+                  </li>
+                ))}
+                {data.photos && (
+                  <li>
+                    <a href={data.photos} target="_blank" rel="noopener">
+                      Full photo album
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </div>
+          )
+        }
+      </aside>
+    </div>
+
+    {
+      data.gallery && (
+        <section class="section section-alt" id="photos" aria-labelledby="photos-title">
+          <div class="wrap">
+            <h2 class="heading" id="photos-title">Photos</h2>
+            <Gallery folder={data.gallery} alt={data.galleryAlt} />
+          </div>
+        </section>
+      )
+    }
+  </article>
+</Base>
+
+<style>
+  .event-head {
+    padding-block: clamp(2rem, 5vw, 4rem) clamp(2rem, 4vw, 3rem);
+  }
+  .back {
+    margin-bottom: var(--space-6);
+    font-weight: 500;
+  }
+  .back a::before {
+    content: "← ";
+  }
+  .head-grid {
+    display: flex;
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+    align-items: flex-start;
+  }
+  .date-chip.big {
+    width: clamp(4.5rem, 9vw, 7rem);
+    padding-block: 0.9rem 0.7rem;
+    border-radius: var(--radius-md);
+    rotate: -3deg;
+  }
+  .date-chip.big b {
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+  }
+  .date-chip.big span {
+    font-size: var(--text-small);
+  }
+  .event-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 600px);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+    padding-bottom: var(--section);
+  }
+  .side {
+    display: grid;
+    gap: var(--space-7);
+  }
+  .resources {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-weight: 500;
+  }
+  #photos h2 {
+    margin-bottom: var(--space-6);
+  }
+  @media (max-width: 60rem) {
+    .event-body {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 30rem) {
+    .head-grid {
+      flex-direction: column;
+    }
+  }
+</style>

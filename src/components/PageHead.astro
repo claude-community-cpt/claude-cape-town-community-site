@@ -1,0 +1,37 @@
+---
+// The title block at the top of every page except the home page.
+interface Props {
+  title: string;
+  lede?: string;
+  coral?: boolean;
+}
+const { title, lede, coral = false } = Astro.props;
+---
+
+<header class:list={["page-head", { "section-coral": coral }]}>
+  <div class="wrap stack">
+    <h1 class="display">{title}</h1>
+    {lede && <p class="lede">{lede}</p>}
+    <slot />
+  </div>
+</header>
+
+<style>
+  .page-head {
+    padding-block: clamp(3rem, 7vw, 6rem) clamp(2rem, 4vw, 3.5rem);
+  }
+  .page-head.section-coral {
+    padding-bottom: clamp(3rem, 7vw, 6rem);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .page-head h1 {
+      animation: head-in var(--speed-scene) var(--ease-out) both;
+    }
+  }
+  @keyframes head-in {
+    from {
+      opacity: 0;
+      translate: 0 1rem;
+    }
+  }
+</style>

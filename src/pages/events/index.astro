@@ -1,0 +1,186 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHead from "../../components/PageHead.astro";
+import EventRow from "../../components/EventRow.astro";
+import LumaEmbed from "../../components/LumaEmbed.astro";
+import { getEvents, year, SITE, day, month, longDate, timeRange, whereLine } from "../../lib";
+
+const { upcoming, past } = await getEvents();
+const years = [...new Set(past.map((e) => year(e.data.start)))];
+---
+
+<Base title="Events" description="Upcoming and past Claude Community events in Cape Town. Free, in person, and open to everyone. Register on Luma.">
+  <PageHead title="What's on" lede="Everything on the Cape Town calendar. Events are free, and you register on Luma.">
+    <p class="jump small">
+      <a href="#upcoming">Upcoming ({upcoming.length})</a>
+      <a href="#past">Past ({past.length})</a>
+    </p>
+  </PageHead>
+
+  <section class="section upcoming" id="upcoming" aria-labelledby="upcoming-title">
+    <div class="wrap">
+      <h2 class="heading" id="upcoming-title">Upcoming</h2>
+      {
+        upcoming.length === 0 && (
+          <p class="lede empty">
+            Nothing is scheduled right now. <a href={SITE.lumaCalendar} target="_blank" rel="noopener">Follow the Luma calendar</a> or{" "}
+            <a href="/#newsletter">get the newsletter</a> to hear first.
+          </p>
+        )
+      }
+      {
+        upcoming.map((event) => (
+          <article class="up">
+            <div class="up-info">
+              <div class="date-chip" aria-hidden="true">
+                <b>{day(event.data.start)}</b>
+                <span>{month(event.data.start)}</span>
+              </div>
+              <p class="small muted">
+                <time datetime={event.data.start.toISOString()}>{longDate(event.data.start)}</time>, {timeRange(event)}
+              </p>
+              <h3 class="heading"><a href={`/events/${event.id}/`}>{event.data.title}</a></h3>
+              <p class="muted">{event.data.summary}</p>
+              <div class="pills">
+                <span class="pill">{event.data.format}</span>
+                <span class="pill pill-outline">{whereLine(event)}</span>
+                {event.data.status && <span class="pill pill-outline">{event.data.status}</span>}
+              </div>
+              <p class="actions">
+                {event.data.luma && (
+                  <a class="btn btn-primary" href={event.data.luma.url} target="_blank" rel="noopener">
+                    {event.data.luma.label ?? "Register on Luma"}
+                  </a>
+                )}
+                <a class="textlink" href={`/events/${event.id}/`}>Event details</a>
+              </p>
+            </div>
+            {event.data.luma?.embedId && <LumaEmbed embedId={event.data.luma.embedId} title={event.data.title} />}
+          </article>
+        ))
+      }
+      {
+        upcoming.length > 0 && (
+          <p class="small muted more">
+            More coming. <a href={SITE.lumaCalendar} target="_blank" rel="noopener">Follow the Claude Community calendar on Luma</a> or{" "}
+            <a href="/#newsletter">sign up for the newsletter</a> to hear first.
+          </p>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section section-alt" id="past" aria-labelledby="past-title">
+    <div class="wrap">
+      <h2 class="heading" id="past-title">Past events</h2>
+      {
+        years.map((y) => (
+          <div class="year">
+            <p class="year-label" aria-hidden="true">{y}</p>
+            <div class="rows">
+              {past.filter((e) => year(e.data.start) === y).map((event) => <EventRow event={event} />)}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section section-coral">
+    <div class="wrap cta">
+      <div class="stack">
+        <h2 class="heading">Have a room, or a talk?</h2>
+        <p class="lede">We are always looking for places to gather and people with something to show.</p>
+      </div>
+      <p class="actions">
+        <a class="btn btn-solid" href="/partner/">Support an event</a>
+        <a class="textlink" href="/speak/">Give a talk</a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .jump {
+    display: flex;
+    gap: var(--space-5);
+    font-weight: 500;
+  }
+  .upcoming {
+    padding-top: var(--space-5);
+  }
+  .up {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 600px);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: start;
+    padding-block: var(--space-7);
+    border-top: 1px solid var(--line);
+  }
+  .upcoming h2 + .up {
+    margin-top: var(--space-6);
+  }
+  .up-info {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+  }
+  .up-info h3 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .up-info h3 a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--coral);
+    text-decoration-thickness: 2px;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4) var(--space-5);
+    margin-top: var(--space-3);
+  }
+  .empty,
+  .more {
+    margin-top: var(--space-6);
+  }
+  .year {
+    display: grid;
+    grid-template-columns: clamp(9rem, 14vw, 12rem) minmax(0, 1fr);
+    gap: var(--space-5);
+    margin-top: var(--space-7);
+  }
+  .year-label {
+    position: sticky;
+    top: 6rem;
+    align-self: start;
+    font: 300 var(--text-display) / 1 var(--font-display);
+    color: var(--text-faint);
+  }
+  .rows > :global(.event-row:last-child) {
+    border-bottom: 1px solid var(--line);
+  }
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+  }
+  @media (max-width: 60rem) {
+    .up {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 44rem) {
+    .year {
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
+    .year-label {
+      position: static;
+      font-size: var(--text-heading);
+    }
+  }
+</style>

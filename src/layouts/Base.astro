@@ -1,0 +1,103 @@
+---
+import "@fontsource/poppins/400.css";
+import "@fontsource/poppins/500.css";
+import "@fontsource/poppins/600.css";
+import "@fontsource-variable/lora";
+import "@fontsource-variable/lora/wght-italic.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITE } from "../lib";
+
+interface Props {
+  /** Page name. The site name is added after it. Leave out on the home page. */
+  title?: string;
+  description?: string;
+  /** Keep the page out of search engines (utility pages). */
+  noindex?: boolean;
+  /** Extra schema.org objects for this page (events, for example). */
+  schema?: Record<string, unknown>[];
+}
+
+const { title, description = SITE.description, noindex = false, schema = [] } = Astro.props;
+const fullTitle = title ? `${title} | ${SITE.name}` : SITE.name;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL("/og.png", Astro.site).href;
+// The commit this build came from, so the post-deploy check can tell when it is live.
+const build = process.env.GITHUB_SHA?.slice(0, 12) ?? "local";
+
+const organisation = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: SITE.name,
+  url: Astro.site?.href,
+  logo: new URL("/apple-touch-icon.png", Astro.site).href,
+  description: SITE.description,
+  areaServed: { "@type": "City", name: "Cape Town" },
+  sameAs: [SITE.lumaCalendar, "https://github.com/claude-community-cpt"],
+};
+
+/* Content Security Policy. GitHub Pages cannot send response headers, so the
+   policy lives in a meta tag. It allows only what the site uses:
+   its own files, Luma event frames, and the two form services.
+   If you add a new outside service, add its address here. */
+const csp = [
+  "default-src 'self'",
+  "script-src 'self'",
+  "style-src 'self'",
+  "img-src 'self' data:",
+  "font-src 'self'",
+  "frame-src https://luma.com https://lu.ma",
+  "connect-src 'self' https://app.kit.com https://docs.google.com",
+  "form-action 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "upgrade-insecure-requests",
+].join("; ");
+---
+
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Security-Policy" content={csp} />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="build" content={build} />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={title ?? SITE.name} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Hello, Cape Town. Claude Community Cape Town." />
+    <meta property="og:locale" content="en_ZA" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="theme-color" content="#faf9f5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1a1917" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="preload" href="/fonts/AnthropicSerifDisplay-Light.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/AnthropicSansDisplay-Semibold.woff2" as="font" type="font/woff2" crossorigin />
+    <script is:inline src="/theme.js"></script>
+    {[organisation, ...schema].map((item) => <script is:inline type="application/ld+json" set:html={JSON.stringify(item)} />)}
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

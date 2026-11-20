@@ -1,0 +1,35 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import sheep from "../assets/brand/sticker-pixel-sheep.png";
+---
+
+<Base title="Page not found" noindex>
+  <section class="wrap lost">
+    <span class="sticker"><Image src={sheep} alt="" width={220} loading="eager" /></span>
+    <h1 class="display">This page wandered off</h1>
+    <p class="lede">The address may have changed when the site was rebuilt. Try one of these.</p>
+    <p class="actions">
+      <a class="btn btn-primary" href="/events/">See what's on</a>
+      <a class="textlink" href="/">Go to the home page</a>
+    </p>
+  </section>
+</Base>
+
+<style>
+  .lost {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-5);
+    padding-block: var(--section);
+  }
+  .sticker {
+    --tilt: -8deg;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-5);
+  }
+</style>
