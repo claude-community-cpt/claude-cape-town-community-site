@@ -1,8 +1,11 @@
 # macOS
 .DS_Store
 
-# Original camera files — 4000x6000 JPEGs, ~200 MB total.
-# The site serves the resampled copies in site/assets/gallery/ instead.
-# These live on Tessa's Mac only; they are deliberately not in git.
-project/uploads/
-project/assets/gallery/
+# Dependencies and build output
+node_modules/
+dist/
+.astro/
+
+# Test output
+test-results/
+playwright-report/

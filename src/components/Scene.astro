@@ -1,0 +1,230 @@
+---
+// The hero scene: Table Mountain in the brand's dither texture, with the pixel
+// creature walking the foreshore eating strawberries. Click or tap the ground
+// to drop another strawberry. Purely decorative, so hidden from screen readers.
+import { getImage } from "astro:assets";
+import creature from "../assets/brand/creature.png";
+import strawberry from "../assets/brand/strawberry.png";
+
+const creatureImg = await getImage({ src: creature, width: 240, format: "png" });
+const berryImg = await getImage({ src: strawberry, format: "png" });
+
+// Devil's Peak, the flat top, Kloof Nek, Lion's Head, Signal Hill.
+const skyline =
+  "M0,320 L0,262 L90,246 L170,222 L232,168 L268,124 L292,104 L318,128 L352,160 L392,172 L424,122 L452,86 L486,76 L560,79 L640,74 L730,78 L812,75 L838,92 L872,150 L912,196 L962,220 L1004,200 L1040,150 L1066,112 L1086,96 L1108,116 L1136,168 L1178,204 L1240,208 L1310,196 L1380,214 L1440,240 L1440,320 Z";
+const cloth =
+  "M430,84 C440,52 500,40 548,52 C590,30 668,34 700,54 C760,40 836,54 846,82 C870,98 866,128 846,140 L836,96 L812,80 L730,83 L640,79 L560,84 L486,81 L452,91 L436,128 C420,116 418,98 430,84 Z";
+---
+
+<div class="scene" aria-hidden="true" data-scene>
+  <svg class="mountain" viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax slice" focusable="false">
+    <defs>
+      <pattern id="dots-far" width="8" height="8" patternUnits="userSpaceOnUse">
+        <circle class="dot" cx="2" cy="2" r="1.2"></circle>
+      </pattern>
+      <pattern id="dots-mid" width="4" height="4" patternUnits="userSpaceOnUse">
+        <circle class="dot" cx="2" cy="2" r="1.1"></circle>
+      </pattern>
+      <pattern id="dots-near" width="4" height="4" patternUnits="userSpaceOnUse">
+        <circle class="dot" cx="2" cy="2" r="1.45"></circle>
+      </pattern>
+      <linearGradient id="fade-down" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0.25" stop-color="#000"></stop>
+        <stop offset="0.95" stop-color="#fff"></stop>
+      </linearGradient>
+      <mask id="lower"><rect width="1440" height="320" fill="url(#fade-down)"></rect></mask>
+    </defs>
+
+    <g class="stars">
+      <circle cx="96" cy="38" r="1.6"></circle><circle cx="214" cy="84" r="1.2"></circle>
+      <circle cx="372" cy="30" r="1.4"></circle><circle cx="610" cy="18" r="1.2"></circle>
+      <circle cx="905" cy="46" r="1.6"></circle><circle cx="1010" cy="22" r="1.2"></circle>
+      <circle cx="1190" cy="70" r="1.4"></circle><circle cx="1338" cy="34" r="1.6"></circle>
+      <circle cx="1280" cy="120" r="1.2"></circle><circle cx="150" cy="150" r="1.2"></circle>
+    </g>
+
+    <path d={skyline} fill="url(#dots-far)"></path>
+    <path d={skyline} fill="url(#dots-mid)" mask="url(#lower)"></path>
+    <path class="cloth" d={cloth} fill="url(#dots-far)"></path>
+    <path d="M0,320 L0,286 C200,274 420,292 720,282 C1010,272 1240,290 1440,280 L1440,320 Z" fill="url(#dots-near)"></path>
+  </svg>
+
+  <p class="caption nowplaying">♪ Ocean DX, Dream Veil</p>
+  <div class="ground" data-ground data-berry={berryImg.src}>
+    <img class="berry" src={berryImg.src} alt="" width="34" height="37" data-x="14" />
+    <img class="berry" src={berryImg.src} alt="" width="34" height="37" data-x="40" />
+    <img class="berry" src={berryImg.src} alt="" width="34" height="37" data-x="64" />
+    <img class="berry" src={berryImg.src} alt="" width="34" height="37" data-x="88" />
+    <img class="creature" src={creatureImg.src} alt="" width="120" height="78" data-creature />
+  </div>
+</div>
+
+<script>
+  const scene = document.querySelector<HTMLElement>("[data-scene]");
+  const ground = scene?.querySelector<HTMLElement>("[data-ground]");
+  const creature = scene?.querySelector<HTMLElement>("[data-creature]");
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (scene && ground && creature) {
+    type Berry = { el: HTMLElement; x: number; eaten: boolean; extra: boolean };
+    const berries: Berry[] = [...ground.querySelectorAll<HTMLElement>(".berry")].map((el) => ({
+      el,
+      x: Number(el.dataset.x),
+      eaten: false,
+      extra: false,
+    }));
+    const place = (b: Berry) => (b.el.style.left = `${b.x}%`);
+    berries.forEach(place);
+
+    let x = 4; // creature position, percent of the ground width
+    let dir = 1;
+    let pauseUntil = 0;
+    let last = performance.now();
+
+    function nearest(): Berry | undefined {
+      return berries.filter((b) => !b.eaten).sort((a, b) => Math.abs(a.x - x) - Math.abs(b.x - x))[0];
+    }
+
+    function draw(now: number) {
+      const width = ground!.clientWidth - creature!.clientWidth;
+      const bob = still || now < pauseUntil ? 0 : Math.abs(Math.sin(now / 130)) * -4;
+      creature!.style.transform = `translate(${(x / 100) * width}px, ${bob}px) scaleX(${dir > 0 ? -1 : 1})`;
+    }
+
+    function tick(now: number) {
+      const dt = Math.min(50, now - last) / 1000;
+      last = now;
+      if (now > pauseUntil) {
+        const target = nearest();
+        if (!target) {
+          // All eaten: the first four grow back, extras are cleared away.
+          for (const b of berries.splice(0)) {
+            if (b.extra) b.el.remove();
+            else {
+              b.eaten = false;
+              b.el.style.opacity = "1";
+              berries.push(b);
+            }
+          }
+          pauseUntil = now + 1600;
+        } else {
+          const gap = target.x - x;
+          dir = gap >= 0 ? 1 : -1;
+          x += dir * 9 * dt;
+          if (Math.abs(gap) < 1.2) {
+            target.eaten = true;
+            target.el.style.opacity = "0";
+            pauseUntil = now + 900;
+          }
+        }
+      }
+      draw(now);
+      requestAnimationFrame(tick);
+    }
+
+    // Drop a strawberry wherever the visitor clicks or taps.
+    ground.addEventListener("pointerdown", (event) => {
+      if (berries.filter((b) => b.extra && !b.eaten).length >= 8) return;
+      const box = ground.getBoundingClientRect();
+      const el = document.createElement("img");
+      el.className = "berry is-dropped";
+      el.src = ground.dataset.berry!;
+      el.alt = "";
+      el.width = 34;
+      el.height = 37;
+      // Copy Astro's scoped-style attribute so the new berry is styled like the others.
+      for (const attr of berries[0]?.el.attributes ?? []) {
+        if (attr.name.startsWith("data-astro-cid")) el.setAttribute(attr.name, "");
+      }
+      const berry: Berry = {
+        el,
+        x: Math.max(2, Math.min(96, ((event.clientX - box.left) / box.width) * 100)),
+        eaten: false,
+        extra: true,
+      };
+      place(berry);
+      ground.append(el);
+      berries.push(berry);
+    });
+
+    if (still) draw(0);
+    else requestAnimationFrame(tick);
+  }
+</script>
+
+<style>
+  .scene {
+    position: relative;
+    height: clamp(13rem, 26vw, 22rem);
+    margin-top: clamp(1rem, 3vw, 2.5rem);
+    overflow: hidden;
+  }
+  .mountain {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .dot {
+    fill: var(--dither);
+  }
+  /* Stars come out in dark mode. */
+  .stars circle {
+    fill: light-dark(transparent, rgb(250 249 245 / 0.75));
+  }
+  /* The tablecloth cloud spills slowly over the flat top. */
+  .cloth {
+    opacity: 0.85;
+    animation: drift 16s ease-in-out infinite alternate;
+  }
+  @keyframes drift {
+    from {
+      translate: -14px 0;
+    }
+    to {
+      translate: 18px 3px;
+    }
+  }
+  .nowplaying {
+    position: absolute;
+    top: 0;
+    right: var(--gutter);
+  }
+  .ground {
+    position: absolute;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: 0;
+    height: 7rem;
+    cursor: copy;
+    touch-action: manipulation;
+  }
+  .berry {
+    position: absolute;
+    bottom: 1.1rem;
+    width: clamp(22px, 2.6vw, 34px);
+    height: auto;
+    image-rendering: pixelated;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .berry.is-dropped {
+    animation: drop 0.5s var(--ease-out);
+  }
+  @keyframes drop {
+    from {
+      translate: 0 -5rem;
+      opacity: 0;
+    }
+  }
+  .creature {
+    position: absolute;
+    left: 0;
+    bottom: 0.9rem;
+    width: clamp(72px, 9vw, 120px);
+    height: auto;
+    image-rendering: pixelated;
+    will-change: transform;
+    pointer-events: none;
+  }
+</style>

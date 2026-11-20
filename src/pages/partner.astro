@@ -1,0 +1,60 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHead from "../components/PageHead.astro";
+import FormShell from "../components/FormShell.astro";
+---
+
+<Base title="Host or support an event" description="Offer a room, food and drink, or prizes for a Claude Community Cape Town event.">
+  <PageHead title="Host or support an event" lede="Our events are free, and they run on generous people: rooms to gather in, food and drink, and prizes for the builders. Tell us what you have in mind." />
+  <section class="wrap-narrow body">
+    <dl class="kinds">
+      <div>
+        <dt class="title">A room</dt>
+        <dd class="muted">Host a meetup, workshop or build night in your space. We thank you as "Hosted at" on the event page.</dd>
+      </div>
+      <div>
+        <dt class="title">Food, drink and prizes</dt>
+        <dd class="muted">Feed the room or reward the best demo of the night.</dd>
+      </div>
+      <div>
+        <dt class="title">Co-host</dt>
+        <dd class="muted">Does your team build with Claude? Bring a speaker and a real use case.</dd>
+      </div>
+    </dl>
+    <FormShell id="partner-form" submit="Send" doneTitle="Thanks, we have your note." doneText="We'll be in touch before the next event.">
+      <label class="field"><span class="field-label">Organisation</span>
+        <input class="field-input" type="text" name="org" placeholder="Company or organisation name" autocomplete="organization" required /></label>
+      <label class="field"><span class="field-label">Your name</span>
+        <input class="field-input" type="text" name="name" placeholder="Your name" autocomplete="name" required /></label>
+      <label class="field"><span class="field-label">Email</span>
+        <input class="field-input" type="email" name="email" placeholder="you@example.com" autocomplete="email" required /></label>
+      <label class="field"><span class="field-label">Phone or WhatsApp (optional)</span>
+        <input class="field-input" type="tel" name="phone" placeholder="+27 82 123 4567" autocomplete="tel" inputmode="tel" /></label>
+      <label class="field"><span class="field-label">Website (optional)</span>
+        <input class="field-input" type="url" name="website" placeholder="https://" autocomplete="url" /></label>
+      <label class="field"><span class="field-label">How would you like to help?</span>
+        <input class="field-input" type="text" name="how" placeholder="A room, food and drink, prizes, co-hosting, something else" required /></label>
+      <label class="field"><span class="field-label">Tell us more (optional)</span>
+        <textarea class="field-input" name="message" rows="4" placeholder="What you have in mind, and anything we should know"></textarea></label>
+    </FormShell>
+  </section>
+</Base>
+
+<style>
+  .body {
+    padding-bottom: var(--section);
+  }
+  .kinds {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: var(--space-5);
+    margin: 0 0 var(--space-6);
+  }
+  .kinds div {
+    padding-top: var(--space-4);
+    border-top: 2px solid var(--coral);
+  }
+  .kinds dd {
+    margin: var(--space-1) 0 0;
+  }
+</style>

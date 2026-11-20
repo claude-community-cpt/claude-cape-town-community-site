@@ -1,0 +1,52 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHead from "../components/PageHead.astro";
+import Gallery from "../components/Gallery.astro";
+import { getEvents, longDate } from "../lib";
+
+const { past } = await getEvents();
+const withPhotos = past.filter((e) => e.data.gallery || e.data.photos);
+---
+
+<Base title="Gallery" description="Photos from Claude Community Cape Town meetups, workshops and build days.">
+  <PageHead title="Thank you, Cape Town" lede="Moments from our events. In a photo and want it taken down? Message one of the hosts and we will remove it." />
+  {
+    withPhotos.map((event) => (
+      <section class="wrap album" aria-labelledby={`album-${event.id}`}>
+        <div class="album-head">
+          <h2 class="heading" id={`album-${event.id}`}>
+            <a href={`/events/${event.id}/`}>{event.data.title}</a>
+          </h2>
+          <p class="caption">{longDate(event.data.start)}</p>
+          {event.data.photos && (
+            <a class="textlink" href={event.data.photos} target="_blank" rel="noopener">
+              Full photo album
+            </a>
+          )}
+        </div>
+        {event.data.gallery && <Gallery folder={event.data.gallery} alt={event.data.galleryAlt} />}
+      </section>
+    ))
+  }
+</Base>
+
+<style>
+  .album {
+    padding-bottom: var(--section);
+  }
+  .album-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2) var(--space-5);
+    margin-bottom: var(--space-5);
+  }
+  .album-head h2 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .album-head h2 a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--coral);
+  }
+</style>

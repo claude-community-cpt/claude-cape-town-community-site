@@ -1,0 +1,106 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import PageHead from "../components/PageHead.astro";
+import sheep from "../assets/brand/sticker-pixel-sheep.png";
+import { SITE } from "../lib";
+
+// The Discord card appears only while its link is set in src/lib.ts.
+const ways = [
+  {
+    title: "Come to an event",
+    text: "The best way in. Events are free and open to everyone, and you register on Luma.",
+    links: [{ href: SITE.lumaCalendar, label: "See the Luma calendar" }],
+  },
+  SITE.discord && {
+    title: "Chat on Discord",
+    text: "Ask questions, share what you are building and hear about events first.",
+    links: [{ href: SITE.discord, label: "Join the Discord" }],
+  },
+  {
+    title: "Say hello on LinkedIn",
+    text: "Connect with the hosts for event news, or to ask anything before you come along.",
+    links: SITE.hosts.map((host) => ({ href: host.linkedin, label: `${host.name} on LinkedIn` })),
+  },
+  {
+    title: "Meet the ambassadors",
+    text: "The community is run by volunteer Claude Community Ambassadors. Find us in the official directory.",
+    links: [{ href: SITE.ambassadors, label: "Ambassador directory" }],
+  },
+].filter((way) => !!way);
+---
+
+<Base title="Join" description="How to join Cape Town's Claude community: come to a free event and meet people building with Claude near you.">
+  <PageHead coral title="Join the community" lede="There is nothing to sign up for. Come to an event and you are part of it.">
+    <span class="sticker"><Image src={sheep} alt="" width={150} loading="eager" /></span>
+  </PageHead>
+  <section class="wrap body">
+    <ul class="ways">
+      {
+        ways.map((way) => (
+          <li>
+            <h2 class="title">{way.title}</h2>
+            <p class="muted">{way.text}</p>
+            <p class="links">
+              {way.links.map((link) => (
+                <a class="textlink" href={link.href} target="_blank" rel="noopener">
+                  {link.label}
+                </a>
+              ))}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="small muted note">
+      We also have a WhatsApp group. To keep members' phone numbers away from spammers the link is not public: ask a host at
+      an event and we will add you.
+    </p>
+  </section>
+</Base>
+
+<style>
+  .body {
+    padding-block: var(--space-8) var(--section);
+  }
+  .ways {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: var(--space-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ways li {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+    padding-top: var(--space-4);
+    border-top: 2px solid var(--coral);
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    margin-top: var(--space-2);
+  }
+  .note {
+    max-width: var(--measure);
+    margin-top: var(--space-7);
+  }
+  :global(.page-head) :global(.wrap) {
+    position: relative;
+  }
+  .sticker {
+    --tilt: 7deg;
+    position: absolute;
+    right: 0;
+    bottom: -5.5rem;
+    margin: 0;
+  }
+  @media (max-width: 52rem) {
+    .sticker {
+      display: none;
+    }
+  }
+</style>

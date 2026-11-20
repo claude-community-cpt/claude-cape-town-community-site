@@ -1,0 +1,243 @@
+---
+// The living style guide: every token and component, rendered with the real CSS.
+// DESIGN.md in the repo root explains the rules behind them.
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import PageHead from "../components/PageHead.astro";
+import EventRow from "../components/EventRow.astro";
+import Spark from "../components/Spark.astro";
+import sheep from "../assets/brand/sticker-pixel-sheep.png";
+import { getEvents } from "../lib";
+
+const { all } = await getEvents();
+const sample = all.at(-1);
+
+const colours = [
+  { token: "--coral", use: "Brand colour. Big surfaces, primary buttons, date chips." },
+  { token: "--coral-deep", use: "Hover and pressed state on coral." },
+  { token: "--accent-text", use: "Links and small coral text. Darker so it stays readable." },
+  { token: "--accent-tint", use: "Soft fill for pills." },
+  { token: "--bg", use: "Page background. Ivory in light, warm ink in dark." },
+  { token: "--bg-alt", use: "Alternate section background." },
+  { token: "--surface", use: "Cards and form fields." },
+  { token: "--text", use: "Body text and line art." },
+  { token: "--text-muted", use: "Secondary text." },
+  { token: "--line", use: "Hairline dividers." },
+];
+const type = [
+  { cls: "hero-title", name: "Hero", note: "Display serif 300. Home page greeting only.", text: "Hello" },
+  { cls: "display", name: "Display", note: "Display serif 300. One per page, the h1.", text: "Thank you, Cape Town" },
+  { cls: "heading", name: "Heading", note: "Display serif 300. Section titles.", text: "Four ways we gather" },
+  { cls: "title", name: "Title", note: "Label sans 600. Card and row titles.", text: "Build your first agent workshop" },
+  { cls: "lede", name: "Lede", note: "Poppins 400. One intro paragraph under a title.", text: "Free meetups, workshops and build days for people who make things with Claude." },
+  { cls: "", name: "Body", note: "Poppins 400, 16px.", text: "Laptops open, hands on keyboards. Learn by building and leave with something working." },
+  { cls: "wordmark", name: "Wordmark", note: "Label sans 600, capitals. The lockup only.", text: "Claude Community" },
+  { cls: "caption", name: "Caption", note: "Plex Mono. Ambient asides only.", text: "♪ Ocean DX, Dream Veil" },
+];
+const space = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+---
+
+<Base title="Design system" description="The colours, type and components of the Claude Community Cape Town website." noindex>
+  <PageHead title="Design system" lede="Everything the site is built from. If you are adding a page, start here and reuse what you see. The rules behind each piece are in DESIGN.md in the repository." />
+
+  <section class="wrap block" aria-labelledby="sg-colour">
+    <h2 class="heading" id="sg-colour">Colour</h2>
+    <p class="lede">Use the switch in the header to see every colour in light and dark.</p>
+    <ul class="swatches">
+      {
+        colours.map((c) => (
+          <li>
+            <span class:list={["swatch", `sw${c.token}`]} />
+            <code>{c.token}</code>
+            <span class="small muted">{c.use}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="wrap block" aria-labelledby="sg-type">
+    <h2 class="heading" id="sg-type">Type</h2>
+    <dl class="specimens">
+      {
+        type.map((t) => (
+          <div>
+            <dt>
+              <code>{t.cls ? `.${t.cls}` : "body"}</code>
+              <span class="small muted">{t.note}</span>
+            </dt>
+            <dd class={t.cls}>{t.text}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <section class="wrap block" aria-labelledby="sg-space">
+    <h2 class="heading" id="sg-space">Space</h2>
+    <ul class="spaces">
+      {
+        space.map((n) => (
+          <li>
+            <code>--space-{n}</code>
+            <span class:list={["bar", `sp-${n}`]} />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="wrap block" aria-labelledby="sg-buttons">
+    <h2 class="heading" id="sg-buttons">Buttons and links</h2>
+    <div class="row">
+      <a class="btn btn-primary btn-lg" href="#sg-buttons">Primary large</a>
+      <a class="btn btn-primary" href="#sg-buttons">Primary</a>
+      <a class="btn btn-solid" href="#sg-buttons">Solid</a>
+      <a class="btn btn-outline" href="#sg-buttons">Outline</a>
+      <a class="btn btn-primary btn-sm" href="#sg-buttons">Small</a>
+      <a class="textlink" href="#sg-buttons">Text link</a>
+    </div>
+    <div class="row on-coral section-coral">
+      <a class="btn btn-solid" href="#sg-buttons">Solid on coral</a>
+      <a class="textlink" href="#sg-buttons">Text link on coral</a>
+      <span class="pill">Pill on coral</span>
+    </div>
+  </section>
+
+  <section class="wrap block" aria-labelledby="sg-pieces">
+    <h2 class="heading" id="sg-pieces">Small pieces</h2>
+    <div class="row">
+      <span class="pill">Workshop</span>
+      <span class="pill pill-outline">Roamwork, Harrington Street</span>
+      <div class="date-chip"><b>05</b><span>Dec</span></div>
+      <div class="date-chip is-past"><b>27</b><span>Aug</span></div>
+      <Spark size={40} />
+      <span class="sticker"><Image src={sheep} alt="" width={120} /></span>
+    </div>
+  </section>
+
+  {
+    sample && (
+      <section class="wrap block" aria-labelledby="sg-event">
+        <h2 class="heading" id="sg-event">Event row</h2>
+        <p class="lede">Built from an event file. You never write this by hand.</p>
+        <EventRow event={sample} />
+      </section>
+    )
+  }
+
+  <section class="wrap block" aria-labelledby="sg-form">
+    <h2 class="heading" id="sg-form">Card and form fields</h2>
+    <div class="card form demo-form">
+      <label class="field"><span class="field-label">Text field</span>
+        <input class="field-input" type="text" placeholder="Placeholder" /></label>
+      <label class="field"><span class="field-label">Text area</span>
+        <textarea class="field-input" rows="3" placeholder="A sentence or two is enough"></textarea></label>
+      <label class="field-check"><input type="checkbox" /><span>A checkbox with a full-sentence label.</span></label>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .block {
+    padding-bottom: var(--section);
+    display: grid;
+    gap: var(--space-5);
+  }
+  code {
+    font: 400 var(--text-small) var(--font-mono);
+  }
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .swatches li {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .swatch {
+    height: 5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+  }
+  .sw--coral { background: var(--coral); }
+  .sw--coral-deep { background: var(--coral-deep); }
+  .sw--accent-text { background: var(--accent-text); }
+  .sw--accent-tint { background: var(--accent-tint); }
+  .sw--bg { background: var(--bg); }
+  .sw--bg-alt { background: var(--bg-alt); }
+  .sw--surface { background: var(--surface); }
+  .sw--text { background: var(--text); }
+  .sw--text-muted { background: var(--text-muted); }
+  .sw--line { background: var(--line); }
+
+  .specimens {
+    margin: 0;
+  }
+  .specimens > div {
+    display: grid;
+    grid-template-columns: 16rem minmax(0, 1fr);
+    gap: var(--space-5);
+    align-items: baseline;
+    padding-block: var(--space-5);
+    border-top: 1px solid var(--line);
+  }
+  .specimens dt {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .specimens dd {
+    margin: 0;
+    min-width: 0;
+  }
+  .spaces {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .spaces li {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    align-items: center;
+  }
+  .bar {
+    height: 0.75rem;
+    background: var(--coral);
+    border-radius: 2px;
+  }
+  .sp-1 { width: var(--space-1); }
+  .sp-2 { width: var(--space-2); }
+  .sp-3 { width: var(--space-3); }
+  .sp-4 { width: var(--space-4); }
+  .sp-5 { width: var(--space-5); }
+  .sp-6 { width: var(--space-6); }
+  .sp-7 { width: var(--space-7); }
+  .sp-8 { width: var(--space-8); }
+  .sp-9 { width: var(--space-9); }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4) var(--space-5);
+  }
+  .on-coral {
+    padding: var(--space-5);
+    border-radius: var(--radius-md);
+  }
+  .demo-form {
+    max-width: 30rem;
+  }
+  @media (max-width: 44rem) {
+    .specimens > div {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+  }
+</style>
