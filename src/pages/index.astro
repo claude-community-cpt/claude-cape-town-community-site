@@ -222,6 +222,17 @@ const hosts = [
   }
   .hero-title span:last-child {
     margin-left: clamp(1.5rem, 9vw, 9rem);
+    white-space: nowrap;
+  }
+  /* On a phone the greeting is two tidy lines: sized to the screen so
+     "Cape Town" never breaks, with a small step in to keep the stagger. */
+  @media (max-width: 34rem) {
+    .hero-title {
+      font-size: min(var(--text-hero), 15.5vw);
+    }
+    .hero-title span:last-child {
+      margin-left: 0.3em;
+    }
   }
   .actions {
     display: flex;
@@ -480,6 +491,15 @@ const hosts = [
   .join :global(.join-sticker) {
     --tilt: 6deg;
     margin-inline: auto;
+  }
+  @media (max-width: 52rem) {
+    .join :global(.join-sticker) {
+      margin-inline: 0;
+    }
+    .join :global(.join-sticker img) {
+      width: 9rem;
+      height: auto;
+    }
   }
 
   @media (max-width: 52rem) {

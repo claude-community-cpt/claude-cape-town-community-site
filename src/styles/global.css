@@ -314,6 +314,8 @@ a:hover {
 .pill-outline {
   background: transparent;
   box-shadow: inset 0 0 0 1px var(--line-strong);
+  /* Stays a neat label if a long venue name wraps onto a second line. */
+  border-radius: var(--radius-md);
 }
 .section-coral .pill {
   background: var(--ink);
@@ -440,9 +442,12 @@ textarea.field-input {
   rotate: var(--tilt, -4deg);
   transition: rotate var(--speed-move) var(--ease-out), scale var(--speed-move) var(--ease-out);
 }
-.sticker:hover {
-  rotate: calc(var(--tilt, -4deg) * -1);
-  scale: 1.04;
+/* Only where there is a real pointer: on a touch screen a hover sticks after a tap. */
+@media (hover: hover) {
+  .sticker:hover {
+    rotate: calc(var(--tilt, -4deg) * -1);
+    scale: 1.04;
+  }
 }
 .sticker img {
   display: block;
@@ -484,6 +489,13 @@ button.sticker {
   border: 0;
   background: none;
   cursor: pointer;
+  /* No double-tap zoom wait and no grey flash on phones. */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.sticker.is-spinning img,
+.sticker.is-tickled img {
+  will-change: transform;
 }
 .sticker.is-spinning img {
   animation: sticker-spin 800ms var(--ease-out);
@@ -562,5 +574,15 @@ button.sticker {
   }
   @view-transition {
     navigation: none;
+  }
+  /* A clicked sticker still answers, with a small pop in place of the spin. */
+  .sticker.is-spinning img,
+  .sticker.is-tickled img {
+    animation: sticker-pop 320ms ease-out !important;
+  }
+}
+@keyframes sticker-pop {
+  40% {
+    scale: 1.08;
   }
 }

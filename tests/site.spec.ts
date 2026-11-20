@@ -323,3 +323,12 @@ test("the mountain scene: a click drops a strawberry and poking Clawd makes him 
   await expect(scene.locator("[data-bubble]")).toHaveClass(/is-on/);
   await expect(scene.locator(".berry")).toHaveCount(before + 1);
 });
+
+test("with reduced motion Clawd still strolls along the shore", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  const clawd = page.locator("[data-clawd]");
+  await clawd.scrollIntoViewIfNeeded();
+  const start = (await clawd.boundingBox())!.x;
+  await expect.poll(async () => (await clawd.boundingBox())!.x, { timeout: 5000 }).toBeGreaterThan(start + 5);
+});

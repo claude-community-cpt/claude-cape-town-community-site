@@ -22,7 +22,7 @@ const more = all.length - thumbs.length;
   thumbs.length > 0 && (
     <a class="strip" href={href} aria-label={`${label} (${all.length})`}>
       {thumbs.map((t) => (
-        <img src={t.src} alt="" width="120" height="90" loading="lazy" decoding="async" />
+        <img src={t.src} alt="" width="120" height="90" decoding="async" />
       ))}
       {more > 0 && <span class="more small">+{more}</span>}
     </a>

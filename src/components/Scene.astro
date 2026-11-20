@@ -132,6 +132,9 @@ const lights = [150, 236, 318, 392, 470, 520, 598, 660, 742, 806, 880, 968, 1042
   const creature = scene?.querySelector<HTMLElement>("[data-creature]");
   const speech = scene?.querySelector<HTMLElement>("[data-say]");
   const bubble = scene?.querySelector<HTMLElement>("[data-bubble]");
+  // With "reduce motion" on, Clawd still strolls and eats, since a small slow
+  // walk is the point of the scene, but nothing bobs, jumps, flips, bursts or
+  // leans, and the stylesheet stops the sky's animations.
   const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const touch = window.matchMedia("(hover: none)").matches;
 
@@ -170,6 +173,7 @@ const lights = [150, 236, 318, 392, 470, 520, 598, 660, 742, 806, 880, 968, 1042
     }
 
     function jump(now: number, flip = false) {
+      if (still) return;
       if (jumpAt < 0) jumpAt = now;
       if (flip) once(creature!, "is-flipping");
     }
@@ -294,11 +298,8 @@ const lights = [150, 236, 318, 392, 470, 520, 598, 660, 742, 806, 880, 968, 1042
 
     creature.addEventListener("animationend", () => creature.classList.remove("is-chomping", "is-flipping"));
 
-    if (still) draw(0);
-    else {
-      requestAnimationFrame(tick);
-      window.setTimeout(() => say(touch ? "tap to feed me" : "click to feed me", 2600), 3200);
-    }
+    requestAnimationFrame(tick);
+    window.setTimeout(() => say(touch ? "tap to feed me" : "click to feed me", 2600), 3200);
   }
 </script>
 
