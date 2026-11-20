@@ -75,16 +75,19 @@ const schema = {
     </header>
 
     <div class="wrap event-body">
-      <div class="prose">
-        <Content />
-      </div>
+      <section class="split split-frame">
+        <h2 class="title">About</h2>
+        <div class="prose">
+          <Content />
+        </div>
+      </section>
 
-      <aside class="side">
-        {
-          data.luma && (
+      {
+        data.luma && (
+          <section class="split split-frame">
             <div class="stack">
               <h2 class="title">{past ? "On Luma" : "Register"}</h2>
-              {data.luma.embedId && <LumaEmbed embedId={data.luma.embedId} title={data.title} />}
+              {!past && <p class="muted">Free. You register on Luma.</p>}
               <p>
                 {past ? (
                   <a class="textlink" href={data.luma.url} target="_blank" rel="noopener">
@@ -97,32 +100,34 @@ const schema = {
                 )}
               </p>
             </div>
-          )
-        }
-        {
-          (data.slides.length > 0 || data.photos) && (
-            <div class="stack">
-              <h2 class="title">From the day</h2>
-              <ul class="resources">
-                {data.slides.map((s) => (
-                  <li>
-                    <a href={s.url} target="_blank" rel="noopener">
-                      {s.title}
-                    </a>
-                  </li>
-                ))}
-                {data.photos && (
-                  <li>
-                    <a href={data.photos} target="_blank" rel="noopener">
-                      Full photo album
-                    </a>
-                  </li>
-                )}
-              </ul>
-            </div>
-          )
-        }
-      </aside>
+            {data.luma.embedId && <LumaEmbed embedId={data.luma.embedId} title={data.title} past={past} />}
+          </section>
+        )
+      }
+
+      {
+        (data.slides.length > 0 || data.photos) && (
+          <section class="split split-frame">
+            <h2 class="title">From the day</h2>
+            <ul class="resources">
+              {data.slides.map((s) => (
+                <li>
+                  <a href={s.url} target="_blank" rel="noopener">
+                    {s.title}
+                  </a>
+                </li>
+              ))}
+              {data.photos && (
+                <li>
+                  <a href={data.photos} target="_blank" rel="noopener">
+                    Full photo album
+                  </a>
+                </li>
+              )}
+            </ul>
+          </section>
+        )
+      }
     </div>
 
     {
@@ -169,15 +174,12 @@ const schema = {
   .date-chip.big span {
     font-size: var(--text-small);
   }
-  /* One column: the words, then registration at the full width of the page. */
+  /* Rows on the site's two columns: a heading on the left, its content on the right. */
   .event-body {
-    display: grid;
-    gap: var(--space-7);
     padding-bottom: var(--section);
   }
-  .side {
-    display: grid;
-    gap: var(--space-7);
+  .event-body .prose {
+    max-width: 46rem;
   }
   .resources {
     display: grid;

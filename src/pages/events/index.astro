@@ -29,23 +29,25 @@ const years = [...new Set(past.map((e) => year(e.data.start)))];
       }
       {
         upcoming.map((event) => (
-          <article class="up">
-            <div class="up-head">
-              <div class="date-chip" aria-hidden="true">
-                <b>{day(event.data.start)}</b>
-                <span>{month(event.data.start)}</span>
-              </div>
-              <div class="up-info">
-                <p class="small muted">
-                  <time datetime={event.data.start.toISOString()}>{longDate(event.data.start)}</time>, {timeRange(event)}
-                </p>
-                <h3 class="heading"><a href={`/events/${event.id}/`}>{event.data.title}</a></h3>
-                <p class="muted summary">{event.data.summary}</p>
-                <div class="pills">
-                  <span class="pill">{event.data.format}</span>
-                  <span class="pill pill-outline">{whereLine(event)}</span>
-                  {event.data.status && <span class="pill pill-outline">{event.data.status}</span>}
+          <article class:list={["up", "split", { "split-frame": !!event.data.luma?.embedId }]}>
+            <div class="up-info">
+              <div class="up-when">
+                <div class="date-chip" aria-hidden="true">
+                  <b>{day(event.data.start)}</b>
+                  <span>{month(event.data.start)}</span>
                 </div>
+                <p class="small muted">
+                  <time datetime={event.data.start.toISOString()}>{longDate(event.data.start)}</time>
+                  <br />
+                  {timeRange(event)}
+                </p>
+              </div>
+              <h3 class="heading"><a href={`/events/${event.id}/`}>{event.data.title}</a></h3>
+              <p class="muted summary">{event.data.summary}</p>
+              <p class="small where">{whereLine(event)}</p>
+              <div class="pills">
+                <span class="pill">{event.data.format}</span>
+                {event.data.status && <span class="pill pill-outline">{event.data.status}</span>}
               </div>
               <p class="actions">
                 {event.data.luma && (
@@ -109,26 +111,26 @@ const years = [...new Set(past.map((e) => year(e.data.start)))];
   .upcoming {
     padding-top: var(--space-5);
   }
-  /* The event's details in one row, then Luma's registration at full width. */
-  .up {
-    display: grid;
-    gap: var(--space-6);
-    padding-block: var(--space-7);
-    border-top: 1px solid var(--line);
-  }
+  /* The event's details on the left, Luma's registration on the right. */
   .upcoming h2 + .up {
     margin-top: var(--space-6);
   }
-  .up-head {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    gap: var(--space-5) var(--space-6);
-    align-items: start;
-  }
   .up-info {
     display: grid;
-    gap: var(--space-2);
+    gap: var(--space-3);
     justify-items: start;
+  }
+  .up-when {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-2);
+  }
+  .where {
+    font-weight: 500;
+  }
+  .up-info .actions {
+    margin-top: var(--space-3);
   }
   .up-info h3 a {
     color: var(--text);
@@ -144,12 +146,6 @@ const years = [...new Set(past.map((e) => year(e.data.start)))];
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-4) var(--space-5);
-  }
-  /* Beside the details, the buttons sit level with the event's title. */
-  @media (min-width: 60.01rem) {
-    .up-head .actions {
-      margin-top: 2.1rem;
-    }
   }
   .empty,
   .more {
@@ -180,22 +176,6 @@ const years = [...new Set(past.map((e) => year(e.data.start)))];
     align-items: center;
     justify-content: space-between;
     gap: var(--space-6);
-  }
-  @media (max-width: 60rem) {
-    .up-head {
-      grid-template-columns: auto minmax(0, 1fr);
-    }
-    .up-head .actions {
-      grid-column: 2;
-    }
-  }
-  @media (max-width: 30rem) {
-    .up-head {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .up-head .actions {
-      grid-column: 1;
-    }
   }
   @media (max-width: 44rem) {
     .year {

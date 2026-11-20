@@ -1,7 +1,9 @@
 ---
-// The hero scene: Table Mountain in the brand's dither texture, with the pixel
-// creature walking the foreshore eating strawberries. Click or tap the ground
-// to drop another strawberry. Purely decorative, so hidden from screen readers.
+// The hero scene: Table Mountain in the brand's dither texture. The sun comes up
+// in the nek beside Lion's Head, the cable cars run, clouds and birds cross the
+// sky, and at night the moon, stars and city lights come out. Clawd walks the
+// foreshore eating strawberries: click or tap anywhere to drop another, or poke
+// Clawd to make him jump. Purely decorative, so hidden from screen readers.
 import { getImage } from "astro:assets";
 import creature from "../assets/brand/creature.png";
 import strawberry from "../assets/brand/strawberry.png";
@@ -11,13 +13,20 @@ const berryImg = await getImage({ src: strawberry, format: "png" });
 
 // Devil's Peak, the flat top, Kloof Nek, Lion's Head, Signal Hill.
 const skyline =
-  "M0,320 L0,262 L90,246 L170,222 L232,168 L268,124 L292,104 L318,128 L352,160 L392,172 L424,122 L452,86 L486,76 L560,79 L640,74 L730,78 L812,75 L838,92 L872,150 L912,196 L962,220 L1004,200 L1040,150 L1066,112 L1086,96 L1108,116 L1136,168 L1178,204 L1240,208 L1310,196 L1380,214 L1440,240 L1440,320 Z";
-const cloth =
-  "M430,84 C440,52 500,40 548,52 C590,30 668,34 700,54 C760,40 836,54 846,82 C870,98 866,128 846,140 L836,96 L812,80 L730,83 L640,79 L560,84 L486,81 L452,91 L436,128 C420,116 418,98 430,84 Z";
+  "M-60,320 L-60,262 L90,246 L170,222 L232,168 L268,124 L292,104 L318,128 L352,160 L392,172 L424,122 L452,86 L486,76 L560,79 L640,74 L730,78 L812,75 L838,92 L872,150 L912,196 L962,220 L1004,200 L1040,150 L1066,112 L1086,96 L1108,116 L1136,168 L1178,204 L1240,208 L1310,196 L1380,214 L1500,240 L1500,320 Z";
+
+// Pixel clouds: stacked blocks, drawn once and reused.
+const cloud = "M20,30 h34 v-12 h30 v-10 h44 v10 h26 v12 h30 v14 h-164 Z";
+const stars = [
+  [96, 38, 1.6], [214, 84, 1.2], [372, 30, 1.4], [470, 96, 1.1], [540, 44, 1.3], [610, 18, 1.2], [700, 120, 1.1],
+  [790, 52, 1.5], [905, 46, 1.6], [1010, 22, 1.2], [1090, 110, 1.1], [1190, 70, 1.4], [1338, 34, 1.6], [1280, 120, 1.2],
+  [150, 150, 1.2], [1400, 150, 1.1], [330, 130, 1.1], [860, 110, 1.2],
+];
+const lights = [150, 236, 318, 392, 470, 520, 598, 660, 742, 806, 880, 968, 1042, 1130, 1216, 1290];
 ---
 
 <div class="scene" data-scene>
-  <svg class="mountain" aria-hidden="true" viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax slice" focusable="false">
+  <svg class="mountain" aria-hidden="true" viewBox="0 0 1440 400" preserveAspectRatio="xMidYMax slice" focusable="false">
     <defs>
       <pattern id="dots-far" width="8" height="8" patternUnits="userSpaceOnUse">
         <circle class="dot" cx="2" cy="2" r="1.2"></circle>
@@ -28,44 +37,105 @@ const cloth =
       <pattern id="dots-near" width="4" height="4" patternUnits="userSpaceOnUse">
         <circle class="dot" cx="2" cy="2" r="1.45"></circle>
       </pattern>
+      <pattern id="dots-sun" width="7" height="7" patternUnits="userSpaceOnUse">
+        <circle class="dot-sun" cx="2" cy="2" r="1.3"></circle>
+      </pattern>
       <linearGradient id="fade-down" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0.25" stop-color="#000"></stop>
         <stop offset="0.95" stop-color="#fff"></stop>
       </linearGradient>
-      <mask id="lower"><rect width="1440" height="320" fill="url(#fade-down)"></rect></mask>
+      <radialGradient id="fade-out">
+        <stop offset="0.45" stop-color="#fff"></stop>
+        <stop offset="1" stop-color="#000"></stop>
+      </radialGradient>
+      <mask id="lower"><rect x="-60" width="1560" height="320" fill="url(#fade-down)"></rect></mask>
+      <mask id="glow"><circle cx="948" cy="258" r="96" fill="url(#fade-out)"></circle></mask>
     </defs>
 
-    <g class="stars">
-      <circle cx="96" cy="38" r="1.6"></circle><circle cx="214" cy="84" r="1.2"></circle>
-      <circle cx="372" cy="30" r="1.4"></circle><circle cx="610" cy="18" r="1.2"></circle>
-      <circle cx="905" cy="46" r="1.6"></circle><circle cx="1010" cy="22" r="1.2"></circle>
-      <circle cx="1190" cy="70" r="1.4"></circle><circle cx="1338" cy="34" r="1.6"></circle>
-      <circle cx="1280" cy="120" r="1.2"></circle><circle cx="150" cy="150" r="1.2"></circle>
+    <g class="layer sky">
+      <g class="stars">
+        {stars.map(([cx, cy, r]) => <circle cx={cx} cy={cy} r={r} />)}
+      </g>
+      <line class="shooting" x1="1120" y1="36" x2="1068" y2="62"></line>
+      <g class="moon">
+        <circle class="moon-disc" cx="640" cy="78" r="24"></circle>
+        <circle class="moon-bite" cx="651" cy="70" r="21"></circle>
+      </g>
+      <g class="sun">
+        <circle class="sun-glow" cx="948" cy="258" r="96" fill="url(#dots-sun)" mask="url(#glow)"></circle>
+        <circle class="sun-disc" cx="948" cy="258" r="40"></circle>
+      </g>
     </g>
 
-    <path d={skyline} fill="url(#dots-far)"></path>
-    <path d={skyline} fill="url(#dots-mid)" mask="url(#lower)"></path>
-    <path class="cloth" d={cloth} fill="url(#dots-far)"></path>
-    <path d="M0,320 L0,286 C200,274 420,292 720,282 C1010,272 1240,290 1440,280 L1440,320 Z" fill="url(#dots-near)"></path>
+    <g class="layer clouds">
+      {
+        [
+          ["cloud-a", "translate(0 58) scale(1.5)"],
+          ["cloud-b", "translate(0 92) scale(1.1)"],
+          ["cloud-c", "translate(0 16) scale(1.9)"],
+        ].map(([name, at]) => (
+          <g class:list={["cloud", name]}>
+            <g transform={at}>
+              <path class="backing" d={cloud} />
+              <path d={cloud} fill="url(#dots-mid)" />
+            </g>
+          </g>
+        ))
+      }
+      <g class="birds">
+        <g transform="translate(0 150)">
+          <path class="bird" d="M-9,-6 L0,0 L9,-6"></path>
+          <path class="bird" d="M16,8 L25,14 L34,8"></path>
+          <path class="bird" d="M-28,12 L-19,18 L-10,12"></path>
+        </g>
+      </g>
+    </g>
+
+    <g class="layer range" transform="translate(0 80)">
+      <path class="backing" d={skyline}></path>
+      <path d={skyline} fill="url(#dots-far)"></path>
+      <path d={skyline} fill="url(#dots-mid)" mask="url(#lower)"></path>
+      <path class="ridge" d={skyline}></path>
+      <line class="cable" x1="826" y1="78" x2="912" y2="226"></line>
+      <g class="car car-up"><rect x="902" y="222" width="20" height="13" rx="3"></rect></g>
+      <g class="car car-down"><rect x="902" y="222" width="20" height="13" rx="3"></rect></g>
+      <g class="lights">
+        {lights.map((x, i) => <rect x={x} y={262 + ((i * 7) % 16)} width="4" height="4" />)}
+      </g>
+    </g>
+
+    <g class="layer shore" transform="translate(0 80)">
+      <path class="backing" d="M-60,320 L-60,286 C200,274 420,292 720,282 C1010,272 1240,290 1500,280 L1500,320 Z"></path>
+      <path d="M-60,320 L-60,286 C200,274 420,292 720,282 C1010,272 1240,290 1500,280 L1500,320 Z" fill="url(#dots-near)"></path>
+    </g>
   </svg>
 
-  <a class="caption nowplaying" href="https://www.youtube.com/watch?v=tRsQsTMvPNg" target="_blank" rel="noopener">♪ Claude radio</a>
+  <a class="caption nowplaying" href="https://www.youtube.com/watch?v=tRsQsTMvPNg" target="_blank" rel="noopener">
+    <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>♪ Claude radio
+  </a>
   <div class="ground" aria-hidden="true" data-ground data-berry={berryImg.src}>
     <img class="berry" src={berryImg.src} alt="" width="34" height="37" data-x="14" />
     <img class="berry" src={berryImg.src} alt="" width="34" height="37" data-x="40" />
     <img class="berry" src={berryImg.src} alt="" width="34" height="37" data-x="64" />
     <img class="berry" src={berryImg.src} alt="" width="34" height="37" data-x="88" />
-    <img class="creature" src={creatureImg.src} alt="" width="120" height="78" data-creature />
+    <div class="clawd" data-clawd>
+      <span class="turn"><img class="creature" src={creatureImg.src} alt="" width="120" height="78" data-creature /></span>
+    </div>
+    <div class="say" data-say><span class="bubble" data-bubble></span></div>
   </div>
 </div>
 
 <script>
   const scene = document.querySelector<HTMLElement>("[data-scene]");
   const ground = scene?.querySelector<HTMLElement>("[data-ground]");
+  const clawd = scene?.querySelector<HTMLElement>("[data-clawd]");
   const creature = scene?.querySelector<HTMLElement>("[data-creature]");
+  const speech = scene?.querySelector<HTMLElement>("[data-say]");
+  const bubble = scene?.querySelector<HTMLElement>("[data-bubble]");
   const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const touch = window.matchMedia("(hover: none)").matches;
 
-  if (scene && ground && creature) {
+  if (scene && ground && clawd && creature && speech && bubble) {
     type Berry = { el: HTMLElement; x: number; eaten: boolean; extra: boolean };
     const berries: Berry[] = [...ground.querySelectorAll<HTMLElement>(".berry")].map((el) => ({
       el,
@@ -76,19 +146,66 @@ const cloth =
     const place = (b: Berry) => (b.el.style.left = `${b.x}%`);
     berries.forEach(place);
 
-    let x = 4; // creature position, percent of the ground width
+    let x = 4; // Clawd's position, percent of the ground width
     let dir = 1;
     let pauseUntil = 0;
     let last = performance.now();
+    let jumpAt = -1;
+    let eaten = 0;
+    let quiet: number | undefined;
+
+    const JUMP_MS = 560;
+
+    function say(words: string, ms = 1500) {
+      bubble!.textContent = words;
+      bubble!.classList.add("is-on");
+      window.clearTimeout(quiet);
+      quiet = window.setTimeout(() => bubble!.classList.remove("is-on"), ms);
+    }
+
+    function once(el: HTMLElement, animation: string) {
+      el.classList.remove(animation);
+      void el.offsetWidth; // restart the animation if it is already running
+      el.classList.add(animation);
+    }
+
+    function jump(now: number, flip = false) {
+      if (jumpAt < 0) jumpAt = now;
+      if (flip) once(creature!, "is-flipping");
+    }
+
+    // A few crumbs fly out where a strawberry was eaten.
+    function crumbs(at: number) {
+      if (still) return;
+      for (let i = 0; i < 7; i++) {
+        const el = document.createElement("i");
+        el.className = i % 3 === 0 ? "crumb crumb-leaf" : "crumb";
+        el.style.left = `${at}%`;
+        el.style.setProperty("--dx", `${Math.round((Math.random() - 0.5) * 90)}px`);
+        el.style.setProperty("--dy", `${Math.round(-24 - Math.random() * 56)}px`);
+        el.addEventListener("animationend", () => el.remove());
+        ground!.append(el);
+      }
+    }
 
     function nearest(): Berry | undefined {
       return berries.filter((b) => !b.eaten).sort((a, b) => Math.abs(a.x - x) - Math.abs(b.x - x))[0];
     }
 
     function draw(now: number) {
-      const width = ground!.clientWidth - creature!.clientWidth;
-      const bob = still || now < pauseUntil ? 0 : Math.abs(Math.sin(now / 130)) * -4;
-      creature!.style.transform = `translate(${(x / 100) * width}px, ${bob}px) scaleX(${dir > 0 ? -1 : 1})`;
+      const width = ground!.clientWidth - clawd!.clientWidth;
+      const left = (x / 100) * width;
+      let lift = still || now < pauseUntil ? 0 : Math.abs(Math.sin(now / 130)) * -4;
+      if (jumpAt >= 0) {
+        const t = (now - jumpAt) / JUMP_MS;
+        if (t >= 1) jumpAt = -1;
+        else lift = -Math.sin(Math.PI * t) * clawd!.clientHeight * 0.75;
+      }
+      // Only the outer boxes are moved here; turning, chomping and flipping
+      // are CSS on the elements inside, so they happen in place.
+      clawd!.style.transform = `translate(${left}px, ${lift}px)`;
+      clawd!.dataset.facing = dir > 0 ? "right" : "left";
+      speech!.style.transform = `translate(${left + clawd!.clientWidth / 2}px, ${lift}px)`;
     }
 
     function tick(now: number) {
@@ -102,7 +219,7 @@ const cloth =
             if (b.extra) b.el.remove();
             else {
               b.eaten = false;
-              b.el.style.opacity = "1";
+              b.el.classList.remove("is-eaten");
               berries.push(b);
             }
           }
@@ -110,11 +227,24 @@ const cloth =
         } else {
           const gap = target.x - x;
           dir = gap >= 0 ? 1 : -1;
-          x += dir * 9 * dt;
+          // Clawd hurries for a strawberry somebody just dropped.
+          x += dir * (target.extra ? 17 : 9) * dt;
           if (Math.abs(gap) < 1.2) {
             target.eaten = true;
-            target.el.style.opacity = "0";
+            target.el.classList.add("is-eaten");
+            crumbs(target.x);
+            once(creature!, "is-chomping");
+            eaten += 1;
             pauseUntil = now + 900;
+            if (eaten % 5 === 0) {
+              jump(now, true);
+              say("yum!");
+            } else if (!nearest()) {
+              say(touch ? "tap for more" : "click for more", 2200);
+              pauseUntil = now + 2400;
+            } else if (eaten % 2 === 0) {
+              say("nom");
+            }
           }
         }
       }
@@ -122,20 +252,26 @@ const cloth =
       requestAnimationFrame(tick);
     }
 
-    // Drop a strawberry wherever the visitor clicks or taps.
-    ground.addEventListener("pointerdown", (event) => {
-      if (berries.filter((b) => b.extra && !b.eaten).length >= 8) return;
+    // Click or tap anywhere in the scene: on Clawd he jumps, anywhere else a
+    // strawberry drops to the ground below.
+    scene.addEventListener("pointerdown", (event) => {
+      if ((event.target as HTMLElement).closest("a")) return;
       const box = ground.getBoundingClientRect();
+      const body = creature.getBoundingClientRect();
+      const onClawd =
+        event.clientX > body.left - 8 && event.clientX < body.right + 8 && event.clientY > body.top - 8 && event.clientY < body.bottom + 8;
+      if (onClawd) {
+        jump(performance.now(), true);
+        say(["hey!", "boing", "wheee"][Math.floor(Math.random() * 3)]);
+        return;
+      }
+      if (berries.filter((b) => b.extra && !b.eaten).length >= 8) return;
       const el = document.createElement("img");
       el.className = "berry is-dropped";
       el.src = ground.dataset.berry!;
       el.alt = "";
       el.width = 34;
       el.height = 37;
-      // Copy Astro's scoped-style attribute so the new berry is styled like the others.
-      for (const attr of berries[0]?.el.attributes ?? []) {
-        if (attr.name.startsWith("data-astro-cid")) el.setAttribute(attr.name, "");
-      }
       const berry: Berry = {
         el,
         x: Math.max(2, Math.min(96, ((event.clientX - box.left) / box.width) * 100)),
@@ -147,17 +283,35 @@ const cloth =
       berries.push(berry);
     });
 
+    // The sky, the mountain and the shore shift a little as the pointer moves.
+    if (!still && !touch) {
+      scene.addEventListener("pointermove", (event) => {
+        const box = scene.getBoundingClientRect();
+        scene.style.setProperty("--lean", (((event.clientX - box.left) / box.width - 0.5) * 2).toFixed(3));
+      });
+      scene.addEventListener("pointerleave", () => scene.style.setProperty("--lean", "0"));
+    }
+
+    creature.addEventListener("animationend", () => creature.classList.remove("is-chomping", "is-flipping"));
+
     if (still) draw(0);
-    else requestAnimationFrame(tick);
+    else {
+      requestAnimationFrame(tick);
+      window.setTimeout(() => say(touch ? "tap to feed me" : "click to feed me", 2600), 3200);
+    }
   }
 </script>
 
 <style>
   .scene {
     position: relative;
-    height: clamp(13rem, 26vw, 22rem);
+    height: clamp(14rem, 28vw, 25rem);
     margin-top: clamp(1rem, 3vw, 2.5rem);
     overflow: hidden;
+    cursor: copy;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
   }
   .mountain {
     position: absolute;
@@ -168,45 +322,256 @@ const cloth =
   .dot {
     fill: var(--dither);
   }
-  /* Stars come out in dark mode. */
-  .stars circle {
-    fill: light-dark(transparent, rgb(250 249 245 / 0.75));
+  /* Solid shapes in the page colour sit behind the dots, so nearer things
+     cover farther ones and the mountain keeps a clean edge. */
+  .backing {
+    fill: var(--bg);
   }
-  /* The tablecloth cloud spills slowly over the flat top. */
-  .cloth {
-    opacity: 0.85;
-    animation: drift 16s ease-in-out infinite alternate;
+  .ridge {
+    fill: none;
+    stroke: var(--dither);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
   }
-  @keyframes drift {
+
+  /* Layers lean with the pointer: far things move least. */
+  .layer {
+    transition: translate 0.8s var(--ease-out);
+  }
+  .sky {
+    translate: calc(var(--lean, 0) * -4px) 0;
+  }
+  .clouds {
+    translate: calc(var(--lean, 0) * -16px) 0;
+  }
+  .range {
+    translate: calc(var(--lean, 0) * -8px) 0;
+  }
+  .shore {
+    translate: calc(var(--lean, 0) * 6px) 0;
+  }
+
+  /* Day: the sun comes up in the nek between the mountain and Lion's Head. */
+  .sun {
+    animation: sunrise 2.6s var(--ease-out) both;
+  }
+  .sun-disc {
+    fill: light-dark(var(--coral), transparent);
+  }
+  .dot-sun {
+    fill: light-dark(var(--coral), transparent);
+  }
+  .sun-glow {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: glow 5s ease-in-out infinite alternate;
+  }
+  @keyframes sunrise {
     from {
-      translate: -14px 0;
+      translate: 0 120px;
+    }
+  }
+  @keyframes glow {
+    from {
+      scale: 0.9;
+      opacity: 0.7;
     }
     to {
-      translate: 18px 3px;
+      scale: 1.08;
+      opacity: 1;
     }
   }
+
+  /* Night: moon, stars, a shooting star now and then, and the city's lights. */
+  .moon {
+    animation: sunrise 2.6s var(--ease-out) both;
+  }
+  .moon-disc {
+    fill: light-dark(transparent, var(--ivory));
+  }
+  .moon-bite {
+    fill: light-dark(transparent, var(--bg));
+  }
+  .stars circle {
+    fill: light-dark(transparent, rgb(250 249 245 / 0.8));
+    animation: twinkle 3.4s ease-in-out infinite alternate;
+  }
+  .stars circle:nth-child(3n) {
+    animation-delay: -1.2s;
+    animation-duration: 2.6s;
+  }
+  .stars circle:nth-child(3n + 1) {
+    animation-delay: -2.3s;
+    animation-duration: 4.2s;
+  }
+  @keyframes twinkle {
+    from {
+      opacity: 0.25;
+    }
+  }
+  .shooting {
+    stroke: light-dark(transparent, var(--ivory));
+    stroke-width: 2;
+    stroke-linecap: round;
+    opacity: 0;
+    animation: shoot 13s linear infinite 4s;
+  }
+  @keyframes shoot {
+    0%,
+    92% {
+      opacity: 0;
+      translate: 0 0;
+    }
+    93% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      translate: -260px 130px;
+    }
+  }
+  .lights rect {
+    fill: light-dark(transparent, var(--coral));
+    animation: twinkle 2.8s ease-in-out infinite alternate;
+  }
+  .lights rect:nth-child(2n) {
+    fill: light-dark(transparent, var(--ivory));
+    animation-delay: -1.6s;
+    animation-duration: 3.8s;
+  }
+
+  /* Clouds cross the sky above the mountain; they never sit on it. */
+  .cloud {
+    animation: cross 150s linear infinite;
+  }
+  .cloud-a {
+    animation-delay: -40s;
+  }
+  .cloud-b {
+    animation-duration: 210s;
+    animation-delay: -150s;
+  }
+  .cloud-c {
+    animation-duration: 180s;
+    animation-delay: -110s;
+  }
+  @keyframes cross {
+    from {
+      transform: translateX(-360px);
+    }
+    to {
+      transform: translateX(1480px);
+    }
+  }
+  .birds {
+    animation: cross 58s linear infinite -20s;
+  }
+  .bird {
+    fill: none;
+    stroke: var(--dither);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transform-box: fill-box;
+    transform-origin: center bottom;
+    animation: flap 0.42s ease-in-out infinite alternate;
+  }
+  .bird:nth-child(2) {
+    animation-delay: -0.15s;
+  }
+  .bird:nth-child(3) {
+    animation-delay: -0.3s;
+  }
+  @keyframes flap {
+    to {
+      scale: 1 -0.5;
+    }
+  }
+
+  /* The cable cars pass each other on the way up and down. */
+  .cable {
+    stroke: var(--dither);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+  .car rect {
+    fill: var(--coral);
+    stroke: var(--bg);
+    stroke-width: 2;
+  }
+  .car {
+    animation: ride 24s ease-in-out infinite;
+  }
+  .car-down {
+    animation-delay: -12s;
+  }
+  @keyframes ride {
+    0%,
+    6% {
+      translate: 0 0;
+    }
+    44%,
+    56% {
+      translate: -86px -148px;
+    }
+    94%,
+    100% {
+      translate: 0 0;
+    }
+  }
+
   .nowplaying {
     position: absolute;
     top: 0;
     right: var(--gutter);
     z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
     color: inherit;
     text-decoration: none;
+    cursor: pointer;
   }
   .nowplaying:hover {
     color: var(--accent-text);
     text-decoration: underline;
   }
+  .bars {
+    display: inline-flex;
+    align-items: end;
+    gap: 2px;
+    height: 0.9em;
+  }
+  .bars i {
+    width: 2px;
+    height: 100%;
+    background: currentColor;
+    transform-origin: bottom;
+    animation: beat 0.9s ease-in-out infinite alternate;
+  }
+  .bars i:nth-child(2) {
+    animation-delay: -0.3s;
+  }
+  .bars i:nth-child(3) {
+    animation-delay: -0.6s;
+  }
+  @keyframes beat {
+    from {
+      scale: 1 0.25;
+    }
+  }
+
   .ground {
     position: absolute;
     left: var(--gutter);
     right: var(--gutter);
     bottom: 0;
     height: 7rem;
-    cursor: copy;
-    touch-action: manipulation;
   }
-  .berry {
+  /* Strawberries dropped by a visitor are made in the script, so these rules
+     are global to reach them. */
+  .ground :global(.berry) {
     position: absolute;
     bottom: 1.1rem;
     width: clamp(30px, 3.4vw, 46px);
@@ -214,27 +579,124 @@ const cloth =
     image-rendering: pixelated;
     /* A rim in the page colour lifts the fruit off the dotted ground. */
     filter: drop-shadow(2px 0 0 var(--bg)) drop-shadow(-2px 0 0 var(--bg)) drop-shadow(0 2px 0 var(--bg)) drop-shadow(0 -2px 0 var(--bg));
-    transition: opacity 0.3s ease;
+    transform-origin: center bottom;
+    transition:
+      opacity 0.25s ease,
+      scale 0.35s var(--ease-out);
     pointer-events: none;
   }
-  .berry.is-dropped {
-    animation: drop 0.5s var(--ease-out);
+  .ground :global(.berry.is-eaten) {
+    opacity: 0;
+    scale: 0.2;
+  }
+  .ground :global(.berry.is-dropped) {
+    animation: drop 0.7s var(--ease-out);
   }
   @keyframes drop {
-    from {
-      translate: 0 -5rem;
+    0% {
+      translate: 0 -9rem;
+      opacity: 0;
+    }
+    55% {
+      translate: 0 0;
+      scale: 1.15 0.8;
+      opacity: 1;
+    }
+    75% {
+      translate: 0 -0.9rem;
+      scale: 0.95 1.08;
+    }
+    100% {
+      translate: 0 0;
+    }
+  }
+  .ground :global(.crumb) {
+    position: absolute;
+    bottom: 2rem;
+    width: 6px;
+    height: 6px;
+    background: var(--coral);
+    pointer-events: none;
+    animation: crumb 0.6s var(--ease-out) forwards;
+  }
+  .ground :global(.crumb-leaf) {
+    background: var(--text);
+  }
+  @keyframes crumb {
+    to {
+      translate: var(--dx) var(--dy);
       opacity: 0;
     }
   }
-  .creature {
+  .clawd {
     position: absolute;
     left: 0;
     bottom: 0.9rem;
     width: clamp(72px, 9vw, 120px);
+    will-change: transform;
+    pointer-events: none;
+  }
+  .turn {
+    display: block;
+  }
+  /* The picture faces left; turn it round when Clawd walks right. */
+  .clawd[data-facing="right"] .turn {
+    scale: -1 1;
+  }
+  .creature {
+    display: block;
+    width: 100%;
     height: auto;
     image-rendering: pixelated;
     filter: drop-shadow(2px 0 0 var(--bg)) drop-shadow(-2px 0 0 var(--bg)) drop-shadow(0 2px 0 var(--bg)) drop-shadow(0 -2px 0 var(--bg));
-    will-change: transform;
+    transform-origin: center bottom;
+  }
+  .creature.is-chomping {
+    animation: chomp 0.5s ease-in-out;
+  }
+  .creature.is-flipping {
+    transform-origin: center;
+    animation: flip 0.56s ease-in-out;
+  }
+  @keyframes chomp {
+    30% {
+      scale: 1.12 0.84;
+    }
+    60% {
+      scale: 0.94 1.1;
+    }
+  }
+  @keyframes flip {
+    to {
+      rotate: 360deg;
+    }
+  }
+  /* What Clawd says. It follows him along the ground. */
+  .say {
+    position: absolute;
+    left: 0;
+    bottom: calc(0.9rem + clamp(72px, 9vw, 120px) * 0.65 + 0.9rem);
     pointer-events: none;
+  }
+  .bubble {
+    display: block;
+    padding: 0.15rem 0.5rem;
+    border: 2px solid var(--text);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text);
+    font: 500 var(--text-label) / 1.4 var(--font-mono);
+    white-space: nowrap;
+    translate: -50% 0;
+    opacity: 0;
+    scale: 0.6;
+    transform-origin: center bottom;
+    transition:
+      opacity 0.2s ease,
+      scale 0.3s var(--ease-out);
+  }
+  .bubble.is-on {
+    opacity: 1;
+    scale: 1;
   }
 </style>

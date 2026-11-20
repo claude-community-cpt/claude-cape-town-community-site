@@ -6,15 +6,17 @@
 interface Props {
   embedId: string;
   title: string;
+  /** A finished event shows less in the frame, so it can be shorter. */
+  past?: boolean;
 }
-const { embedId, title } = Astro.props;
+const { embedId, title, past = false } = Astro.props;
 ---
 
-<div class="luma-box">
+<div class:list={["luma-box", { "is-past": past }]}>
 <iframe
   class="luma"
   src={`https://luma.com/embed/event/${embedId}/simple`}
-  title={`Register on Luma: ${title}`}
+  title={past ? `On Luma: ${title}` : `Register on Luma: ${title}`}
   loading="lazy"
   allow="fullscreen; payment"></iframe>
 </div>

@@ -37,14 +37,15 @@ const { title, lede, coral = false, sticker, stickerWidth = 170 } = Astro.props;
     align-items: center;
     gap: var(--space-7);
   }
-  .head-sticker {
+  /* The sticker is drawn by another component, so these rules are global to reach it. */
+  .has-sticker :global(.head-sticker) {
     --tilt: 6deg;
   }
   @media (max-width: 52rem) {
     .has-sticker {
       grid-template-columns: 1fr;
     }
-    .head-sticker {
+    .has-sticker :global(.head-sticker) {
       display: none;
     }
   }
