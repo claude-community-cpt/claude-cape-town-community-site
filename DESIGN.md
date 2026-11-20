@@ -132,7 +132,8 @@ characters (`max-width: var(--measure)`).
 | Spark | `<Spark size={24} />`. Takes the current text colour. |
 | Event row | `<EventRow event={event} />`. Built from an event file. |
 | Luma embed | `<LumaEmbed embedId="evt-…" title="…" />`. Rendered for upcoming events automatically. |
-| Gallery | `<Gallery folder="2026-08-27-claude-kickoff-build" />`. Photos open in a full-screen view. |
+| Gallery | `<Gallery folder="2026-08-27-claude-kickoff-build" />`. The photos of one event, shown on its page. A photo opens a full-screen view with previous and next arrows, arrow keys, swipe and a counter. |
+| Photo strip | `<PhotoStrip folder="…" href="…" label="…" />`. The first few photos as one link. Past event rows add it automatically. |
 | Page head | `<PageHead title="…" lede="…" />` at the top of every page except home. |
 
 ## Illustration

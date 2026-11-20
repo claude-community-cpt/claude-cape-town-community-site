@@ -38,7 +38,7 @@ npm run verify                    # type check, build, HTML and link checks, bro
 src/
   content/events/   one Markdown file per event
   pages/            one file per page; the file name is the address
-  components/       header, footer, event row, gallery, Luma embed, hero scene
+  components/       header, footer, event row, photos, Luma embed, hero scene
   layouts/Base.astro  the shared <head>: SEO tags, security policy, fonts
   styles/           tokens.css (design tokens) and global.css (shared styles)
   scripts/forms.ts  sends the four forms

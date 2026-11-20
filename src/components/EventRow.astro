@@ -1,5 +1,6 @@
 ---
 // One event as a row: date chip, title, when and where, and its links.
+import PhotoStrip from "./PhotoStrip.astro";
 import { type EventEntry, day, month, longDate, timeRange, whereLine, endOf } from "../lib";
 
 interface Props {
@@ -51,6 +52,7 @@ const href = `/events/${event.id}/`;
         </p>
       )
     }
+    {past && data.gallery && <PhotoStrip folder={data.gallery} href={`${href}#photos`} label={`Photos from ${data.title}`} />}
   </div>
 </article>
 
@@ -103,6 +105,10 @@ const href = `/events/${event.id}/`;
     gap: var(--space-2) var(--space-5);
     margin-top: var(--space-1);
     font-weight: 500;
+  }
+  .body > :global(.strip) {
+    position: relative; /* above the row link */
+    z-index: 1;
   }
   @media (max-width: 30rem) {
     .event-row {

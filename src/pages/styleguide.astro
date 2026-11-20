@@ -5,12 +5,14 @@ import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import PageHead from "../components/PageHead.astro";
 import EventRow from "../components/EventRow.astro";
+import Gallery from "../components/Gallery.astro";
 import Spark from "../components/Spark.astro";
 import sheep from "../assets/brand/sticker-pixel-sheep.png";
 import { getEvents } from "../lib";
 
 const { all } = await getEvents();
 const sample = all.at(-1);
+const withPhotos = all.find((e) => e.data.gallery);
 
 const colours = [
   { token: "--coral", use: "Brand colour. Big surfaces, primary buttons, date chips." },
@@ -122,6 +124,19 @@ const space = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
         <h2 class="heading" id="sg-event">Event row</h2>
         <p class="lede">Built from an event file. You never write this by hand.</p>
         <EventRow event={sample} />
+      </section>
+    )
+  }
+
+  {
+    withPhotos?.data.gallery && (
+      <section class="wrap block" aria-labelledby="sg-gallery">
+        <h2 class="heading" id="sg-gallery">Photos</h2>
+        <p class="lede">
+          The photos of one event. Open one for the full-screen view, then step through with the arrows, the keyboard or
+          a swipe. A past event's row shows the first few as a strip.
+        </p>
+        <Gallery folder={withPhotos.data.gallery} alt={withPhotos.data.galleryAlt} />
       </section>
     )
   }
