@@ -30,7 +30,9 @@ if command -v dig >/dev/null; then
   c=$(dig +short CNAME "www.$HOST" @1.1.1.1)
   case "$c" in
     claude-community-cpt.github.io.) ok "DNS www CNAME points at the org's GitHub Pages" ;;
-    *.github.io.) ok "DNS www CNAME points at GitHub Pages ($c should become claude-community-cpt.github.io.)" ;;
+    # The old personal-account address still serves the site, so it does not fail the deploy,
+    # but it is not accepted as correct. Change the record at the registrar to clear this.
+    *.github.io.) skip "DNS www CNAME" "WARNING: still $c, must become claude-community-cpt.github.io." ;;
     *) bad "DNS www CNAME" "got: $c" ;;
   esac
 else
@@ -74,9 +76,8 @@ done
 code=$(get "$BASE/this-page-does-not-exist/" "$TMP/404.html")
 { [ "$code" = "404" ] && grep -q "wandered off" "$TMP/404.html"; } && ok "Unknown pages get the site's own 404" || bad "404 page" "HTTP $code"
 
-# 6. Security policy and forms are in the page
+# 6. Security policy is in the page
 grep -q 'http-equiv="Content-Security-Policy"' "$LIVE" && ok "Content Security Policy present" || bad "Content Security Policy" "missing"
-grep -q 'id="nl-form"' "$LIVE" && ok "Newsletter form present" || bad "Newsletter form" "missing"
 
 # 7. Everything the home page loads from this site exists
 n=0; broken=0

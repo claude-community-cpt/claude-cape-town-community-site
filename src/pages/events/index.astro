@@ -23,8 +23,7 @@ const years = [...new Set(past.map((e) => year(e.data.start)))];
       {
         upcoming.length === 0 && (
           <p class="lede empty">
-            Nothing is scheduled right now. <a href={SITE.lumaCalendar} target="_blank" rel="noopener">Follow the Luma calendar</a> or{" "}
-            <a href="/#newsletter">get the newsletter</a> to hear first.
+            Nothing is scheduled right now. <a href={SITE.lumaCalendar} target="_blank" rel="noopener">Follow the Luma calendar</a> to hear first.
           </p>
         )
       }
@@ -62,8 +61,7 @@ const years = [...new Set(past.map((e) => year(e.data.start)))];
       {
         upcoming.length > 0 && (
           <p class="small muted more">
-            More coming. <a href={SITE.lumaCalendar} target="_blank" rel="noopener">Follow the Claude Community calendar on Luma</a> or{" "}
-            <a href="/#newsletter">sign up for the newsletter</a> to hear first.
+            More coming. <a href={SITE.lumaCalendar} target="_blank" rel="noopener">Follow the Claude Community calendar on Luma</a> to hear first.
           </p>
         )
       }
@@ -93,7 +91,7 @@ const years = [...new Set(past.map((e) => year(e.data.start)))];
         <p class="lede">We are always looking for places to gather and people with something to show.</p>
       </div>
       <p class="actions">
-        <a class="btn btn-solid" href="/partner/">Support an event</a>
+        <a class="btn btn-solid" href="/partner/">Host or support an event</a>
         <a class="textlink" href="/speak/">Give a talk</a>
       </p>
     </div>

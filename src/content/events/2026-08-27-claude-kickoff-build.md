@@ -7,7 +7,7 @@ venue:
   name: Cape Town
 slides:
   - title: "Claude Code talk (PDF)"
-    url: https://github.com/claude-community-cpt/talks/blob/main/claude-code/27-aug/Claude%20Code%20Talk.pdf
+    url: /talks/2026-08-27-claude-code-talk.pdf
 gallery: 2026-08-27-claude-kickoff-build
 galleryAlt:
   kickoff-01.jpg: Opening talk at the Claude Kickoff Build

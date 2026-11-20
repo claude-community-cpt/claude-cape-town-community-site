@@ -1,7 +1,7 @@
 # Claude Community Cape Town website
 
 The source for [claudecapetown.com](https://claudecapetown.com): events,
-photos and sign-up forms for Cape Town's Claude community. Run by volunteer
+photos and how to take part in Cape Town's Claude community. Run by volunteer
 Claude Community Ambassadors.
 
 It is a static site built with [Astro](https://astro.build) and served by
@@ -64,30 +64,31 @@ Pages, and a `CNAME` for `www`.
 
 ## Forms
 
-All four forms post from the page; no API key lives in the site.
+There are two forms, and both post from the page to Google Forms. No API key
+lives in the site.
 
-| Form | Goes to | Notes |
-| --- | --- | --- |
-| Newsletter (home) | Kit form "Monthly newsletter", ID `10030128` | Double opt-in. A Kit automation adds the tag `newsletter`. |
-| Join | Kit form "Community application", ID `10030161` | Custom fields `whatsapp`, `builds`, `why_join`; tagged `applicant-join`. Only people who tick the box are also added to the newsletter form. |
-| Give a talk | Google Form "Speaker pitch" | Responses in the form's Responses tab. |
-| Support an event | Google Form "Partner application" | Same. |
-
-Send every newsletter to the tag `newsletter`, never to all subscribers: join
-applicants who did not tick the box have not agreed to marketing email.
+| Form | Goes to |
+| --- | --- |
+| Give a talk | Google Form "Speaker pitch" (Responses tab) |
+| Host or support an event | Google Form "Partner application" (Responses tab) |
 
 The form IDs and Google `entry.*` field IDs are at the top of
 `src/scripts/forms.ts`. If a Google Form question is re-created its `entry` ID
 changes; read the new one from the live form's page source.
 
 Each form has a hidden trap field and ignores submissions made within a few
-seconds of the page loading, which stops most bots. Turning on reCAPTCHA in
-the Kit form settings adds a second layer.
+seconds of the page loading, which stops most bots.
+
+There is no join form and no newsletter sign-up. The Join page links out
+instead; set `discord` and `linkedin` in `src/lib.ts` to show those buttons.
+Never publish a WhatsApp invite link.
+
+If you add a form, list what it collects on the [privacy notice](src/pages/privacy.astro).
 
 ## Security
 
 - A Content Security Policy in `src/layouts/Base.astro` allows only this
-  site's own files, Luma frames, Kit and Google Forms. If you add another
+  site's own files, Luma frames and Google Forms. If you add another
   outside service, add it there or the browser will block it.
 - GitHub Actions are pinned to exact commits. Renovate keeps them current.
 - Never commit contact details, attendee lists or keys. See [SECURITY.md](SECURITY.md).

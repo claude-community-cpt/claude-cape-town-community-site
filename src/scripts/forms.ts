@@ -1,10 +1,6 @@
-/* Sends the site's four forms from the page. No API key lives in the site.
-     Newsletter and Join  -> Kit (app.kit.com) public form endpoints
-     Speak and Partner    -> Google Forms
+/* Sends the site's two forms (Give a talk, Host or support an event) to
+   Google Forms from the page. No API key lives in the site.
    README.md ("Forms") says where the submissions end up. */
-
-const KIT_NEWSLETTER = "10030128";
-const KIT_JOIN = "10030161";
 
 const GOOGLE_FORMS: Record<string, { id: string; entries: Record<string, string> }> = {
   "speak-form": {
@@ -34,40 +30,7 @@ function looksLikeSpam(form: HTMLFormElement): boolean {
   return value(form, "company_url") !== "" || Date.now() - loadedAt < 2500;
 }
 
-async function kit(formId: string, body: FormData) {
-  const res = await fetch(`https://app.kit.com/forms/${formId}/subscriptions`, {
-    method: "POST",
-    headers: { Accept: "application/json" },
-    body,
-  });
-  const json = await res.json();
-  if (json?.status !== "success") throw new Error("Kit rejected the submission");
-}
-
-const senders: Record<string, (form: HTMLFormElement) => Promise<void>> = {
-  async "nl-form"(form) {
-    const body = new FormData();
-    body.append("email_address", value(form, "email"));
-    body.append("fields[first_name]", value(form, "name"));
-    await kit(KIT_NEWSLETTER, body);
-  },
-  async "join-form"(form) {
-    const body = new FormData();
-    body.append("email_address", value(form, "email"));
-    body.append("fields[first_name]", value(form, "name"));
-    body.append("fields[whatsapp]", value(form, "phone"));
-    body.append("fields[builds]", value(form, "about"));
-    body.append("fields[why_join]", value(form, "why"));
-    await kit(KIT_JOIN, body);
-    // Only people who tick the box are added to the newsletter (double opt-in).
-    if ((form.elements.namedItem("newsletter") as HTMLInputElement | null)?.checked) {
-      const nl = new FormData();
-      nl.append("email_address", value(form, "email"));
-      nl.append("fields[first_name]", value(form, "name"));
-      await kit(KIT_NEWSLETTER, nl).catch(() => {}); // the application is already in
-    }
-  },
-};
+const senders: Record<string, (form: HTMLFormElement) => Promise<void>> = {};
 
 for (const [formId, config] of Object.entries(GOOGLE_FORMS)) {
   senders[formId] = async (form) => {

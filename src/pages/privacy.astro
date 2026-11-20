@@ -1,36 +1,77 @@
 ---
 import Base from "../layouts/Base.astro";
 import PageHead from "../components/PageHead.astro";
+import { SITE } from "../lib";
 ---
 
-<Base title="Privacy" description="What Claude Community Cape Town collects through this website, why, and how to have it removed.">
-  <PageHead title="Privacy note" lede="What this site collects, why, and how to have it removed." />
+<Base title="Privacy" description="What Claude Community Cape Town collects through this website, why, and your rights under POPIA.">
+  <PageHead title="Privacy notice" lede="What this site collects, why, and your rights under South Africa's Protection of Personal Information Act (POPIA)." />
   <section class="wrap body">
     <div class="prose">
-      <h2>What we collect</h2>
-      <p>This site has no cookies, no analytics and no advertising trackers. We only receive what you type into a form:</p>
-      <ul>
-        <li><strong>Newsletter:</strong> your name and email address.</li>
-        <li><strong>Join:</strong> your name, email address, WhatsApp number, and what you tell us about yourself.</li>
-        <li><strong>Give a talk</strong> and <strong>Support an event:</strong> your name, contact details, and your message.</li>
-      </ul>
-
-      <h2>Why, and where it goes</h2>
+      <h2>Who we are</h2>
       <p>
-        We use it to reply to you, to add you to the community WhatsApp group if you applied to join, and to send the
-        monthly newsletter if you asked for it. Newsletter and join details are stored with Kit, our email service. Talk
-        and support messages are stored in Google Forms. Only the volunteer hosts can see them. We do not sell or share
-        your details.
+        Claude Community Cape Town is a volunteer-run community, organised by the Claude Community Ambassadors named on the
+        <a href="/">home page</a>. They are responsible for the personal information described here.
       </p>
-      <p>Event registration happens on Luma, which has its own privacy policy.</p>
 
-      <h2>Photos</h2>
-      <p>We take photos at events and share some of them here. If you are in a photo and would like it taken down, tell us and we will remove it.</p>
-
-      <h2>Removing your details</h2>
+      <h2>What we collect</h2>
       <p>
-        Every newsletter has an unsubscribe link. To see, correct or delete anything else we hold about you, message one
-        of the hosts on LinkedIn (links are on the <a href="/">home page</a>) and we will sort it out.
+        This site sets no cookies and has no analytics or advertising trackers. We only receive what you choose to type
+        into one of two forms:
+      </p>
+      <ul>
+        <li><strong>Give a talk:</strong> your name, email address and what you would like to talk about.</li>
+        <li>
+          <strong>Host or support an event:</strong> your organisation, your name, your email address, a phone number and
+          website if you give them, and your message.
+        </li>
+      </ul>
+      <p>
+        The site is served by GitHub Pages, which keeps technical logs such as IP addresses for security. We do not have
+        access to those logs.
+      </p>
+
+      <h2>Why we collect it</h2>
+      <p>
+        Only to reply to you about the talk or the offer you sent. We ask for it with your consent, which you give by
+        sending the form. We do not use it for marketing, and we do not sell it or share it with anyone else.
+      </p>
+
+      <h2>Where it is kept, and for how long</h2>
+      <p>
+        Form messages are stored in Google Forms, in a Google account only the volunteer hosts can open. Google may store
+        this outside South Africa. We delete messages once they are no longer needed, and at the latest two years after
+        you sent them.
+      </p>
+
+      <h2>Events</h2>
+      <p>
+        You register for events on Luma, which collects and holds your registration details under
+        <a href="https://luma.com/privacy-policy" target="_blank" rel="noopener">its own privacy policy</a>. This site
+        shows Luma's registration panel in a frame; anything you type there goes to Luma, not to us.
+      </p>
+
+      <h2 id="photos">Photos</h2>
+      <p>
+        We take photos at events and share some of them on this site. If you are in a photo and would like it taken down,
+        message one of the hosts and we will remove it.
+      </p>
+
+      <h2>Your rights</h2>
+      <p>
+        You may ask to see the personal information we hold about you, ask us to correct or delete it, object to how we use
+        it, or withdraw your consent at any time. To do any of these, message one of the hosts on LinkedIn (the links are
+        under "Your hosts" on the <a href="/">home page</a>) and we will sort it out.
+      </p>
+      <p>
+        If you are unhappy with how we handled your request, you may complain to the
+        <a href="https://inforegulator.org.za/" target="_blank" rel="noopener">Information Regulator of South Africa</a>.
+      </p>
+
+      <h2>Changes</h2>
+      <p>
+        If this notice changes, the new version appears here. Its history is public in the
+        <a href={SITE.repo} target="_blank" rel="noopener">site's repository</a>.
       </p>
     </div>
   </section>

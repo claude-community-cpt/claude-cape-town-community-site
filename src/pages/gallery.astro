@@ -9,7 +9,7 @@ const withPhotos = past.filter((e) => e.data.gallery || e.data.photos);
 ---
 
 <Base title="Gallery" description="Photos from Claude Community Cape Town meetups, workshops and build days.">
-  <PageHead title="Thank you, Cape Town" lede="Moments from our events." />
+  <PageHead title="Thank you, Cape Town" lede="Moments from our events. In a photo and want it taken down? Message one of the hosts and we will remove it." />
   {
     withPhotos.map((event) => (
       <section class="wrap album" aria-labelledby={`album-${event.id}`}>

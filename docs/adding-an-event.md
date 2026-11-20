@@ -55,15 +55,18 @@ Add any of these to the same file:
 ```yaml
 slides:
   - title: "Talk title (PDF)"
-    url: https://github.com/claude-community-cpt/talks/blob/main/…
+    url: /talks/2026-12-05-talk-title.pdf
 photos: https://photos.app.goo.gl/…            # a shared album link
 gallery: 2026-12-05-claude-and-coffee          # a folder in src/assets/gallery/
 galleryAlt:
   01.jpg: What the photo shows, in a few words
 ```
 
-- **Slides**: upload the PDF to the `talks` repository and link to it. Ask the
-  speaker first, and check no slide shows private or customer information.
+- **Slides**: put the PDF in `public/talks/`, named with the event date, and
+  link to it as `/talks/<file>.pdf`. Ask the speaker first, and check no slide
+  shows private or customer information. Keep each file under about 10 MB.
+- **Photo removal**: if someone asks for a photo to come down, remove it from
+  the gallery folder (and the shared album) and merge straight away.
 - **Photo album**: in Google Photos, share the album by link and turn off
   collaboration and comments so visitors cannot add to it.
 - **Photos on the site**: put up to about twelve in

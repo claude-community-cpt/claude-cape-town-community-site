@@ -25,7 +25,7 @@ function watchConsole(page: Page) {
 
 // Luma and the form services are outside the site; tests never call them.
 test.beforeEach(async ({ page }) => {
-  await page.route(/^https:\/\/(luma\.com|lu\.ma|app\.kit\.com|docs\.google\.com)\//, (route) =>
+  await page.route(/^https:\/\/(luma\.com|lu\.ma|docs\.google\.com)\//, (route) =>
     route.fulfill({ status: 200, contentType: "text/html", body: "<!doctype html><title>stub</title>" }),
   );
 });
@@ -134,36 +134,45 @@ test("gallery photos open full size and close with Escape", async ({ page }) => 
   await expect(box).toBeHidden();
 });
 
-test("the join form sends to Kit and confirms", async ({ page }) => {
+test("the talk form sends to Google Forms and confirms", async ({ page }) => {
   let posted = "";
-  await page.route("https://app.kit.com/forms/*/subscriptions", async (route) => {
+  await page.route("https://docs.google.com/forms/**", async (route) => {
     posted = route.request().url();
-    await route.fulfill({ json: { status: "success" }, headers: { "access-control-allow-origin": "*" } });
+    await route.fulfill({ status: 200, body: "" });
   });
-  await page.goto("/join/");
-  await page.getByLabel("Your name").fill("Test Person");
-  await page.getByLabel("Email").fill("test@example.com");
-  await page.getByLabel("WhatsApp number").fill("+27 82 123 4567");
-  await page.getByLabel("Why do you want to join the community?").fill("To meet people building with Claude.");
+  await page.goto("/speak/");
+  const form = page.locator("#speak-form");
+  await form.locator("[name=name]").fill("Test Person");
+  await form.locator("[name=email]").fill("test@example.com");
+  await form.locator("[name=topic]").fill("What I built with Claude");
   await page.waitForTimeout(2600); // the form ignores anything faster than a person
-  await page.getByRole("button", { name: "Apply to join" }).click();
-  await expect(page.locator("#join-form-done")).toBeVisible();
-  expect(posted).toContain("/forms/10030161/subscriptions");
+  await form.locator("button[type=submit]").click();
+  await expect(page.locator("#speak-form-done")).toBeVisible();
+  expect(posted).toContain("/formResponse");
 });
 
 test("a bot that fills the hidden field is not sent anywhere", async ({ page }) => {
   let posted = false;
-  await page.route("https://app.kit.com/forms/*/subscriptions", async (route) => {
+  await page.route("https://docs.google.com/forms/**", async (route) => {
     posted = true;
-    await route.fulfill({ json: { status: "success" } });
+    await route.fulfill({ status: 200, body: "" });
   });
-  await page.goto("/");
-  await page.locator("#nl-form [name=email]").fill("bot@example.com");
-  await page.locator("#nl-form [name=company_url]").evaluate((el: HTMLInputElement) => (el.value = "http://spam.example"));
+  await page.goto("/speak/");
+  const form = page.locator("#speak-form");
+  await form.locator("[name=name]").fill("Bot");
+  await form.locator("[name=email]").fill("bot@example.com");
+  await form.locator("[name=topic]").fill("Spam");
+  await form.locator("[name=company_url]").evaluate((el: HTMLInputElement) => (el.value = "http://spam.example"));
   await page.waitForTimeout(2600);
-  await page.locator("#nl-form button[type=submit]").click();
-  await expect(page.locator("#nl-form-done")).toBeVisible();
+  await form.locator("button[type=submit]").click();
+  await expect(page.locator("#speak-form-done")).toBeVisible();
   expect(posted).toBe(false);
+});
+
+test("the join page has no form and never links to WhatsApp", async ({ page }) => {
+  await page.goto("/join/");
+  await expect(page.locator("form")).toHaveCount(0);
+  await expect(page.locator('a[href*="whatsapp.com"], a[href*="wa.me"]')).toHaveCount(0);
 });
 
 test("the mixer short link forwards to the app", async ({ request }) => {

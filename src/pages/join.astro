@@ -2,40 +2,89 @@
 import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import PageHead from "../components/PageHead.astro";
-import FormShell from "../components/FormShell.astro";
 import sheep from "../assets/brand/sticker-pixel-sheep.png";
 import { SITE } from "../lib";
+
+// A way in appears here once its link is set in src/lib.ts.
+const ways = [
+  {
+    title: "Come to an event",
+    text: "The best way in. Events are free and open to everyone, and you register on Luma.",
+    href: SITE.lumaCalendar,
+    label: "See the Luma calendar",
+  },
+  SITE.discord && {
+    title: "Chat on Discord",
+    text: "Ask questions, share what you are building and hear about events first.",
+    href: SITE.discord,
+    label: "Join the Discord",
+  },
+  SITE.linkedin && {
+    title: "Follow on LinkedIn",
+    text: "Event announcements and photos from the community.",
+    href: SITE.linkedin,
+    label: "Follow on LinkedIn",
+  },
+  {
+    title: "Meet the ambassadors",
+    text: "The community is run by volunteer Claude Community Ambassadors. Say hello at an event or find us in the directory.",
+    href: SITE.ambassadors,
+    label: "Ambassador directory",
+  },
+].filter((way) => !!way);
 ---
 
-<Base title="Join" description="Join Cape Town's Claude community: a WhatsApp group, a monthly newsletter, and people building with Claude near you.">
-  <PageHead coral title="Join the community" lede="A WhatsApp group, a monthly newsletter, and a room full of people building with Claude in Cape Town.">
+<Base title="Join" description="How to join Cape Town's Claude community: come to a free event and meet people building with Claude near you.">
+  <PageHead coral title="Join the community" lede="There is nothing to sign up for. Come to an event and you are part of it.">
     <span class="sticker"><Image src={sheep} alt="" width={150} loading="eager" /></span>
   </PageHead>
-  <section class="wrap-narrow body stack">
-    <p class="lede">
-      Tell us a little about yourself. We read every application and add new members to the WhatsApp group by hand. Events
-      stay open to everyone on <a href={SITE.lumaCalendar} target="_blank" rel="noopener">Luma</a>, member or not.
+  <section class="wrap body">
+    <ul class="ways">
+      {
+        ways.map((way) => (
+          <li>
+            <h2 class="title">{way.title}</h2>
+            <p class="muted">{way.text}</p>
+            <a class="textlink" href={way.href} target="_blank" rel="noopener">
+              {way.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="small muted note">
+      We also have a WhatsApp group. To keep members' phone numbers away from spammers the link is not public: ask a host at
+      an event and we will add you.
     </p>
-    <FormShell id="join-form" submit="Apply to join" doneTitle="Thanks, your application is in." doneText="We read every application and add new members to the WhatsApp group. See you at the next meetup.">
-      <label class="field"><span class="field-label">Your name</span>
-        <input class="field-input" type="text" name="name" placeholder="Your name" autocomplete="name" required /></label>
-      <label class="field"><span class="field-label">Email</span>
-        <input class="field-input" type="email" name="email" placeholder="you@example.com" autocomplete="email" required /></label>
-      <label class="field"><span class="field-label">WhatsApp number</span>
-        <input class="field-input" type="tel" name="phone" placeholder="+27 82 123 4567" autocomplete="tel" inputmode="tel" required /></label>
-      <label class="field"><span class="field-label">What do you build? (optional)</span>
-        <input class="field-input" type="text" name="about" placeholder="(a demo, an artefact, a coded prototype)" /></label>
-      <label class="field"><span class="field-label">Why do you want to join the community?</span>
-        <textarea class="field-input" name="why" rows="4" placeholder="A sentence or two is enough" required></textarea></label>
-      <label class="field-check"><input type="checkbox" name="newsletter" value="yes" />
-        <span>Also send me the monthly newsletter: upcoming events, demos and what the community is building. Unsubscribe any time.</span></label>
-    </FormShell>
   </section>
 </Base>
 
 <style>
   .body {
     padding-block: var(--space-8) var(--section);
+  }
+  .ways {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: var(--space-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ways li {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+    padding-top: var(--space-4);
+    border-top: 2px solid var(--coral);
+  }
+  .ways a {
+    justify-self: start;
+    margin-top: var(--space-2);
+  }
+  .note {
+    max-width: var(--measure);
+    margin-top: var(--space-7);
   }
   :global(.page-head) :global(.wrap) {
     position: relative;

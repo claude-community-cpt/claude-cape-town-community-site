@@ -3,7 +3,6 @@ import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import Scene from "../components/Scene.astro";
 import EventRow from "../components/EventRow.astro";
-import NewsletterForm from "../components/NewsletterForm.astro";
 import { getEvents, day, month, longDate, timeRange, whereLine } from "../lib";
 import tessa from "../assets/hosts/tessa.png";
 import daniel from "../assets/hosts/daniel.jpg";
@@ -195,20 +194,12 @@ const hosts = [
     </div>
   </section>
 
-  <section class="section section-alt" id="newsletter" aria-labelledby="newsletter-title">
-    <div class="wrap stack">
-      <h2 class="heading" id="newsletter-title">One email a month</h2>
-      <p class="lede">Upcoming events, demos from the community, and what people are building.</p>
-      <NewsletterForm />
-    </div>
-  </section>
-
   <section class="section section-coral join" aria-labelledby="join-title">
     <div class="wrap join-grid">
       <div class="stack">
         <h2 class="display" id="join-title">Come and build with us</h2>
-        <p class="lede">Join the WhatsApp group and meet the people building with Claude in Cape Town.</p>
-        <p><a class="btn btn-solid btn-lg" href="/join/">Apply to join</a></p>
+        <p class="lede">Come to an event and meet the people building with Claude in Cape Town.</p>
+        <p><a class="btn btn-solid btn-lg" href="/join/">How to join</a></p>
       </div>
       <span class="sticker">
         <Image src={sheep} alt="" width={260} />

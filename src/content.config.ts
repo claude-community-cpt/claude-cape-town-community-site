@@ -35,8 +35,8 @@ const events = defineCollection({
         label: z.string().optional(),
       })
       .optional(),
-    /** Link to the talk slides (PDF in the talks repo, or anywhere public). */
-    slides: z.array(z.object({ title: z.string(), url: z.url() })).default([]),
+    /** Talk slides: a PDF in public/talks/ (written as /talks/file.pdf) or a full link. */
+    slides: z.array(z.object({ title: z.string(), url: z.union([z.url(), z.string().startsWith("/talks/")]) })).default([]),
     /** Link to a shared photo album (Google Photos). */
     photos: z.url().optional(),
     /** Folder name under src/assets/gallery/ holding photos to show on the site. */

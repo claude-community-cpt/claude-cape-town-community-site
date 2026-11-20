@@ -9,6 +9,10 @@ export const SITE = {
   description:
     "Cape Town's Claude community. Free meetups, workshops and build days for people who make things with Claude and Claude Code.",
   lumaCalendar: "https://luma.com/claudecommunity",
+  ambassadors: "https://claude.com/community/ambassadors",
+  /** Community links shown on the Join page. Leave empty to hide the button. Never a WhatsApp invite. */
+  discord: "",
+  linkedin: "",
   repo: "https://github.com/claude-community-cpt/claude-cape-town-community-site",
 } as const;
 
