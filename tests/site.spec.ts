@@ -289,3 +289,37 @@ test("the mixer short link forwards to the app", async ({ request }) => {
   const html = await (await request.get("/mixer/")).text();
   expect(html).toContain("https://table-mixer.vercel.app/");
 });
+
+test("the event page lines its sections up on the same two columns", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/events/");
+  const href = await page.locator("#past a[href^='/events/']").first().getAttribute("href");
+  await page.goto(href!);
+  const rows = page.locator(".event-body .split");
+  expect(await rows.count()).toBeGreaterThan(1);
+  const edges = [];
+  for (const row of await rows.all()) {
+    const label = (await row.locator(":scope > *").first().boundingBox())!;
+    const content = (await row.locator(":scope > *").nth(1).boundingBox())!;
+    edges.push([Math.round(label.x), Math.round(content.x)]);
+  }
+  // Every heading starts on one line down the page, and so does every content block.
+  for (const [label, content] of edges) {
+    expect(label).toBe(edges[0][0]);
+    expect(content).toBe(edges[0][1]);
+  }
+});
+
+test("the mountain scene: a click drops a strawberry and poking Clawd makes him speak", async ({ page }) => {
+  await page.goto("/");
+  const scene = page.locator("[data-scene]");
+  await scene.scrollIntoViewIfNeeded();
+  const before = await scene.locator(".berry").count();
+  const box = (await scene.boundingBox())!;
+  await page.mouse.click(box.x + box.width * 0.5, box.y + 30);
+  await expect(scene.locator(".berry")).toHaveCount(before + 1);
+  const clawd = (await scene.locator("[data-clawd]").boundingBox())!;
+  await page.mouse.click(clawd.x + clawd.width / 2, clawd.y + clawd.height / 2);
+  await expect(scene.locator("[data-bubble]")).toHaveClass(/is-on/);
+  await expect(scene.locator(".berry")).toHaveCount(before + 1);
+});

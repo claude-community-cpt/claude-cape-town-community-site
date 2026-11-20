@@ -77,6 +77,32 @@ a:hover {
 .wrap-narrow > * {
   max-width: 44rem;
 }
+/* A row in two parts: a narrow column for the heading, a wide one for what
+   it introduces. Every page lines up on these same two columns. */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+  gap: var(--space-5) clamp(2rem, 6vw, 5rem);
+  align-items: start;
+  padding-block: var(--space-7);
+  border-top: 1px solid var(--line);
+}
+@media (max-width: 48rem) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* The same row when the wide part holds Luma's frame, which needs 48rem to
+   show its two-column layout. On smaller screens the parts stack. */
+.split-frame {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 52rem);
+  gap: var(--space-6) clamp(2rem, 4vw, 4rem);
+}
+@media (max-width: 72rem) {
+  .split-frame {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 .section {
   padding-block: var(--section);
 }
@@ -474,10 +500,7 @@ button.sticker {
    two columns when wide. Measured against real events with room to spare. */
 .luma-box {
   container-type: inline-size;
-  /* About as wide as Luma's own two-column layout, centred. */
   width: 100%;
-  max-width: 54rem;
-  margin-inline: auto;
 }
 .luma {
   display: block;
@@ -487,14 +510,23 @@ button.sticker {
   border-radius: var(--radius-md);
   background: var(--bg-alt);
 }
+.is-past .luma {
+  height: 840px;
+}
 @container (min-width: 30rem) {
   .luma {
     height: 880px;
+  }
+  .is-past .luma {
+    height: 720px;
   }
 }
 @container (min-width: 48rem) {
   .luma {
     height: 620px;
+  }
+  .is-past .luma {
+    height: 480px;
   }
 }
 
