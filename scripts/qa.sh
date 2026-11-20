@@ -94,7 +94,8 @@ while IFS= read -r url; do
   case "$url" in *linkedin.com*|*luma.com*) [ "$code" != "000" ] || { broken=$((broken+1)); echo "      $code  $url"; } ;;
     *) [ "$code" -ge 200 ] && [ "$code" -lt 400 ] || { broken=$((broken+1)); echo "      $code  $url"; } ;; esac
 done < <(grep -oE 'href="https://[^"]+"' "$LIVE" | sed 's/href="//;s/"$//' | grep -v "$HOST" | sort -u)
-[ "$broken" = 0 ] && ok "All $n external links respond" || bad "External links" "$broken of $n failed"
+# Another site being down is worth knowing about but is not a fault in ours.
+[ "$broken" = 0 ] && ok "All $n external links respond" || skip "WARNING external links" "$broken of $n did not respond, see above"
 
 echo "----------------------------------------------"
 echo "$pass passed, $fail failed"

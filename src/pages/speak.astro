@@ -19,11 +19,11 @@ import FormShell from "../components/FormShell.astro";
     </dl>
     <FormShell id="speak-form" submit="Raise your hand" doneTitle="Thanks, your pitch is in." doneText="We'll be in touch before the next meetup.">
       <label class="field"><span class="field-label">Your name</span>
-        <input class="field-input" type="text" name="name" placeholder="Your name" autocomplete="name" /></label>
+        <input class="field-input" type="text" name="name" placeholder="Your name" autocomplete="name" required /></label>
       <label class="field"><span class="field-label">Email</span>
         <input class="field-input" type="email" name="email" placeholder="you@example.com" autocomplete="email" required /></label>
       <label class="field"><span class="field-label">What would you talk about?</span>
-        <input class="field-input" type="text" name="topic" placeholder="One line is enough" /></label>
+        <input class="field-input" type="text" name="topic" placeholder="One line is enough" required /></label>
     </FormShell>
   </section>
 </Base>
