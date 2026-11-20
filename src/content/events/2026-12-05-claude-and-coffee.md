@@ -5,8 +5,8 @@ end: 2026-12-05T13:00:00+02:00
 format: Claude & Coffee
 summary: "A Saturday morning of table conversations. No laptops, no talks. The room picks the topics and the tables reshuffle every round."
 venue:
-  name: Roam Works
-  address: Harrington Street, District Six
+  name: Roamwork Harrington
+  address: 50 Harrington St, District Six
 status: Registration required
 luma:
   url: https://luma.com/claude-i36b
