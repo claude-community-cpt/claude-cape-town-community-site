@@ -1,7 +1,7 @@
 ---
 // One event as a row: date chip, title, when and where, and its links.
 import PhotoStrip from "./PhotoStrip.astro";
-import { type EventEntry, day, month, longDate, timeRange, whereLine, endOf } from "../lib";
+import { type EventEntry, day, month, longDate, timeRange, endOf } from "../lib";
 
 interface Props {
   event: EventEntry;
@@ -30,25 +30,25 @@ const href = `/events/${event.id}/`;
     <div class="meta">
       <div class="pills">
         <span class="pill">{data.format}</span>
-        <span class="pill pill-outline">{whereLine(event)}</span>
+        <span class="pill pill-outline">{data.venue.name}</span>
         {!past && data.status && <span class="pill pill-outline">{data.status}</span>}
       </div>
       {
         (data.slides.length > 0 || data.photos || data.gallery || data.luma) && (
-          <p class="links small">
+          <p class="links">
             {data.luma && (
-              <a href={data.luma.url} target="_blank" rel="noopener">
+              <a class="pill pill-link" href={data.luma.url} target="_blank" rel="noopener">
                 {past ? "View on Luma" : (data.luma.label ?? "Register on Luma")}
               </a>
             )}
             {data.slides.map((s) => (
-              <a href={s.url} target="_blank" rel="noopener">
+              <a class="pill pill-link" href={s.url} target="_blank" rel="noopener">
                 {s.title}
               </a>
             ))}
-            {data.gallery && <a href={`${href}#photos`}>Photos</a>}
+            {data.gallery && <a class="pill pill-link" href={`${href}#photos`}>Photos</a>}
             {data.photos && (
-              <a href={data.photos} target="_blank" rel="noopener">
+              <a class="pill pill-link" href={data.photos} target="_blank" rel="noopener">
                 Full photo album
               </a>
             )}
@@ -124,8 +124,7 @@ const href = `/events/${event.id}/`;
     z-index: 1;
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2) var(--space-5);
-    font-weight: 500;
+    gap: var(--space-2);
   }
   .meta > :global(.strip) {
     position: relative; /* above the row link */
@@ -135,14 +134,24 @@ const href = `/events/${event.id}/`;
     .body {
       grid-template-columns: minmax(0, 1fr);
     }
+    /* Tags and links share a line; photos take the next one. */
     .meta {
-      justify-items: start;
-      padding-top: 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2);
+      padding-top: var(--space-1);
       text-align: left;
     }
-    .meta .pills,
+    /* One wrapping line of chips. */
+    .meta .pills {
+      display: contents;
+    }
     .meta .links {
       justify-content: flex-start;
+    }
+    .meta > :global(.strip) {
+      flex-basis: 100%;
     }
   }
   @media (max-width: 30rem) {
