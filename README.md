@@ -90,7 +90,12 @@ If you add a form, list what it collects on the [privacy notice](src/pages/priva
 - A Content Security Policy in `src/layouts/Base.astro` allows only this
   site's own files, Luma frames and Google Forms. If you add another
   outside service, add it there or the browser will block it.
-- GitHub Actions are pinned to exact commits. Renovate keeps them current.
+- GitHub Actions are pinned to exact commits. Renovate keeps them and the
+  npm packages current: routine updates arrive as one pull request a week and
+  merge by themselves once every check passes; major updates and security
+  fixes wait for a person. The rules are in `renovate.json`.
+- CodeQL (`.github/workflows/codeql.yml`) scans the code and the workflows on
+  every pull request.
 - Never commit contact details, attendee lists or keys. See [SECURITY.md](SECURITY.md).
 
 ## Short links
