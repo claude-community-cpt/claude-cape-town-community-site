@@ -208,8 +208,25 @@ test("the Luma frame is wide enough to use and the sticker spins when clicked", 
     expect(size.width).toBeGreaterThan(Math.min(page.viewportSize()!.width - 60, 600));
   }
   await page.goto("/");
+  // Clawd on the home page: plain, then happy when tickled, then dizzy from spinning.
+  const clawd = page.locator("button.sticker[data-mood]");
+  await clawd.scrollIntoViewIfNeeded();
+  const shown = clawd.locator("img.is-shown");
+  await expect(shown).toHaveCount(1);
+  const plain = await shown.getAttribute("src");
+  await clawd.click();
+  await expect(clawd).toHaveAttribute("data-mood", "1");
+  await expect(shown).not.toHaveAttribute("src", plain!);
+  await clawd.click();
+  await expect(clawd).toHaveAttribute("data-mood", "2");
+  await expect(clawd).toHaveClass(/is-spinning/);
+  await expect(shown).toHaveCount(1);
+});
+
+test("a page sticker spins when clicked", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/join/");
   const sticker = page.locator("button.sticker");
-  await sticker.scrollIntoViewIfNeeded();
   await sticker.click();
   await expect(sticker).toHaveClass(/is-spinning/);
 });

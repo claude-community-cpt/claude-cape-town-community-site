@@ -1,8 +1,6 @@
 ---
-import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import PageHead from "../components/PageHead.astro";
-import sheep from "../assets/brand/sticker-pixel-sheep.png";
 import { SITE } from "../lib";
 
 // The Discord card appears only while its link is set in src/lib.ts.
@@ -31,9 +29,7 @@ const ways = [
 ---
 
 <Base title="Join" description="How to join Cape Town's Claude community: come to a free event and meet people building with Claude near you.">
-  <PageHead coral title="Join the community" lede="There is nothing to sign up for. Come to an event and you are part of it.">
-    <button class="sticker" type="button" data-spin aria-label="Spin the sticker"><Image src={sheep} alt="" width={150} loading="eager" /></button>
-  </PageHead>
+  <PageHead coral title="Join the community" lede="There is nothing to sign up for. Come to an event and you are part of it." sticker="happy" />
   <section class="wrap body">
     <ul class="ways">
       {
@@ -58,10 +54,6 @@ const ways = [
     </p>
   </section>
 </Base>
-
-<script>
-  import "../scripts/stickers";
-</script>
 
 <style>
   .body {
@@ -91,20 +83,5 @@ const ways = [
   .note {
     max-width: var(--measure);
     margin-top: var(--space-7);
-  }
-  :global(.page-head) :global(.wrap) {
-    position: relative;
-  }
-  .sticker {
-    --tilt: 7deg;
-    position: absolute;
-    right: 0;
-    bottom: -5.5rem;
-    margin: 0;
-  }
-  @media (max-width: 52rem) {
-    .sticker {
-      display: none;
-    }
   }
 </style>

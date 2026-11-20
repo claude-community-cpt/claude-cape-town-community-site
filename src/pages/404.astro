@@ -1,12 +1,11 @@
 ---
-import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
-import sheep from "../assets/brand/sticker-pixel-sheep.png";
+import Sticker from "../components/Sticker.astro";
 ---
 
 <Base title="Page not found" noindex>
   <section class="wrap lost">
-    <span class="sticker"><Image src={sheep} alt="" width={220} loading="eager" /></span>
+    <Sticker name="magnifier" width={200} eager class="lost-sticker" />
     <h1 class="display">This page wandered off</h1>
     <p class="lede">The address may have changed when the site was rebuilt. Try one of these.</p>
     <p class="actions">
@@ -23,7 +22,7 @@ import sheep from "../assets/brand/sticker-pixel-sheep.png";
     gap: var(--space-5);
     padding-block: var(--section);
   }
-  .sticker {
+  .lost-sticker {
     --tilt: -8deg;
   }
   .actions {

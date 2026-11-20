@@ -10,7 +10,7 @@ import iconMeetup from "../assets/brand/icon-highfive.svg";
 import iconTalk from "../assets/brand/icon-conversation.svg";
 import iconLab from "../assets/brand/icon-impactlab.svg";
 import globe from "../assets/brand/globe-doodle.png";
-import sheep from "../assets/brand/sticker-pixel-sheep.png";
+import Sticker from "../components/Sticker.astro";
 
 const { upcoming, past } = await getEvents();
 const [next, ...later] = upcoming;
@@ -203,16 +203,10 @@ const hosts = [
         <p class="lede">Come to an event and meet the people building with Claude in Cape Town.</p>
         <p><a class="btn btn-solid btn-lg" href="/join/">How to join</a></p>
       </div>
-      <button class="sticker" type="button" data-spin aria-label="Spin the sticker">
-        <Image src={sheep} alt="" width={260} />
-      </button>
+      <Sticker name="clawd" moods={["happy", "dizzy"]} width={260} class="join-sticker" />
     </div>
   </section>
 </Base>
-
-<script>
-  import "../scripts/stickers";
-</script>
 
 <style>
   /* ── Hero ── */
@@ -483,7 +477,7 @@ const hosts = [
     gap: var(--space-7);
     flex-wrap: wrap;
   }
-  .join .sticker {
+  .join-sticker {
     --tilt: 6deg;
     margin-inline: auto;
   }

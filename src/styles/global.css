@@ -421,6 +421,37 @@ textarea.field-input {
 .sticker img {
   display: block;
 }
+/* A sticker with moods stacks its pictures and shows one at a time. */
+.sticker.has-moods {
+  display: inline-grid;
+  place-items: center;
+}
+.sticker.has-moods img {
+  grid-area: 1 / 1;
+  opacity: 0;
+}
+.sticker.has-moods img.is-shown {
+  opacity: 1;
+}
+.sticker.is-tickled img {
+  animation: sticker-tickle 600ms var(--ease-out);
+}
+@keyframes sticker-tickle {
+  20% {
+    rotate: -9deg;
+    translate: 0 -6%;
+  }
+  40% {
+    rotate: 8deg;
+  }
+  60% {
+    rotate: -6deg;
+    translate: 0 -3%;
+  }
+  80% {
+    rotate: 4deg;
+  }
+}
 /* A sticker that is a button spins once when clicked. */
 button.sticker {
   padding: 0;

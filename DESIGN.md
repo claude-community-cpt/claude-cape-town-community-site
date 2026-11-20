@@ -130,7 +130,7 @@ characters (`max-width: var(--measure)`).
 | Date chip | `<div class="date-chip"><b>05</b><span>Dec</span></div>`. Add `is-past` for past events. |
 | Card | `<div class="card">` for forms and host cards. Do not put cards inside cards. |
 | Field | `<label class="field"><span class="field-label">…</span><input class="field-input"></label>` |
-| Sticker | `<span class="sticker"><Image … /></span>`. Set `--tilt` between -8deg and 8deg. One per page at most. |
+| Sticker | `<Sticker name="coffee" width={160} />`, or `sticker="coffee"` on `PageHead`. The Clawd stickers live in `src/assets/brand/stickers/` and the name is the file name. Clicking one spins it. Set `--tilt` between -8deg and 8deg. They are there for fun: one or two per page, never on top of text. |
 | Spark | `<Spark size={24} />`. Takes the current text colour. |
 | Event row | `<EventRow event={event} />`. Built from an event file. |
 | Luma embed | `<LumaEmbed embedId="evt-…" title="…" />`. Rendered for upcoming events automatically. |

@@ -7,7 +7,7 @@ import PageHead from "../components/PageHead.astro";
 import EventRow from "../components/EventRow.astro";
 import Gallery from "../components/Gallery.astro";
 import Spark from "../components/Spark.astro";
-import sheep from "../assets/brand/sticker-pixel-sheep.png";
+import Sticker from "../components/Sticker.astro";
 import { getEvents } from "../lib";
 
 const { all } = await getEvents();
@@ -114,7 +114,7 @@ const space = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
       <div class="date-chip"><b>05</b><span>Dec</span></div>
       <div class="date-chip is-past"><b>27</b><span>Aug</span></div>
       <Spark size={40} />
-      <span class="sticker"><Image src={sheep} alt="" width={120} /></span>
+      <Sticker name="clawd" width={120} />
     </div>
   </section>
 
