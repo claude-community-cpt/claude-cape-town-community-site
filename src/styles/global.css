@@ -428,6 +428,9 @@ textarea.field-input {
    two columns when wide. Measured against real events with room to spare. */
 .luma-box {
   container-type: inline-size;
+  /* About as wide as Luma's own two-column layout, centred. */
+  max-width: 54rem;
+  margin-inline: auto;
 }
 .luma {
   display: block;
