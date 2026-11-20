@@ -481,6 +481,15 @@ const hosts = [
     --tilt: 6deg;
     margin-inline: auto;
   }
+  @media (max-width: 52rem) {
+    .join :global(.join-sticker) {
+      margin-inline: 0;
+    }
+    .join :global(.join-sticker img) {
+      width: 9rem;
+      height: auto;
+    }
+  }
 
   @media (max-width: 52rem) {
     .next-grid,

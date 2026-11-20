@@ -45,8 +45,19 @@ const { title, lede, coral = false, sticker, stickerWidth = 170 } = Astro.props;
     .has-sticker {
       grid-template-columns: 1fr;
     }
+    /* On a phone the sticker sits small, under the words on the right. */
+    .has-sticker {
+      gap: 0;
+    }
     .has-sticker :global(.head-sticker) {
-      display: none;
+      justify-self: end;
+      margin-top: calc(-1 * var(--space-3));
+    }
+    .has-sticker :global(.head-sticker img) {
+      width: auto;
+      height: auto;
+      max-width: 6.5rem;
+      max-height: 5.5rem;
     }
   }
   @media (prefers-reduced-motion: no-preference) {
