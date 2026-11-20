@@ -195,9 +195,24 @@ const schema = {
   #photos h2 {
     margin-bottom: var(--space-6);
   }
+  /* On a phone the date sits beside the title, and the details run the full
+     width below them. */
   @media (max-width: 30rem) {
     .head-grid {
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: var(--space-4);
+      align-items: center;
+    }
+    .head-grid .stack {
+      display: contents;
+    }
+    .head-grid .stack > :not(h1) {
+      grid-column: 1 / -1;
+      margin-top: 0;
+    }
+    .head-grid h1 {
+      font-size: var(--text-heading);
     }
   }
 </style>
