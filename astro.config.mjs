@@ -10,11 +10,13 @@ export default defineConfig({
   redirects: {
     "/mixer": "https://table-mixer.vercel.app/",
     "/gallery": "/events/#past",
+    // The Demos page is retired until there are demos to show.
+    "/demos": "/events/",
   },
   integrations: [
     sitemap({
       // Utility pages that should not show up in search.
-      filter: (page) => !/\/(styleguide|mixer|gallery|404)\/?$/.test(page),
+      filter: (page) => !/\/(styleguide|mixer|gallery|demos|404)\/?$/.test(page),
     }),
   ],
   build: {

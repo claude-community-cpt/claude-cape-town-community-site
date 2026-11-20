@@ -32,18 +32,19 @@ const more = all.length - thumbs.length;
 <style>
   .strip {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     gap: var(--space-2);
-    width: fit-content;
     max-width: 100%;
     margin-top: var(--space-2);
     text-decoration: none;
   }
+  /* The photos shrink to fit so the strip always stays on one line. */
   img {
     display: block;
-    width: 5.5rem;
-    height: 4.125rem;
+    flex: 0 1 5rem;
+    min-width: 0;
+    height: auto;
+    aspect-ratio: 4 / 3;
     object-fit: cover;
     border-radius: var(--radius-sm);
     transition: scale var(--speed-move) var(--ease-out);
@@ -52,14 +53,9 @@ const more = all.length - thumbs.length;
     scale: 1.04;
   }
   .more {
-    padding-inline: var(--space-2);
+    flex: none;
+    padding-inline: var(--space-1);
     font-weight: 500;
     color: var(--accent-text);
-  }
-  @media (max-width: 30rem) {
-    img {
-      width: 4.25rem;
-      height: 3.2rem;
-    }
   }
 </style>

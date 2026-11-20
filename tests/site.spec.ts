@@ -2,7 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 // Every page of the site. Add new pages here.
-const pages = ["/", "/events/", "/demos/", "/speak/", "/partner/", "/join/", "/privacy/", "/styleguide/", "/404.html"];
+const pages = ["/", "/events/", "/speak/", "/partner/", "/join/", "/privacy/", "/styleguide/", "/404.html"];
 
 function isLuma(url: string) {
   try {
@@ -188,9 +188,29 @@ test("past events show a photo strip that leads to the photos", async ({ page })
   await expect(page.locator("#photos [data-gallery]")).toBeVisible();
 });
 
-test("the old gallery address forwards to past events", async ({ request }) => {
-  const html = await (await request.get("/gallery/")).text();
-  expect(html).toContain("/events/#past");
+test("the old gallery and demos addresses forward to events", async ({ request }) => {
+  expect(await (await request.get("/gallery/")).text()).toContain("/events/#past");
+  expect(await (await request.get("/demos/")).text()).toContain("/events/");
+});
+
+test("the next event box and the Claude radio caption are links", async ({ page }) => {
+  await page.goto("/");
+  const ticket = page.locator("a.ticket");
+  if (await ticket.count()) await expect(ticket).toHaveAttribute("href", /^\/events\/[\w-]+\/$/);
+  await expect(page.locator("a.nowplaying")).toHaveAttribute("href", "https://www.youtube.com/watch?v=tRsQsTMvPNg");
+});
+
+test("each ambassador card is one link to their LinkedIn profile", async ({ page }) => {
+  await page.goto("/");
+  const cards = page.locator("a.host");
+  await expect(cards).toHaveCount(2);
+  for (const card of await cards.all()) {
+    await expect(card).toHaveAttribute("href", /^https:\/\/www\.linkedin\.com\/in\//);
+  }
+  // The two cards fill the width of the page content.
+  const wrap = (await page.locator("#hosts-title").locator("xpath=ancestor::div[contains(@class,'wrap')]").boundingBox())!;
+  const last = (await cards.last().boundingBox())!;
+  if (page.viewportSize()!.width > 700) expect(wrap.x + wrap.width - (last.x + last.width)).toBeLessThan(80);
 });
 
 test("the talk form sends to Google Forms and confirms", async ({ page }) => {

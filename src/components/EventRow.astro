@@ -20,39 +20,43 @@ const href = `/events/${event.id}/`;
     <b>{day(data.start)}</b><span>{month(data.start)}</span>
   </div>
   <div class="body">
-    <p class="when small muted">
-      <time datetime={data.start.toISOString()}>{longDate(data.start)}</time>{!past && `, ${timeRange(event)}`}
-    </p>
-    <Title class="title"><a href={href}>{data.title}</a></Title>
-    <p class="summary muted">{data.summary}</p>
-    <div class="pills">
-      <span class="pill">{data.format}</span>
-      <span class="pill pill-outline">{whereLine(event)}</span>
-      {!past && data.status && <span class="pill pill-outline">{data.status}</span>}
+    <div class="main">
+      <p class="when small muted">
+        <time datetime={data.start.toISOString()}>{longDate(data.start)}</time>{!past && `, ${timeRange(event)}`}
+      </p>
+      <Title class="title"><a href={href}>{data.title}</a></Title>
+      <p class="summary muted">{data.summary}</p>
     </div>
-    {
-      (data.slides.length > 0 || data.photos || data.gallery || data.luma) && (
-        <p class="links small">
-          {data.luma && (
-            <a href={data.luma.url} target="_blank" rel="noopener">
-              {past ? "View on Luma" : (data.luma.label ?? "Register on Luma")}
-            </a>
-          )}
-          {data.slides.map((s) => (
-            <a href={s.url} target="_blank" rel="noopener">
-              {s.title}
-            </a>
-          ))}
-          {data.gallery && <a href={`${href}#photos`}>Photos</a>}
-          {data.photos && (
-            <a href={data.photos} target="_blank" rel="noopener">
-              Full photo album
-            </a>
-          )}
-        </p>
-      )
-    }
-    {past && data.gallery && <PhotoStrip folder={data.gallery} href={`${href}#photos`} label={`Photos from ${data.title}`} />}
+    <div class="meta">
+      <div class="pills">
+        <span class="pill">{data.format}</span>
+        <span class="pill pill-outline">{whereLine(event)}</span>
+        {!past && data.status && <span class="pill pill-outline">{data.status}</span>}
+      </div>
+      {
+        (data.slides.length > 0 || data.photos || data.gallery || data.luma) && (
+          <p class="links small">
+            {data.luma && (
+              <a href={data.luma.url} target="_blank" rel="noopener">
+                {past ? "View on Luma" : (data.luma.label ?? "Register on Luma")}
+              </a>
+            )}
+            {data.slides.map((s) => (
+              <a href={s.url} target="_blank" rel="noopener">
+                {s.title}
+              </a>
+            ))}
+            {data.gallery && <a href={`${href}#photos`}>Photos</a>}
+            {data.photos && (
+              <a href={data.photos} target="_blank" rel="noopener">
+                Full photo album
+              </a>
+            )}
+          </p>
+        )
+      }
+      {past && data.gallery && <PhotoStrip folder={data.gallery} href={`${href}#photos`} label={`Photos from ${data.title}`} />}
+    </div>
   </div>
 </article>
 
@@ -64,11 +68,32 @@ const href = `/events/${event.id}/`;
     align-items: flex-start;
     padding-block: var(--space-5);
     border-top: 1px solid var(--line);
+    container-type: inline-size;
   }
+  /* Words on the left, the place, links and photos on the right, so a row
+     uses the full width. On narrower screens they stack. */
   .body {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 24rem);
+    gap: var(--space-3) var(--space-7);
+    align-items: start;
+  }
+  .main,
+  .meta {
     min-width: 0;
     display: grid;
     gap: var(--space-2);
+  }
+  .meta {
+    justify-items: end;
+    padding-top: var(--space-1);
+    text-align: right;
+  }
+  .meta .pills,
+  .meta .links {
+    justify-content: flex-end;
   }
   .title a {
     color: var(--text);
@@ -92,10 +117,7 @@ const href = `/events/${event.id}/`;
     rotate: -4deg;
   }
   .summary {
-    max-width: var(--measure);
-  }
-  .pills {
-    margin-top: var(--space-1);
+    max-width: 46rem;
   }
   .links {
     position: relative; /* above the row link */
@@ -103,12 +125,25 @@ const href = `/events/${event.id}/`;
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2) var(--space-5);
-    margin-top: var(--space-1);
     font-weight: 500;
   }
-  .body > :global(.strip) {
+  .meta > :global(.strip) {
     position: relative; /* above the row link */
     z-index: 1;
+  }
+  @container (max-width: 54rem) {
+    .body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .meta {
+      justify-items: start;
+      padding-top: 0;
+      text-align: left;
+    }
+    .meta .pills,
+    .meta .links {
+      justify-content: flex-start;
+    }
   }
   @media (max-width: 30rem) {
     .event-row {
