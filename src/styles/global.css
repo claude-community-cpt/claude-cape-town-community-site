@@ -317,6 +317,16 @@ a:hover {
   /* Stays a neat label if a long venue name wraps onto a second line. */
   border-radius: var(--radius-md);
 }
+/* A link that sits with pills: the same shape, outlined in the link colour. */
+a.pill-link {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px currentColor;
+  color: var(--accent-text);
+  text-decoration: none;
+}
+a.pill-link:hover {
+  background: var(--accent-tint);
+}
 .section-coral .pill {
   background: var(--ink);
   color: var(--ivory);

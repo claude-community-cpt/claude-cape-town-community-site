@@ -37,18 +37,18 @@ const href = `/events/${event.id}/`;
         (data.slides.length > 0 || data.photos || data.gallery || data.luma) && (
           <p class="links">
             {data.luma && (
-              <a href={data.luma.url} target="_blank" rel="noopener">
+              <a class="pill pill-link" href={data.luma.url} target="_blank" rel="noopener">
                 {past ? "View on Luma" : (data.luma.label ?? "Register on Luma")}
               </a>
             )}
             {data.slides.map((s) => (
-              <a href={s.url} target="_blank" rel="noopener">
+              <a class="pill pill-link" href={s.url} target="_blank" rel="noopener">
                 {s.title}
               </a>
             ))}
-            {data.gallery && <a href={`${href}#photos`}>Photos</a>}
+            {data.gallery && <a class="pill pill-link" href={`${href}#photos`}>Photos</a>}
             {data.photos && (
-              <a href={data.photos} target="_blank" rel="noopener">
+              <a class="pill pill-link" href={data.photos} target="_blank" rel="noopener">
                 Full photo album
               </a>
             )}
@@ -125,22 +125,6 @@ const href = `/events/${event.id}/`;
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2);
-  }
-  /* Links are chips like the tags beside them, outlined in the link colour. */
-  .links a {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.2rem 0.8rem;
-    border-radius: var(--radius-pill);
-    box-shadow: inset 0 0 0 1px currentColor;
-    color: var(--accent-text);
-    font-size: var(--text-label);
-    font-weight: 500;
-    line-height: 1.5;
-    text-decoration: none;
-  }
-  .links a:hover {
-    background: var(--accent-tint);
   }
   .meta > :global(.strip) {
     position: relative; /* above the row link */

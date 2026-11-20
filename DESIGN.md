@@ -126,7 +126,7 @@ characters (`max-width: var(--measure)`).
 | --- | --- |
 | Button | `<a class="btn btn-primary">`. Variants: `btn-primary` (coral), `btn-solid` (ink, for coral sections), `btn-outline`. Sizes: `btn-sm`, default, `btn-lg`. One primary button per section. |
 | Text link | `<a class="textlink">` for a secondary action beside a button. |
-| Pill | `<span class="pill">` for format; `pill pill-outline` for venue and status. |
+| Pill | `<span class="pill">` for format; `pill pill-outline` for venue and status; `<a class="pill pill-link">` for a link that sits with pills. |
 | Date chip | `<div class="date-chip"><b>05</b><span>Dec</span></div>`. Add `is-past` for past events. |
 | Card | `<div class="card">` for forms and host cards. Do not put cards inside cards. |
 | Field | `<label class="field"><span class="field-label">…</span><input class="field-input"></label>` |
