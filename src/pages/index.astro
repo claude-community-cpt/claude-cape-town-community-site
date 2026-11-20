@@ -379,6 +379,30 @@ const hosts = [
     height: 4.5rem;
     object-fit: contain;
   }
+  /* On a phone the picture sits beside its heading, with the words below. */
+  @media (max-width: 34rem) {
+    .formats {
+      grid-template-columns: 1fr;
+    }
+    .formats li {
+      grid-template-columns: auto minmax(0, 1fr);
+      column-gap: var(--space-4);
+      align-items: center;
+    }
+    .formats li p {
+      grid-column: 1 / -1;
+    }
+    .format-icon {
+      width: 4.5rem;
+      height: 4.5rem;
+      margin-bottom: 0;
+      border-radius: var(--radius-md);
+    }
+    .format-icon img {
+      width: 3.25rem;
+      height: 3.25rem;
+    }
+  }
 
   /* ── Why ── */
   .why {
@@ -492,12 +516,18 @@ const hosts = [
     --tilt: 6deg;
     margin-inline: auto;
   }
+  /* On phones and tablets the section is centred, with Clawd big in the middle. */
   @media (max-width: 52rem) {
-    .join :global(.join-sticker) {
-      margin-inline: 0;
+    .join-grid {
+      flex-direction: column;
+      gap: var(--space-6);
+      text-align: center;
+    }
+    .join-grid .lede {
+      margin-inline: auto;
     }
     .join :global(.join-sticker img) {
-      width: 9rem;
+      width: min(14rem, 60vw);
       height: auto;
     }
   }
