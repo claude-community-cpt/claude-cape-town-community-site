@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /styleguide/
+Disallow: /mixer/
+
+Sitemap: https://claudecapetown.com/sitemap-index.xml
