@@ -132,7 +132,7 @@ const schema = {
             <h2 class="heading" id="photos-title">Photos</h2>
             <Gallery folder={data.gallery} alt={data.galleryAlt} />
             <p class="small muted removal">
-              In a photo and want it taken down? <a href="/privacy/#photos">Message one of the hosts</a> and we will remove it.
+              In a photo and want it taken down? <a href="/privacy/#photos">Message one of the ambassadors</a> and we will remove it.
             </p>
           </div>
         </section>
@@ -169,11 +169,10 @@ const schema = {
   .date-chip.big span {
     font-size: var(--text-small);
   }
+  /* One column: the words, then registration at the full width of the page. */
   .event-body {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 600px);
-    gap: clamp(2rem, 5vw, 5rem);
-    align-items: start;
+    gap: var(--space-7);
     padding-bottom: var(--section);
   }
   .side {
@@ -193,11 +192,6 @@ const schema = {
   }
   #photos h2 {
     margin-bottom: var(--space-6);
-  }
-  @media (max-width: 60rem) {
-    .event-body {
-      grid-template-columns: 1fr;
-    }
   }
   @media (max-width: 30rem) {
     .head-grid {

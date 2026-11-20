@@ -1,8 +1,10 @@
 # Design system
 
 How the Claude Community Cape Town website looks and sounds, and how to build
-new pages that fit. The live version, with every piece rendered, is at
-[claudecapetown.com/styleguide/](https://claudecapetown.com/styleguide/).
+new pages that fit. To see every piece rendered, run `npm run dev` and open
+`http://localhost:4321/styleguide/`. The style guide is a working reference for
+people and for Claude when preparing a pull request; it is not part of the
+published site.
 
 - **Tokens** (colours, type, space, motion): `src/styles/tokens.css`
 - **Shared styles and components** (buttons, pills, cards, fields): `src/styles/global.css`
@@ -128,11 +130,12 @@ characters (`max-width: var(--measure)`).
 | Date chip | `<div class="date-chip"><b>05</b><span>Dec</span></div>`. Add `is-past` for past events. |
 | Card | `<div class="card">` for forms and host cards. Do not put cards inside cards. |
 | Field | `<label class="field"><span class="field-label">…</span><input class="field-input"></label>` |
-| Sticker | `<span class="sticker"><Image … /></span>`. Set `--tilt` between -8deg and 8deg. One per page at most. |
+| Sticker | `<Sticker name="coffee" width={160} />`, or `sticker="coffee"` on `PageHead`. The Clawd stickers live in `src/assets/brand/stickers/` and the name is the file name. Clicking one spins it. Set `--tilt` between -8deg and 8deg. They are there for fun: one or two per page, never on top of text. |
 | Spark | `<Spark size={24} />`. Takes the current text colour. |
 | Event row | `<EventRow event={event} />`. Built from an event file. |
 | Luma embed | `<LumaEmbed embedId="evt-…" title="…" />`. Rendered for upcoming events automatically. |
-| Gallery | `<Gallery folder="2026-08-27-claude-kickoff-build" />`. Photos open in a full-screen view. |
+| Gallery | `<Gallery folder="2026-08-27-claude-kickoff-build" />`. The photos of one event, shown on its page. A photo opens a full-screen view with previous and next arrows, arrow keys, swipe and a counter. |
+| Photo strip | `<PhotoStrip folder="…" href="…" label="…" />`. The first few photos as one link. Past event rows add it automatically. |
 | Page head | `<PageHead title="…" lede="…" />` at the top of every page except home. |
 
 ## Illustration

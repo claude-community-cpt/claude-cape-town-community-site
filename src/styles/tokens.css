@@ -1,7 +1,7 @@
 /* ─────────────────────────────────────────────────────────────
    Claude Community Cape Town: design tokens
    The single source of truth for colour, type, space and motion.
-   DESIGN.md explains when to use each one; /styleguide/ shows them live.
+   DESIGN.md explains when to use each one; the style guide shows them (npm run dev, then /styleguide/).
 
    Light and dark are one set of tokens. Every colour that changes is
    written once with light-dark(light, dark), and the browser picks a side

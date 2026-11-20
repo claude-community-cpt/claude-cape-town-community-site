@@ -7,7 +7,6 @@ summary: "A Saturday morning of table conversations. No laptops, no talks. The r
 venue:
   name: Roamwork Harrington
   address: 50 Harrington St, District Six
-status: Registration required
 luma:
   url: https://luma.com/claude-i36b
   embedId: evt-cMvmoNRY1FBSDYH

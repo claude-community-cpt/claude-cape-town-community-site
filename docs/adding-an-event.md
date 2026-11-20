@@ -23,7 +23,8 @@ ended (the site rebuilds every night).
    venue:
      name: Roamwork Harrington
      address: 50 Harrington St, District Six   # optional
-   status: Registration required       # optional, shown while upcoming
+   status: Waitlist open                # optional, shown while upcoming. Every event needs
+                                        # registration, so do not say that here
    luma:
      url: https://luma.com/claude-i36b
      embedId: evt-cMvmoNRY1FBSDYH      # optional, see below
@@ -72,6 +73,10 @@ galleryAlt:
 - **Photos on the site**: put up to about twelve in
   `src/assets/gallery/<folder>/`. Resize them to 2000px on the long edge
   first; the build makes the small versions. Describe each one in `galleryAlt`.
+  They appear on the event's own page, where a visitor can open one and step
+  through the rest, and the first few show beside the event in the past
+  events list. There is no separate gallery page. Photos show in file-name
+  order, so name them `01.jpg`, `02.jpg` and so on, best ones first.
 
 ## What not to put in an event file
 

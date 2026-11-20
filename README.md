@@ -13,7 +13,7 @@ GitHub Pages. There is no server, no database and no secret.
 | --- | --- |
 | Add or update an event, slides or photos | [docs/adding-an-event.md](docs/adding-an-event.md) |
 | Add or change a page | [docs/adding-a-page.md](docs/adding-a-page.md) |
-| Check colours, type and components | [DESIGN.md](DESIGN.md) and [/styleguide/](https://claudecapetown.com/styleguide/) |
+| Check colours, type and components | [DESIGN.md](DESIGN.md), and the style guide at `/styleguide/` while running `npm run dev` (it is not on the live site) |
 | Report a security problem | [SECURITY.md](SECURITY.md) |
 
 ## Run it on your computer
@@ -38,7 +38,7 @@ npm run verify                    # type check, build, HTML and link checks, bro
 src/
   content/events/   one Markdown file per event
   pages/            one file per page; the file name is the address
-  components/       header, footer, event row, gallery, Luma embed, hero scene
+  components/       header, footer, event row, photos, Luma embed, hero scene
   layouts/Base.astro  the shared <head>: SEO tags, security policy, fonts
   styles/           tokens.css (design tokens) and global.css (shared styles)
   scripts/forms.ts  sends the four forms

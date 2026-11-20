@@ -1,0 +1,61 @@
+---
+// A few small photos from an event, as one link to the photos on its page.
+import { getImage } from "astro:assets";
+import { photosIn } from "../photos";
+
+interface Props {
+  folder: string;
+  href: string;
+  /** Read out for the link, for example "Photos from Claude Kickoff Build". */
+  label: string;
+  count?: number;
+}
+const { folder, href, label, count = 4 } = Astro.props;
+const all = photosIn(folder);
+const thumbs = await Promise.all(
+  all.slice(0, count).map(({ image }) => getImage({ src: image, width: 240, height: 180, fit: "cover", format: "webp", quality: 65 })),
+);
+const more = all.length - thumbs.length;
+---
+
+{
+  thumbs.length > 0 && (
+    <a class="strip" href={href} aria-label={`${label} (${all.length})`}>
+      {thumbs.map((t) => (
+        <img src={t.src} alt="" width="120" height="90" loading="lazy" decoding="async" />
+      ))}
+      {more > 0 && <span class="more small">+{more}</span>}
+    </a>
+  )
+}
+
+<style>
+  .strip {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    max-width: 100%;
+    margin-top: var(--space-2);
+    text-decoration: none;
+  }
+  /* The photos shrink to fit so the strip always stays on one line. */
+  img {
+    display: block;
+    flex: 0 1 5rem;
+    min-width: 0;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    transition: scale var(--speed-move) var(--ease-out);
+  }
+  .strip:hover img {
+    scale: 1.04;
+  }
+  .more {
+    flex: none;
+    padding-inline: var(--space-1);
+    font-weight: 500;
+    color: var(--accent-text);
+  }
+</style>

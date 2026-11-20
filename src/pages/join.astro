@@ -1,8 +1,6 @@
 ---
-import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import PageHead from "../components/PageHead.astro";
-import sheep from "../assets/brand/sticker-pixel-sheep.png";
 import { SITE } from "../lib";
 
 // The Discord card appears only while its link is set in src/lib.ts.
@@ -19,7 +17,7 @@ const ways = [
   },
   {
     title: "Say hello on LinkedIn",
-    text: "Connect with the hosts for event news, or to ask anything before you come along.",
+    text: "Connect with the ambassadors for event news, or to ask anything before you come along.",
     links: SITE.hosts.map((host) => ({ href: host.linkedin, label: `${host.name} on LinkedIn` })),
   },
   {
@@ -31,9 +29,7 @@ const ways = [
 ---
 
 <Base title="Join" description="How to join Cape Town's Claude community: come to a free event and meet people building with Claude near you.">
-  <PageHead coral title="Join the community" lede="There is nothing to sign up for. Come to an event and you are part of it.">
-    <span class="sticker"><Image src={sheep} alt="" width={150} loading="eager" /></span>
-  </PageHead>
+  <PageHead coral title="Join the community" lede="There is nothing to sign up for. Come to an event and you are part of it." sticker="happy" />
   <section class="wrap body">
     <ul class="ways">
       {
@@ -53,7 +49,7 @@ const ways = [
       }
     </ul>
     <p class="small muted note">
-      We also have a WhatsApp group. To keep members' phone numbers away from spammers the link is not public: ask a host at
+      We also have a WhatsApp group. To keep members' phone numbers away from spammers the link is not public: ask an ambassador at
       an event and we will add you.
     </p>
   </section>
@@ -87,20 +83,5 @@ const ways = [
   .note {
     max-width: var(--measure);
     margin-top: var(--space-7);
-  }
-  :global(.page-head) :global(.wrap) {
-    position: relative;
-  }
-  .sticker {
-    --tilt: 7deg;
-    position: absolute;
-    right: 0;
-    bottom: -5.5rem;
-    margin: 0;
-  }
-  @media (max-width: 52rem) {
-    .sticker {
-      display: none;
-    }
   }
 </style>

@@ -2,7 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 // Every page of the site. Add new pages here.
-const pages = ["/", "/events/", "/gallery/", "/demos/", "/speak/", "/partner/", "/join/", "/privacy/", "/styleguide/", "/404.html"];
+const pages = ["/", "/events/", "/speak/", "/partner/", "/join/", "/privacy/", "/404.html"];
 
 function isLuma(url: string) {
   try {
@@ -125,13 +125,123 @@ test("the phone menu opens and closes", async ({ page, isMobile }) => {
   await expect(nav).toBeHidden();
 });
 
-test("gallery photos open full size and close with Escape", async ({ page }) => {
-  await page.goto("/gallery/");
-  await page.locator("[data-gallery] a").first().click();
+// An event that has photos on the site.
+const eventWithPhotos = "/events/2026-08-27-claude-kickoff-build/";
+
+test("event photos open full size, step through and close with Escape", async ({ page }) => {
+  await page.goto(eventWithPhotos);
+  const links = page.locator("[data-gallery] a");
+  const total = await links.count();
+  expect(total).toBeGreaterThan(1);
+  await links.first().click();
   const box = page.locator("dialog.lightbox");
+  const photo = box.locator("img");
+  const count = box.locator("[data-count]");
   await expect(box).toBeVisible();
+  await expect(count).toHaveText(`1 of ${total}`);
+  const showsPhoto = async (n: number) =>
+    expect.poll(() => photo.evaluate((el: HTMLImageElement) => new URL(el.src).pathname)).toBe(await links.nth(n).getAttribute("href"));
+  await showsPhoto(0);
+
+  await box.locator("[data-next]").click();
+  await expect(count).toHaveText(`2 of ${total}`);
+  await showsPhoto(1);
+
+  await page.keyboard.press("ArrowRight");
+  await expect(count).toHaveText(`3 of ${total}`);
+  await page.keyboard.press("ArrowLeft");
+  await page.keyboard.press("ArrowLeft");
+  await expect(count).toHaveText(`1 of ${total}`);
+  // Going back from the first photo wraps round to the last.
+  await box.locator("[data-prev]").click();
+  await expect(count).toHaveText(`${total} of ${total}`);
+
+  // Nothing in the full-screen view may run off the screen.
+  const view = page.viewportSize()!;
+  for (const part of [photo, box.locator("[data-prev]"), box.locator("[data-next]"), box.locator(".close"), count]) {
+    const edges = (await part.boundingBox())!;
+    expect(edges.x).toBeGreaterThanOrEqual(0);
+    expect(edges.y).toBeGreaterThanOrEqual(0);
+    expect(edges.x + edges.width).toBeLessThanOrEqual(view.width + 1);
+    expect(edges.y + edges.height).toBeLessThanOrEqual(view.height + 1);
+  }
+
   await page.keyboard.press("Escape");
   await expect(box).toBeHidden();
+  await expect(links.last()).toBeFocused();
+});
+
+test("the full-screen photo view has no accessibility violations", async ({ page }) => {
+  await page.goto(eventWithPhotos);
+  await page.locator("[data-gallery] a").first().click();
+  await expect(page.locator("dialog.lightbox")).toBeVisible();
+  const results = await new AxeBuilder({ page }).include("dialog.lightbox").analyze();
+  expect(results.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+});
+
+test("past events show a photo strip that leads to the photos", async ({ page }) => {
+  await page.goto("/events/");
+  const strip = page.locator("#past a.strip").first();
+  await expect(strip).toHaveAttribute("href", `${eventWithPhotos}#photos`);
+  await strip.click();
+  await expect(page).toHaveURL(new RegExp(`${eventWithPhotos}#photos$`));
+  await expect(page.locator("#photos [data-gallery]")).toBeVisible();
+});
+
+test("the old gallery and demos addresses forward to events", async ({ request }) => {
+  expect(await (await request.get("/gallery/")).text()).toContain("/events/#past");
+  expect(await (await request.get("/demos/")).text()).toContain("/events/");
+});
+
+test("the next event box and the Claude radio caption are links", async ({ page }) => {
+  await page.goto("/");
+  const ticket = page.locator("a.ticket");
+  if (await ticket.count()) await expect(ticket).toHaveAttribute("href", /^\/events\/[\w-]+\/$/);
+  await expect(page.locator("a.nowplaying")).toHaveAttribute("href", "https://www.youtube.com/watch?v=tRsQsTMvPNg");
+});
+
+test("the Luma frame is wide enough to use and the sticker spins when clicked", async ({ page }) => {
+  await page.goto("/events/");
+  const frame = page.locator("iframe.luma").first();
+  if (await frame.count()) {
+    const size = (await frame.boundingBox())!;
+    expect(size.width).toBeGreaterThan(Math.min(page.viewportSize()!.width - 60, 600));
+  }
+  await page.goto("/");
+  // Clawd on the home page: plain, then happy when tickled, then dizzy from spinning.
+  const clawd = page.locator("button.sticker[data-mood]");
+  await clawd.scrollIntoViewIfNeeded();
+  const shown = clawd.locator("img.is-shown");
+  await expect(shown).toHaveCount(1);
+  const plain = await shown.getAttribute("src");
+  await clawd.click();
+  await expect(clawd).toHaveAttribute("data-mood", "1");
+  await expect(shown).not.toHaveAttribute("src", plain!);
+  await clawd.click();
+  await expect(clawd).toHaveAttribute("data-mood", "2");
+  await expect(clawd).toHaveClass(/is-spinning/);
+  await expect(shown).toHaveCount(1);
+});
+
+test("a page sticker spins when clicked", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/join/");
+  const sticker = page.locator("button.sticker");
+  await sticker.click();
+  await expect(sticker).toHaveClass(/is-spinning/);
+});
+
+test("each ambassador card is one link to their LinkedIn profile", async ({ page }) => {
+  await page.goto("/");
+  const cards = page.locator("a.host");
+  await expect(cards).toHaveCount(2);
+  for (const card of await cards.all()) {
+    await expect(card).toHaveAttribute("href", /^https:\/\/www\.linkedin\.com\/in\//);
+  }
+  // The two cards fill the width of the page content.
+  const wrap = (await page.locator("#hosts-title").locator("xpath=ancestor::div[contains(@class,'wrap')]").boundingBox())!;
+  const last = (await cards.last().boundingBox())!;
+  if (page.viewportSize()!.width > 700) expect(wrap.x + wrap.width - (last.x + last.width)).toBeLessThan(80);
 });
 
 test("the talk form sends to Google Forms and confirms", async ({ page }) => {

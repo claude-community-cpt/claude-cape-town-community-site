@@ -1,5 +1,7 @@
 ---
-// Luma's registration frame for one event. `embedId` is the evt-... id from
+// Luma's registration frame for one event. It fills the width it is given,
+// and its height follows that width so nobody has to scroll inside it (the
+// heights are in src/styles/global.css). `embedId` is the evt-... id from
 // Luma's "Embed event" snippet (Share, then Embed, on the event's manage page).
 interface Props {
   embedId: string;
@@ -8,11 +10,11 @@ interface Props {
 const { embedId, title } = Astro.props;
 ---
 
+<div class="luma-box">
 <iframe
   class="luma"
   src={`https://luma.com/embed/event/${embedId}/simple`}
   title={`Register on Luma: ${title}`}
-  width="600"
-  height="450"
   loading="lazy"
   allow="fullscreen; payment"></iframe>
+</div>

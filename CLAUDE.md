@@ -44,8 +44,9 @@ Run `npm run verify` before opening a pull request. CI runs the same thing.
 - Every colour must work in light and dark. Use `light-dark()` in tokens, not
   separate dark-mode rules.
 - Text on coral is ink. Links and small coral text use `--accent-text`.
-- Check new work at phone width and in both themes. `/styleguide/` shows every
-  component; add new ones there.
+- Check new work at phone width and in both themes. The style guide
+  (`src/dev/styleguide.astro`) shows every component; add new ones there. It
+  is served at `/styleguide/` under `npm run dev` only and is never published.
 - Respect `prefers-reduced-motion` for any animation.
 
 ## Rules for security and privacy

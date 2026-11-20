@@ -16,8 +16,8 @@ const cloth =
   "M430,84 C440,52 500,40 548,52 C590,30 668,34 700,54 C760,40 836,54 846,82 C870,98 866,128 846,140 L836,96 L812,80 L730,83 L640,79 L560,84 L486,81 L452,91 L436,128 C420,116 418,98 430,84 Z";
 ---
 
-<div class="scene" aria-hidden="true" data-scene>
-  <svg class="mountain" viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax slice" focusable="false">
+<div class="scene" data-scene>
+  <svg class="mountain" aria-hidden="true" viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax slice" focusable="false">
     <defs>
       <pattern id="dots-far" width="8" height="8" patternUnits="userSpaceOnUse">
         <circle class="dot" cx="2" cy="2" r="1.2"></circle>
@@ -49,8 +49,8 @@ const cloth =
     <path d="M0,320 L0,286 C200,274 420,292 720,282 C1010,272 1240,290 1440,280 L1440,320 Z" fill="url(#dots-near)"></path>
   </svg>
 
-  <p class="caption nowplaying">♪ Ocean DX, Dream Veil</p>
-  <div class="ground" data-ground data-berry={berryImg.src}>
+  <a class="caption nowplaying" href="https://www.youtube.com/watch?v=tRsQsTMvPNg" target="_blank" rel="noopener">♪ Claude radio</a>
+  <div class="ground" aria-hidden="true" data-ground data-berry={berryImg.src}>
     <img class="berry" src={berryImg.src} alt="" width="34" height="37" data-x="14" />
     <img class="berry" src={berryImg.src} alt="" width="34" height="37" data-x="40" />
     <img class="berry" src={berryImg.src} alt="" width="34" height="37" data-x="64" />
@@ -189,6 +189,13 @@ const cloth =
     position: absolute;
     top: 0;
     right: var(--gutter);
+    z-index: 1;
+    color: inherit;
+    text-decoration: none;
+  }
+  .nowplaying:hover {
+    color: var(--accent-text);
+    text-decoration: underline;
   }
   .ground {
     position: absolute;
@@ -202,9 +209,11 @@ const cloth =
   .berry {
     position: absolute;
     bottom: 1.1rem;
-    width: clamp(22px, 2.6vw, 34px);
+    width: clamp(30px, 3.4vw, 46px);
     height: auto;
     image-rendering: pixelated;
+    /* A rim in the page colour lifts the fruit off the dotted ground. */
+    filter: drop-shadow(2px 0 0 var(--bg)) drop-shadow(-2px 0 0 var(--bg)) drop-shadow(0 2px 0 var(--bg)) drop-shadow(0 -2px 0 var(--bg));
     transition: opacity 0.3s ease;
     pointer-events: none;
   }
@@ -224,6 +233,7 @@ const cloth =
     width: clamp(72px, 9vw, 120px);
     height: auto;
     image-rendering: pixelated;
+    filter: drop-shadow(2px 0 0 var(--bg)) drop-shadow(-2px 0 0 var(--bg)) drop-shadow(0 2px 0 var(--bg)) drop-shadow(0 -2px 0 var(--bg));
     will-change: transform;
     pointer-events: none;
   }

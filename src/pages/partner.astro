@@ -5,8 +5,8 @@ import FormShell from "../components/FormShell.astro";
 ---
 
 <Base title="Host or support an event" description="Offer a room, food and drink, or prizes for a Claude Community Cape Town event.">
-  <PageHead title="Host or support an event" lede="Our events are free, and they run on generous people: rooms to gather in, food and drink, and prizes for the builders. Tell us what you have in mind." />
-  <section class="wrap-narrow body">
+  <PageHead title="Host or support an event" lede="Our events are free, and they run on generous people: rooms to gather in, food and drink, and prizes for the builders. Tell us what you have in mind." sticker="heart" />
+  <section class="wrap body">
     <dl class="kinds">
       <div>
         <dt class="title">A room</dt>
@@ -41,14 +41,27 @@ import FormShell from "../components/FormShell.astro";
 </Base>
 
 <style>
+  /* What we are looking for on the left, the form on the right. */
   .body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+    gap: var(--space-6) clamp(2rem, 6vw, 5rem);
+    align-items: start;
     padding-bottom: var(--section);
   }
   .kinds {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-    gap: var(--space-5);
-    margin: 0 0 var(--space-6);
+    gap: var(--space-6);
+    margin: 0;
+  }
+  @media (max-width: 56rem) {
+    .body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .kinds {
+      grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+      gap: var(--space-5);
+    }
   }
   .kinds div {
     padding-top: var(--space-4);

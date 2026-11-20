@@ -1,18 +1,26 @@
 ---
+import Sticker from "./Sticker.astro";
+
 // The title block at the top of every page except the home page.
 interface Props {
   title: string;
   lede?: string;
   coral?: boolean;
+  /** Name of a sticker in src/assets/brand/stickers/, shown beside the title on wide screens. */
+  sticker?: string;
+  stickerWidth?: number;
 }
-const { title, lede, coral = false } = Astro.props;
+const { title, lede, coral = false, sticker, stickerWidth = 170 } = Astro.props;
 ---
 
 <header class:list={["page-head", { "section-coral": coral }]}>
-  <div class="wrap stack">
-    <h1 class="display">{title}</h1>
-    {lede && <p class="lede">{lede}</p>}
-    <slot />
+  <div class:list={["wrap", "head", { "has-sticker": !!sticker }]}>
+    <div class="stack">
+      <h1 class="display">{title}</h1>
+      {lede && <p class="lede">{lede}</p>}
+      <slot />
+    </div>
+    {sticker && <Sticker name={sticker} width={stickerWidth} eager class="head-sticker" />}
   </div>
 </header>
 
@@ -22,6 +30,23 @@ const { title, lede, coral = false } = Astro.props;
   }
   .page-head.section-coral {
     padding-bottom: clamp(3rem, 7vw, 6rem);
+  }
+  .has-sticker {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-7);
+  }
+  .head-sticker {
+    --tilt: 6deg;
+  }
+  @media (max-width: 52rem) {
+    .has-sticker {
+      grid-template-columns: 1fr;
+    }
+    .head-sticker {
+      display: none;
+    }
   }
   @media (prefers-reduced-motion: no-preference) {
     .page-head h1 {

@@ -17,8 +17,6 @@ const yearNow = new Date().getFullYear();
       <h2 class="wordmark">Community</h2>
       <ul>
         <li><a href="/events/">Events</a></li>
-        <li><a href="/gallery/">Gallery</a></li>
-        <li><a href="/demos/">Demos</a></li>
         <li><a href="/speak/">Give a talk</a></li>
         <li><a href="/partner/">Host or support an event</a></li>
         <li><a href="/join/">Join</a></li>
@@ -43,7 +41,6 @@ const yearNow = new Date().getFullYear();
     <span>© {yearNow} Claude Community Cape Town</span>
     <span class="links">
       <a href="/privacy/">Privacy</a>
-      <a href="/styleguide/">Design system</a>
     </span>
     <span class="built">Built with Claude in Cape Town</span>
   </div>
@@ -59,8 +56,10 @@ const yearNow = new Date().getFullYear();
   }
   .cols {
     display: grid;
-    grid-template-columns: minmax(16rem, 2fr) 1fr 1fr;
-    gap: clamp(2rem, 5vw, 5rem);
+    /* The link columns are as wide as their words, so the last one ends on
+       the right edge of the page like everything above it. */
+    grid-template-columns: minmax(16rem, 1fr) auto auto;
+    gap: clamp(2rem, 7vw, 7rem);
   }
   .about p + p {
     margin-top: var(--space-3);
@@ -121,6 +120,7 @@ const yearNow = new Date().getFullYear();
   @media (max-width: 44rem) {
     .cols {
       grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
     }
     .about {
       grid-column: 1 / -1;

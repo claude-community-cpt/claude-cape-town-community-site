@@ -1,0 +1,46 @@
+---
+// A Clawd sticker. Click it and it spins. The pictures live in
+// src/assets/brand/stickers/ and are picked by file name.
+//
+// Give `moods` a list of names and Clawd changes as he is clicked: the first
+// click tickles him into the second picture, and more clicks spin him into
+// the last one. He calms down again after a few seconds.
+import { Image } from "astro:assets";
+
+const files = import.meta.glob<{ default: ImageMetadata }>("../assets/brand/stickers/*.png", { eager: true });
+const stickers = Object.fromEntries(
+  Object.entries(files).map(([path, file]) => [path.split("/").pop()!.replace(".png", ""), file.default]),
+);
+
+interface Props {
+  name: string;
+  moods?: string[];
+  /** Width in pixels as drawn on the page. */
+  width?: number;
+  eager?: boolean;
+  class?: string;
+}
+const { name, moods = [], width = 160, eager = false, class: className } = Astro.props;
+const names = [name, ...moods];
+for (const n of names) {
+  if (!stickers[n]) throw new Error(`No sticker called "${n}". Choose from: ${Object.keys(stickers).join(", ")}`);
+}
+---
+
+<button
+  class:list={["sticker", className, { "has-moods": moods.length > 0 }]}
+  type="button"
+  data-spin
+  data-mood={moods.length > 0 ? "0" : undefined}
+  aria-label={moods.length > 0 ? "Tickle Clawd" : "Spin the sticker"}
+>
+  {
+    names.map((n, i) => (
+      <Image src={stickers[n]} alt="" width={width} loading={eager ? "eager" : "lazy"} class:list={{ "is-shown": i === 0 }} />
+    ))
+  }
+</button>
+
+<script>
+  import "../scripts/stickers";
+</script>

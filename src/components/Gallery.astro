@@ -1,8 +1,9 @@
 ---
-// A photo grid for one event. Photos live in src/assets/gallery/<folder>/ and
-// are resized at build time. Click a photo for the full-size view.
+// The photos of one event: a grid, and a full-screen view you can step through
+// with the arrows, the keyboard or a swipe. Photos live in
+// src/assets/gallery/<folder>/ and are resized at build time.
 import { getImage } from "astro:assets";
-import type { ImageMetadata } from "astro";
+import { photosIn } from "../photos";
 
 interface Props {
   folder: string;
@@ -10,25 +11,20 @@ interface Props {
 }
 const { folder, alt = {} } = Astro.props;
 
-const files = import.meta.glob<{ default: ImageMetadata }>("../assets/gallery/*/*.{jpg,jpeg,png,webp}", { eager: true });
 const photos = await Promise.all(
-  Object.entries(files)
-    .filter(([path]) => path.includes(`/gallery/${folder}/`))
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(async ([path, mod]) => {
-      const name = path.split("/").pop()!;
-      const thumb = await getImage({ src: mod.default, width: 720, format: "webp", quality: 70 });
-      const full = await getImage({ src: mod.default, width: 1600, format: "webp", quality: 75 });
-      return { name, thumb, full, alt: alt[name] ?? "", wide: mod.default.width > mod.default.height * 1.3 };
-    }),
+  photosIn(folder).map(async ({ name, image }) => {
+    const thumb = await getImage({ src: image, width: 720, format: "webp", quality: 70 });
+    const full = await getImage({ src: image, width: 1600, format: "webp", quality: 75 });
+    return { name, thumb, full, alt: alt[name] ?? "", wide: image.width > image.height * 1.3 };
+  }),
 );
 ---
 
 <ul class="gallery" data-gallery>
   {
-    photos.map((p) => (
+    photos.map((p, i) => (
       <li class:list={{ wide: p.wide }}>
-        <a href={p.full.src} aria-label={`Open photo: ${p.alt || p.name}`}>
+        <a href={p.full.src} aria-label={`Open photo ${i + 1} of ${photos.length}${p.alt ? `: ${p.alt}` : ""}`}>
           <img src={p.thumb.src} alt={p.alt} width={p.thumb.attributes.width} height={p.thumb.attributes.height} loading="lazy" decoding="async" />
         </a>
       </li>
@@ -36,31 +32,75 @@ const photos = await Promise.all(
   }
 </ul>
 
-<dialog class="lightbox" data-lightbox aria-label="Photo">
-  <form method="dialog"><button class="close" type="submit" aria-label="Close">✕</button></form>
-  <figure></figure>
+<dialog class="lightbox" data-lightbox aria-label="Photos">
+  <form method="dialog"><button class="round close" type="submit" aria-label="Close">✕</button></form>
+  <button class="round prev" type="button" data-prev aria-label="Previous photo">‹</button>
+  <figure>
+    <div class="frame" data-frame></div>
+    <figcaption class="small" data-caption></figcaption>
+  </figure>
+  <button class="round next" type="button" data-next aria-label="Next photo">›</button>
+  <p class="count small" data-count aria-live="polite"></p>
 </dialog>
 
 <script>
   // Without JavaScript the links simply open the full-size photo.
   for (const gallery of document.querySelectorAll<HTMLElement>("[data-gallery]")) {
     const box = gallery.nextElementSibling as HTMLDialogElement | null;
-    const frame = box?.querySelector("figure");
-    if (!box || !frame || typeof box.showModal !== "function") continue;
+    const frame = box?.querySelector<HTMLElement>("[data-frame]");
+    const caption = box?.querySelector<HTMLElement>("[data-caption]");
+    const count = box?.querySelector<HTMLElement>("[data-count]");
+    const links = [...gallery.querySelectorAll<HTMLAnchorElement>("a")];
+    if (!box || !frame || !caption || !count || links.length === 0 || typeof box.showModal !== "function") continue;
+
     const img = document.createElement("img");
-    for (const attr of frame.attributes) img.setAttribute(attr.name, attr.value); // keep the scoped styles
+    frame.append(img);
+    let index = 0;
+
+    const show = (to: number) => {
+      index = (to + links.length) % links.length;
+      const link = links[index];
+      const text = link.querySelector("img")?.alt ?? "";
+      img.src = link.href;
+      img.alt = text;
+      caption.textContent = text;
+      count.textContent = `${index + 1} of ${links.length}`;
+      // Fetch the neighbours so the next step is instant.
+      for (const near of [index + 1, index - 1]) new Image().src = links[(near + links.length) % links.length].href;
+    };
+
+    if (links.length < 2) for (const button of box.querySelectorAll<HTMLElement>("[data-prev], [data-next]")) button.hidden = true;
+
     gallery.addEventListener("click", (event) => {
       const link = (event.target as HTMLElement).closest("a");
       if (!link) return;
       event.preventDefault();
-      img.src = link.href;
-      img.alt = link.querySelector("img")?.alt ?? "";
-      frame.replaceChildren(img);
+      show(links.indexOf(link));
       box.showModal();
     });
-    box.addEventListener("click", (event) => {
-      if (event.target === box) box.close();
+    box.querySelector("[data-prev]")?.addEventListener("click", () => show(index - 1));
+    box.querySelector("[data-next]")?.addEventListener("click", () => show(index + 1));
+    box.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") show(index - 1);
+      else if (event.key === "ArrowRight") show(index + 1);
     });
+
+    // Swipe left or right on a touch screen.
+    let startX: number | null = null;
+    box.addEventListener("touchstart", (event) => (startX = event.touches.length === 1 ? event.touches[0].clientX : null), { passive: true });
+    box.addEventListener("touchend", (event) => {
+      if (startX === null) return;
+      const moved = event.changedTouches[0].clientX - startX;
+      startX = null;
+      if (Math.abs(moved) > 40) show(index + (moved < 0 ? 1 : -1));
+    });
+
+    // A click on the dark area around the photo closes the view.
+    box.addEventListener("click", (event) => {
+      if (event.target === box || event.target === frame) box.close();
+    });
+    // Leave the keyboard on the photo that was last open.
+    box.addEventListener("close", () => links[index].focus());
   }
 </script>
 
@@ -101,48 +141,114 @@ const photos = await Promise.all(
     width: 100vw;
     height: 100dvh;
     margin: 0;
-    padding: var(--space-5);
+    padding: var(--space-4);
     border: 0;
     background: rgb(20 20 19 / 0.94);
+    color: #faf9f5;
   }
   .lightbox[open] {
     display: grid;
-    place-items: center;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-3);
     animation: fade var(--speed-move) var(--ease-out);
   }
   .lightbox::backdrop {
     background: transparent;
   }
   .lightbox figure {
-    display: contents;
+    grid-column: 2;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: var(--space-3);
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    text-align: center;
   }
-  .lightbox img {
+  .frame {
+    display: grid;
+    place-items: center;
+    min-height: 0;
+    touch-action: pan-y;
+  }
+  .frame :global(img) {
     width: auto;
     height: auto;
     max-width: 100%;
-    max-height: calc(100dvh - 3rem);
+    /* The screen, less the counter, the caption and the padding. */
+    max-height: calc(100dvh - 9rem);
     object-fit: contain;
     border-radius: var(--radius-sm);
+  }
+  figcaption:empty {
+    display: none;
+  }
+  .count {
+    grid-column: 1 / -1;
+    margin: 0;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .round {
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1.5px solid rgb(250 249 245 / 0.5);
+    border-radius: 50%;
+    background: rgb(20 20 19 / 0.6);
+    color: inherit;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .round:hover {
+    border-color: #faf9f5;
+  }
+  .round:focus-visible {
+    outline: 2px solid #faf9f5;
+    outline-offset: 2px;
+  }
+  .prev {
+    grid-column: 1;
+  }
+  .next {
+    grid-column: 3;
   }
   .close {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    width: 2.75rem;
-    height: 2.75rem;
-    border: 1.5px solid rgb(250 249 245 / 0.5);
-    border-radius: 50%;
-    background: transparent;
-    color: #faf9f5;
+    z-index: 1;
     font-size: 1.2rem;
-    cursor: pointer;
   }
   @keyframes fade {
     from {
       opacity: 0;
     }
   }
+  @media (prefers-reduced-motion: reduce) {
+    .lightbox[open] {
+      animation: none;
+    }
+  }
   @media (max-width: 40rem) {
+    /* On a phone the photo takes the full width and the arrows sit over it. */
+    .lightbox {
+      padding: var(--space-3);
+    }
+    .lightbox figure {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+    .prev,
+    .next {
+      grid-row: 1;
+      z-index: 1;
+    }
+    .next {
+      justify-self: end;
+    }
     .gallery {
       grid-auto-rows: 11rem;
     }

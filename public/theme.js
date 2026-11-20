@@ -16,6 +16,7 @@
     var parts = hash.slice(2).split("/").filter(Boolean);
     var pages = ["events", "gallery", "demos", "speak", "partner", "join"];
     if (parts.length && pages.indexOf(parts[0]) !== -1) {
+      if (parts[0] === "gallery") parts = ["events", "past"]; // photos are on each event's page now
       location.replace("/" + parts[0] + "/" + (parts[1] === "past" ? "#past" : ""));
     }
   }
