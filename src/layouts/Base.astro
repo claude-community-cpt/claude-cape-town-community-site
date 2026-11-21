@@ -69,6 +69,8 @@ const csp = [
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex" />}
+    {/* Proves to Google Search Console that we own the site. Only the home page needs it. */}
+    {Astro.url.pathname === "/" && <meta name="google-site-verification" content="Delv1EZypoTWFMyudTnilpY4tOWSohu0fXVBRJ5S2ZQ" />}
 
     <meta property="og:site_name" content={SITE.name} />
     <meta property="og:title" content={title ?? SITE.name} />
