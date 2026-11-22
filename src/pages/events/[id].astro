@@ -3,7 +3,7 @@ import { render } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import LumaEmbed from "../../components/LumaEmbed.astro";
 import Gallery from "../../components/Gallery.astro";
-import { getEvents, endOf, day, month, longDate, timeRange, whereLine, SITE, type EventEntry } from "../../lib";
+import { getEvents, endOf, day, month, longDate, timeRange, whereLine, eventSchema, shareImage, shareText, type EventEntry } from "../../lib";
 
 export async function getStaticPaths() {
   const { all } = await getEvents();
@@ -17,38 +17,11 @@ const { event } = Astro.props;
 const { data } = event;
 const { Content } = await render(event);
 const past = endOf(event) < new Date();
-const url = new URL(`/events/${event.id}/`, Astro.site).href;
 
-const schema = {
-  "@context": "https://schema.org",
-  "@type": "Event",
-  name: data.title,
-  description: data.summary,
-  startDate: data.start.toISOString(),
-  endDate: endOf(event).toISOString(),
-  eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-  eventStatus: "https://schema.org/EventScheduled",
-  isAccessibleForFree: true,
-  url,
-  image: new URL("/og.png", Astro.site).href,
-  location: {
-    "@type": "Place",
-    name: data.venue.name,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: data.venue.address,
-      addressLocality: "Cape Town",
-      addressCountry: "ZA",
-    },
-  },
-  organizer: { "@type": "Organization", name: SITE.name, url: Astro.site?.href },
-  ...(data.luma && !past && {
-    offers: { "@type": "Offer", price: 0, priceCurrency: "ZAR", url: data.luma.url, availability: "https://schema.org/InStock" },
-  }),
-};
+const share = shareText(event);
 ---
 
-<Base title={data.title} description={data.summary} schema={[schema]}>
+<Base title={data.title} description={share.description} shareTitle={share.title} image={shareImage(event)} schema={[eventSchema(event)]}>
   <article>
     <header class="event-head">
       <div class="wrap">

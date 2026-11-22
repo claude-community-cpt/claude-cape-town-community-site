@@ -1,5 +1,11 @@
+# claudecapetown.com is a public community site with no private pages.
+# Search engines and AI assistants (training, search and on-request readers
+# alike, such as Googlebot, Bingbot, GPTBot, OAI-SearchBot, ClaudeBot,
+# Claude-SearchBot and PerplexityBot) are all welcome to read every page.
+# Short links such as /mixer/ keep themselves out of search with a noindex
+# tag, which only works if crawlers are allowed to fetch them, so nothing is
+# disallowed here.
 User-agent: *
 Allow: /
-Disallow: /mixer/
 
 Sitemap: https://claudecapetown.com/sitemap-index.xml

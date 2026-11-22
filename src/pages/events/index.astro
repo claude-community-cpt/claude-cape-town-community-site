@@ -3,13 +3,17 @@ import Base from "../../layouts/Base.astro";
 import PageHead from "../../components/PageHead.astro";
 import EventRow from "../../components/EventRow.astro";
 import LumaEmbed from "../../components/LumaEmbed.astro";
-import { getEvents, year, SITE, day, month, longDate, timeRange, whereLine } from "../../lib";
+import { getEvents, year, SITE, day, month, longDate, timeRange, whereLine, eventSchema } from "../../lib";
 
 const { upcoming, past } = await getEvents();
 const years = [...new Set(past.map((e) => year(e.data.start)))];
 ---
 
-<Base title="Events" description="Upcoming and past Claude Community events in Cape Town. Free, in person, and open to everyone. Register on Luma.">
+<Base
+  title="Events"
+  description="Upcoming and past Claude meetups, workshops and build days in Cape Town. Free, in person, and open to everyone. Register on Luma."
+  schema={upcoming.map((event) => eventSchema(event))}
+>
   <PageHead title="What's on" lede="Everything on the Cape Town calendar. Events are free, and you register on Luma." sticker="coffee" stickerWidth={190}>
     <p class="jump">
       <a class="pill pill-link" href="#upcoming">Upcoming ({upcoming.length})</a>

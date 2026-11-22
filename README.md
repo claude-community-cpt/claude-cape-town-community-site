@@ -105,5 +105,26 @@ If you add a form, list what it collects on the [privacy notice](src/pages/priva
 ## Short links
 
 `claudecapetown.com/mixer` forwards to the Table Mixer app
-([coffee-chat](https://github.com/claude-community-cpt/coffee-chat)). Add more
-under `redirects` in `astro.config.mjs`.
+([coffee-chat](https://github.com/claude-community-cpt/coffee-chat)). It is a
+small page, `src/pages/mixer.astro`, so the link shows a preview when it is
+shared. Copy it for another short link that people will share. For a plain
+forward nobody shares, add a line under `redirects` in `astro.config.mjs`.
+
+## Search engines, AI assistants and link previews
+
+- `public/robots.txt` welcomes every crawler, AI ones included, and points to
+  the sitemap. The site has no private pages.
+- The sitemap (`/sitemap-index.xml`) is built for you and lists every page
+  with the date it last changed. It is the address to submit in Google Search
+  Console and Bing Webmaster Tools.
+- `/llms.txt` is a plain-text guide to the site for AI assistants, in the
+  [llmstxt.org](https://llmstxt.org) layout. It is built from the events, in
+  `src/pages/llms.txt.ts`.
+- Titles, descriptions, link-preview tags and the data Google reads are set in
+  `src/layouts/Base.astro`; the event ones come from `src/lib.ts`.
+- Link-preview pictures are drawn by `node scripts/make-og.mjs`: one for the
+  site (`public/og.png`) and one per event (`public/og/`). WhatsApp remembers
+  the first preview it saw for a link, so to test a change add `?v=2` to the
+  address.
+- The icons `favicon.ico` and `favicon-96.png` are drawn from `favicon.svg` by
+  `node scripts/make-favicon.mjs`.
