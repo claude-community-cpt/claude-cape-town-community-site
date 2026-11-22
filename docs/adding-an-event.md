@@ -33,7 +33,12 @@ ended (the site rebuilds every night).
    ```
 
 3. Write the longer description under the second `---` in plain Markdown.
-4. Open a pull request. The checks build the site and test it; once they pass
+4. Optional, but worth it: draw the event's share card, the picture people
+   see when the event's link is posted in WhatsApp, LinkedIn or Discord. Run
+   `node scripts/make-og.mjs` and commit the new file in `public/og/`. Run it
+   again if the title, date or venue changes. Without a card the link shows
+   the general "Hello, Cape Town" picture instead.
+5. Open a pull request. The checks build the site and test it; once they pass
    and it is merged, the site updates in about two minutes.
 
 ### The Luma embed

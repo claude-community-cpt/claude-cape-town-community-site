@@ -65,10 +65,67 @@ test("head has the SEO and security tags", async ({ page }) => {
   expect(csp).not.toContain("unsafe-inline");
 });
 
-test("robots, sitemap and security.txt are served", async ({ request }) => {
-  for (const path of ["/robots.txt", "/sitemap-index.xml", "/.well-known/security.txt", "/og.png", "/CNAME"]) {
+test("the home page title says what the community does, and names the site for Google", async ({ page }) => {
+  await page.goto("/");
+  await expect(page).toHaveTitle(/^Claude Community Cape Town: .*meetups/);
+  const data = await page.locator('script[type="application/ld+json"]').allTextContents();
+  expect(data.map((json) => JSON.parse(json)["@type"])).toEqual(expect.arrayContaining(["Organization", "WebSite"]));
+});
+
+test("a shared link says which community it is", async ({ page }) => {
+  for (const path of ["/events/", "/join/", "/speak/", "/partner/"]) {
+    await page.goto(path);
+    for (const tag of ['meta[property="og:title"]', 'meta[name="twitter:title"]']) {
+      await expect(page.locator(tag), path).toHaveAttribute("content", /Claude Community Cape Town/);
+    }
+  }
+});
+
+test("a shared event link shows its date, its place and its own picture", async ({ page, request }) => {
+  await page.goto("/events/2026-12-05-claude-and-coffee/");
+  await expect(page.locator('meta[property="og:title"]')).toHaveAttribute("content", "Sat 5 Dec: Claude & Coffee Meetup, Cape Town");
+  await expect(page.locator('meta[property="og:description"]')).toHaveAttribute("content", /^Saturday, 5 December 2026, 09:00 to 13:00 at Roamwork Harrington\./);
+  const image = await page.locator('meta[property="og:image"]').getAttribute("content");
+  expect(image).toBe("https://claudecapetown.com/og/2026-12-05-claude-and-coffee.png");
+  expect((await request.get(new URL(image!).pathname)).status()).toBe(200);
+
+  // Google asks for event times in local time with the offset.
+  const data = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((json) => JSON.parse(json));
+  const event = data.find((item) => item["@type"] === "Event");
+  expect(event.startDate).toBe("2026-12-05T09:00:00+02:00");
+  expect(event.endDate).toBe("2026-12-05T13:00:00+02:00");
+  expect(event.image).toBe(image);
+});
+
+test("robots, sitemap, llms.txt, icons and security.txt are served", async ({ request }) => {
+  for (const path of ["/robots.txt", "/sitemap-index.xml", "/sitemap-0.xml", "/llms.txt", "/.well-known/security.txt", "/og.png", "/favicon.ico", "/favicon-96.png", "/CNAME"]) {
     expect((await request.get(path)).status(), path).toBe(200);
   }
+});
+
+test("robots.txt lets every crawler in and points to the sitemap", async ({ request }) => {
+  const robots = await (await request.get("/robots.txt")).text();
+  expect(robots).toMatch(/^User-agent: \*$/m);
+  expect(robots).toMatch(/^Sitemap: https:\/\/claudecapetown\.com\/sitemap-index\.xml$/m);
+  expect(robots).not.toMatch(/^Disallow:/m);
+});
+
+test("the sitemap lists every real page and no short links", async ({ request }) => {
+  const sitemap = await (await request.get("/sitemap-0.xml")).text();
+  for (const path of ["/", "/events/", "/events/2026-12-05-claude-and-coffee/", "/join/", "/speak/", "/partner/", "/privacy/"]) {
+    expect(sitemap, path).toContain(`<loc>https://claudecapetown.com${path}</loc>`);
+  }
+  for (const path of ["/mixer/", "/gallery/", "/demos/", "/404/"]) {
+    expect(sitemap, path).not.toContain(`<loc>https://claudecapetown.com${path}</loc>`);
+  }
+});
+
+test("llms.txt follows the llmstxt.org layout and lists the events", async ({ request }) => {
+  const text = await (await request.get("/llms.txt")).text();
+  expect(text).toMatch(/^# Claude Community Cape Town\n\n> /);
+  expect(text).toContain("## Upcoming events");
+  expect(text).toContain("- [Claude Kickoff Build](https://claudecapetown.com/events/2026-08-27-claude-kickoff-build/): ");
+  expect(text).not.toMatch(/whatsapp/i);
 });
 
 test("theme follows the system, and the switch overrides and remembers", async ({ page }) => {
@@ -285,9 +342,13 @@ test("the join page has no form and never links to WhatsApp", async ({ page }) =
   await expect(page.locator('a[href*="whatsapp.com"], a[href*="wa.me"]')).toHaveCount(0);
 });
 
-test("the mixer short link forwards to the app", async ({ request }) => {
+test("the mixer short link forwards to the app, stays out of search and has a preview", async ({ request }) => {
+  // Read as text: opening it in the browser would follow the link to the app, an outside service.
   const html = await (await request.get("/mixer/")).text();
-  expect(html).toContain("https://table-mixer.vercel.app/");
+  expect(html).toContain('<meta http-equiv="refresh" content="0;url=https://table-mixer.vercel.app/">');
+  expect(html).toContain('<meta name="robots" content="noindex">');
+  expect(html).toContain('<meta property="og:title" content="Table Mixer | Claude Community Cape Town">');
+  expect(html).toContain('<meta property="og:image" content="https://claudecapetown.com/og.png">');
 });
 
 test("the event page lines its sections up on the same two columns", async ({ page }) => {

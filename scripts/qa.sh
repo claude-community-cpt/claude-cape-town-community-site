@@ -69,7 +69,7 @@ else ok "Home page is live (build ${live_build:-unknown})"; fi
 [ -s "$LIVE" ] || { echo "no page to check further"; exit 1; }
 
 # 5. Every page and key file responds
-for path in / /events/ /gallery/ /demos/ /speak/ /partner/ /join/ /privacy/ /mixer/ /robots.txt /sitemap-index.xml /og.png /.well-known/security.txt; do
+for path in / /events/ /gallery/ /demos/ /speak/ /partner/ /join/ /privacy/ /mixer/ /robots.txt /sitemap-index.xml /llms.txt /favicon.ico /og.png /.well-known/security.txt; do
   code=$(get "$BASE$path" /dev/null)
   [ "$code" = "200" ] && ok "$path responds" || bad "$path" "HTTP $code"
 done

@@ -18,12 +18,21 @@ interface Props {
   noindex?: boolean;
   /** Extra schema.org objects for this page (events, for example). */
   schema?: Record<string, unknown>[];
+  /** The bold line when the link is shared in WhatsApp and the like. Defaults to the page title. */
+  shareTitle?: string;
+  /** The picture for shared links, 1200 by 630, as a path such as /og/my-event.png. Defaults to /og.png. */
+  image?: string;
+  /** For short links: send visitors straight on to this address. */
+  forwardTo?: string;
 }
 
-const { title, description = SITE.description, noindex = false, schema = [] } = Astro.props;
-const fullTitle = title ? `${title} | ${SITE.name}` : SITE.name;
+const { title, description = SITE.description, noindex = false, schema = [], shareTitle, image = "/og.png", forwardTo } = Astro.props;
+const isHome = Astro.url.pathname === "/";
+const fullTitle = title ? `${title} | ${SITE.name}` : `${SITE.name}: ${SITE.tagline}`;
+const ogTitle = shareTitle ?? fullTitle;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const ogImage = new URL("/og.png", Astro.site).href;
+const ogImage = new URL(image, Astro.site).href;
+const ogImageAlt = image === "/og.png" ? "Hello, Cape Town. Claude Community Cape Town." : `${shareTitle ?? title}. ${SITE.name}.`;
 // The commit this build came from, so the post-deploy check can tell when it is live.
 const build = process.env.GITHUB_SHA?.slice(0, 12) ?? "local";
 
@@ -35,7 +44,16 @@ const organisation = {
   logo: new URL("/apple-touch-icon.png", Astro.site).href,
   description: SITE.description,
   areaServed: { "@type": "City", name: "Cape Town" },
-  sameAs: [SITE.lumaCalendar, "https://github.com/claude-community-cpt"],
+  sameAs: [SITE.lumaCalendar, "https://github.com/claude-community-cpt", ...(SITE.discord ? [SITE.discord] : [])],
+};
+
+// Tells Google what to call the site in results. Only the home page needs it.
+const website = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: SITE.name,
+  alternateName: "Claude Cape Town",
+  url: Astro.site?.href,
 };
 
 /* Content Security Policy. GitHub Pages cannot send response headers, so the
@@ -70,29 +88,37 @@ const csp = [
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex" />}
     {/* Proves to Google Search Console that we own the site. Only the home page needs it. */}
-    {Astro.url.pathname === "/" && <meta name="google-site-verification" content="Delv1EZypoTWFMyudTnilpY4tOWSohu0fXVBRJ5S2ZQ" />}
+    {forwardTo && <meta http-equiv="refresh" content={`0;url=${forwardTo}`} />}
+    {isHome && <meta name="google-site-verification" content="Delv1EZypoTWFMyudTnilpY4tOWSohu0fXVBRJ5S2ZQ" />}
 
     <meta property="og:site_name" content={SITE.name} />
-    <meta property="og:title" content={title ?? SITE.name} />
+    <meta property="og:title" content={ogTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Hello, Cape Town. Claude Community Cape Town." />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:locale" content="en_ZA" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={ogTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
 
     <meta name="theme-color" content="#faf9f5" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#1a1917" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="preload" href="/fonts/AnthropicSerifDisplay-Light.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/AnthropicSansDisplay-Semibold.woff2" as="font" type="font/woff2" crossorigin />
     <script is:inline src="/theme.js"></script>
-    {[organisation, ...schema].map((item) => <script is:inline type="application/ld+json" set:html={JSON.stringify(item)} />)}
+    {[organisation, ...(isHome ? [website] : []), ...schema].map((item) => <script is:inline type="application/ld+json" set:html={JSON.stringify(item)} />)}
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
