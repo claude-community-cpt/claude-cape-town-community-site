@@ -8,7 +8,7 @@ import { getImage } from "astro:assets";
 import creature from "../assets/brand/creature.png";
 import strawberry from "../assets/brand/strawberry.png";
 
-const creatureImg = await getImage({ src: creature, width: 240, format: "png" });
+const creatureImg = await getImage({ src: creature, width: 240, format: "webp", quality: 90 });
 const berryImg = await getImage({ src: strawberry, format: "png" });
 
 // Devil's Peak, the flat top, Kloof Nek, Lion's Head, Signal Hill.
