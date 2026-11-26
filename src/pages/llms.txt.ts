@@ -26,6 +26,7 @@ The community is run by volunteer Claude Community Ambassadors. It is not run by
 - [Home](${url("/", site)}): What the community is, the next event and the kinds of events it runs
 - [Events](${url("/events/", site)}): Every upcoming and past event, with dates, venues and links to register
 - [Join](${url("/join/", site)}): How to take part. There is nothing to sign up for: come to an event
+- [Downloads](${url("/downloads/", site)}): Free animated Zoom backgrounds of the home page scene, in a day and a night version
 - [Give a talk](${url("/speak/", site)}): How to offer a ten-minute talk or demo. First-time speakers are welcome
 - [Host or support an event](${url("/partner/", site)}): How to offer a room, food and drink, or prizes
 

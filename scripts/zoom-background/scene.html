@@ -1,0 +1,219 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root { --bg:#faf9f5; --dither:rgb(20 20 19 / 0.62); --coral:#d97757; --ivory:#faf9f5; --text:#141413; }
+  :root.dark { --bg:#1a1917; --dither:rgb(250 249 245 / 0.5); --text:#faf9f5; }
+  html,body { margin:0; width:1920px; height:1080px; overflow:hidden; background:var(--bg); }
+  svg { position:absolute; inset:0; width:1920px; height:1080px; }
+  .dot { fill:var(--dither); }
+  .backing { fill:var(--bg); }
+  .ridge { fill:none; stroke:var(--dither); stroke-width:1.5; stroke-linejoin:round; }
+  .sun-disc, .dot-sun { fill:var(--coral); }
+  .dark .sun { display:none; }
+  .night { display:none; }
+  .dark .night { display:inline; }
+  .moon-disc { fill:var(--ivory); }
+  .moon-bite { fill:var(--bg); }
+  .stars circle { fill:rgb(250 249 245 / 0.8); }
+  .shooting { stroke:var(--ivory); stroke-width:2; stroke-linecap:round; }
+  .lights rect { fill:var(--coral); }
+  .lights rect:nth-child(2n) { fill:var(--ivory); }
+  .bird { fill:none; stroke:var(--dither); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .cable { stroke:var(--dither); stroke-width:1; }
+  .car rect { fill:var(--coral); stroke:var(--bg); stroke-width:2; }
+  .sprite { position:absolute; image-rendering:pixelated; transform-origin:center bottom;
+    filter: drop-shadow(3px 0 0 var(--bg)) drop-shadow(-3px 0 0 var(--bg)) drop-shadow(0 3px 0 var(--bg)) drop-shadow(0 -3px 0 var(--bg)); }
+  #clawd { position:absolute; left:0; top:0; width:160px; }
+  #clawd img { position:static; display:block; width:160px; height:auto; }
+  .berry { width:56px; height:auto; }
+  .crumb { position:absolute; width:8px; height:8px; background:var(--coral); }
+  .crumb.leaf { background:var(--text); }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 1440 810" id="svg">
+  <defs>
+    <pattern id="dots-far" width="12" height="12" patternUnits="userSpaceOnUse"><circle class="dot" cx="3" cy="3" r="1.8"/></pattern>
+    <pattern id="dots-mid" width="6" height="6" patternUnits="userSpaceOnUse"><circle class="dot" cx="3" cy="3" r="1.65"/></pattern>
+    <pattern id="dots-near" width="6" height="6" patternUnits="userSpaceOnUse"><circle class="dot" cx="3" cy="3" r="2.15"/></pattern>
+    <pattern id="dots-sun" width="9" height="9" patternUnits="userSpaceOnUse"><circle class="dot-sun" cx="3" cy="3" r="1.7"/></pattern>
+    <linearGradient id="fade-down" x1="0" y1="0" x2="0" y2="1"><stop offset="0.25" stop-color="#000"/><stop offset="0.95" stop-color="#fff"/></linearGradient>
+    <radialGradient id="fade-out"><stop offset="0.45" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient>
+    <mask id="lower"><rect x="-60" width="1560" height="320" fill="url(#fade-down)"/></mask>
+    <mask id="glow"><circle cx="948" cy="538" r="120" fill="url(#fade-out)"/></mask>
+    <path id="cloud" d="M18,30 h36 v-12 h30 v-12 h42 v12 h24 v12 h36 v12 h-168 Z"/>
+  </defs>
+  <g class="night stars" id="stars"></g>
+  <line class="night shooting" id="shoot" x1="1180" y1="60" x2="1128" y2="86"/>
+  <g class="night"><circle class="moon-disc" cx="300" cy="150" r="30"/><circle class="moon-bite" cx="314" cy="140" r="26"/></g>
+  <g class="sun">
+    <circle id="sunglow" cx="948" cy="538" r="120" fill="url(#dots-sun)" mask="url(#glow)"/>
+    <circle class="sun-disc" cx="948" cy="538" r="48"/>
+  </g>
+  <g id="clouds"></g>
+  <g id="birds">
+    <path class="bird"/><path class="bird"/><path class="bird"/>
+  </g>
+  <g transform="translate(0 360)">
+    <path class="backing" id="sk1"/>
+    <path id="sk2" fill="url(#dots-far)"/>
+    <path id="sk3" fill="url(#dots-mid)" mask="url(#lower)"/>
+    <path class="ridge" id="sk4"/>
+    <line class="cable" x1="826" y1="78" x2="912" y2="226"/>
+    <g class="car" id="car1"><rect x="902" y="222" width="20" height="13" rx="3"/></g>
+    <g class="car" id="car2"><rect x="902" y="222" width="20" height="13" rx="3"/></g>
+    <g class="night lights" id="lights"></g>
+    <path class="backing" id="sh1"/>
+    <path id="sh2" fill="url(#dots-near)"/>
+  </g>
+</svg>
+<div id="ground"></div>
+<script>
+const T = 40;
+const params = new URLSearchParams(location.search);
+if (params.get("theme") === "dark") document.documentElement.classList.add("dark");
+const NS = "http://www.w3.org/2000/svg";
+const $ = (id) => document.getElementById(id);
+const skyline = "M-60,320 L-60,262 L90,246 L170,222 L232,168 L268,124 L292,104 L318,128 L352,160 L392,172 L424,122 L452,86 L486,76 L560,79 L640,74 L730,78 L812,75 L838,92 L872,150 L912,196 L962,220 L1004,200 L1040,150 L1066,112 L1086,96 L1108,116 L1136,168 L1178,204 L1240,208 L1310,196 L1380,214 L1500,240 L1500,320 Z";
+for (const id of ["sk1","sk2","sk3","sk4"]) $(id).setAttribute("d", skyline);
+const shore = "M-60,520 L-60,286 C200,274 420,292 720,282 C1010,272 1240,290 1500,280 L1500,520 Z";
+$("sh1").setAttribute("d", shore); $("sh2").setAttribute("d", shore);
+
+// seeded random
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const stars = [];
+for (let i = 0; i < 46; i++) {
+  const c = document.createElementNS(NS, "circle");
+  const x = rnd() * 1440, y = rnd() * 460;
+  c.setAttribute("cx", x.toFixed(0)); c.setAttribute("cy", y.toFixed(0)); c.setAttribute("r", (1.2 + rnd() * 0.9).toFixed(2));
+  $("stars").append(c); stars.push({ c, period: [8, 5, 10][i % 3], phase: rnd() });
+}
+const lightXs = [150, 236, 318, 392, 470, 520, 598, 660, 742, 806, 880, 968, 1042, 1130, 1216, 1290];
+const lights = lightXs.map((x, i) => {
+  const r = document.createElementNS(NS, "rect");
+  r.setAttribute("x", x); r.setAttribute("y", 262 + ((i * 7) % 16)); r.setAttribute("width", 5); r.setAttribute("height", 5);
+  $("lights").append(r); return { r, period: i % 2 ? 8 : 5, phase: rnd() };
+});
+
+// Clouds: identical copies evenly spaced, so each row repeats within the loop.
+const W = 1900;
+const rows = [
+  { y: 150, s: 1.5, n: 2, phase: 0.10 },
+  { y: 272, s: 1.1, n: 3, phase: 0.62 },
+  { y: 36, s: 1.9, n: 2, phase: 0.38 },
+];
+const clouds = [];
+for (const row of rows) for (let i = 0; i < row.n; i++) {
+  const g = document.createElementNS(NS, "g");
+  g.innerHTML = `<g transform="scale(${row.s})"><use href="#cloud" class="backing"/><use href="#cloud" fill="url(#dots-mid)"/></g>`;
+  $("clouds").append(g); clouds.push({ g, row, i });
+}
+const birdEls = [...document.querySelectorAll(".bird")];
+const birdAt = [[0, 0], [25, 14], [-19, 18]];
+
+// Clawd and the strawberries
+const ground = $("ground");
+const GY = 1040; // feet line, px
+const berryXs = [250, 520, 1400, 1670];
+const berries = berryXs.map((x) => {
+  const el = document.createElement("img");
+  el.className = "sprite berry"; el.src = "../../src/assets/brand/strawberry.png"; el.style.left = (x - 28) + "px"; el.style.top = (GY - 61) + "px";
+  ground.append(el); return { x, el, events: [] };
+});
+const clawd = document.createElement("div"); clawd.id = "clawd";
+clawd.innerHTML = '<img class="sprite" src="../../src/assets/brand/creature.png">';
+ground.append(clawd);
+const clawdImg = clawd.firstChild;
+
+const X0 = 110, X1 = 1810, EAT = 0.9, END = 1.6;
+const speed = (2 * (X1 - X0)) / (T - 8 * EAT - 2 * END);
+const segs = []; const eats = [];
+let tt = 0, xx = X0;
+const pause = (d, kind) => { segs.push({ t0: tt, t1: tt + d, x0: xx, x1: xx, kind }); tt += d; };
+const walk = (to) => { const d = Math.abs(to - xx) / speed; segs.push({ t0: tt, t1: tt + d, x0: xx, x1: to, kind: "walk" }); tt += d; xx = to; };
+pause(END, "endL");
+for (const b of berries) { walk(b.x); b.events.push([tt, 0]); eats.push({ t: tt, x: b.x }); pause(EAT, "eat"); }
+walk(X1);
+for (const b of berries) b.events.push([tt + 0.5, 1]);
+const tR = tt; pause(END, "endR");
+for (const b of [...berries].reverse()) { walk(b.x); b.events.push([tt, 0]); eats.push({ t: tt, x: b.x }); pause(EAT, "eat"); }
+walk(X0);
+for (const b of berries) { b.events.push([0.5, 1]); b.events.sort((a, c) => a[0] - c[0]); }
+const crumbs = [];
+for (const e of eats) for (let i = 0; i < 7; i++) {
+  const el = document.createElement("i"); el.className = i % 3 === 0 ? "crumb leaf" : "crumb";
+  ground.append(el); crumbs.push({ el, t: e.t, x: e.x, dx: (rnd() - 0.5) * 120, dy: -32 - rnd() * 74 });
+}
+const easeOut = (p) => 1 - Math.pow(1 - p, 3);
+const clamp01 = (p) => Math.max(0, Math.min(1, p));
+const tri = (p) => 0.5 - 0.5 * Math.cos(2 * Math.PI * p); // smooth 0..1..0
+const lerp = (a, b, p) => a + (b - a) * p;
+
+window.render = (t) => {
+  t = ((t % T) + T) % T;
+  // sun glow
+  const g = tri(t / 10);
+  const sg = $("sunglow"); const sc = lerp(0.9, 1.08, g);
+  sg.setAttribute("transform", `translate(948 538) scale(${sc}) translate(-948 -538)`); sg.setAttribute("opacity", lerp(0.7, 1, g));
+  for (const s of stars) s.c.setAttribute("opacity", lerp(0.25, 1, tri(t / s.period + s.phase)));
+  for (const l of lights) l.r.setAttribute("opacity", lerp(0.25, 1, tri(t / l.period + l.phase)));
+  // shooting star once a loop
+  const sp = (t - 23) / 0.9; const sh = $("shoot");
+  if (sp < 0 || sp > 1) sh.setAttribute("opacity", 0);
+  else { sh.setAttribute("opacity", sp < 0.15 ? sp / 0.15 : 1 - (sp - 0.15) / 0.85); sh.setAttribute("transform", `translate(${-260 * sp} ${130 * sp})`); }
+  // clouds
+  for (const c of clouds) {
+    const p = (t / (T * c.row.n) + c.i / c.row.n + c.row.phase) % 1;
+    c.g.setAttribute("transform", `translate(${p * W - 380} ${c.row.y})`);
+  }
+  // birds: one pass a loop
+  const bp = (t / T + 0.45) % 1; const bx = bp * 1700 - 120, by = 384 - 30 * Math.sin(bp * Math.PI);
+  birdEls.forEach((el, i) => {
+    const f = lerp(1, -0.5, tri(t / 0.8 + i * 0.3));
+    const [ox, oy] = birdAt[i];
+    el.setAttribute("d", `M${bx + ox - 9},${by + oy - 6 * f} L${bx + ox},${by + oy} L${bx + ox + 9},${by + oy - 6 * f}`);
+  });
+  // cable cars
+  const ride = (tc) => {
+    const p = ((tc % 20) + 20) % 20 / 20; let k;
+    const ez = (q) => q < 0.5 ? 2 * q * q : 1 - Math.pow(-2 * q + 2, 2) / 2;
+    if (p < 0.06) k = 0; else if (p < 0.44) k = ez((p - 0.06) / 0.38); else if (p < 0.56) k = 1; else if (p < 0.94) k = 1 - ez((p - 0.56) / 0.38); else k = 0;
+    return `translate(${-86 * k} ${-148 * k})`;
+  };
+  $("car1").setAttribute("transform", ride(t)); $("car2").setAttribute("transform", ride(t + 10));
+  // Clawd
+  const seg = segs.find((s) => t >= s.t0 && t < s.t1) || segs[segs.length - 1];
+  const p = (t - seg.t0) / (seg.t1 - seg.t0);
+  const x = lerp(seg.x0, seg.x1, p);
+  let lift = 0, sx = 1, sy = 1;
+  if (seg.kind === "walk") lift = -5 * Math.abs(Math.sin((t - seg.t0) / 0.13));
+  if (seg.kind === "eat") {
+    const q = (t - seg.t0) / 0.5;
+    if (q < 0.3) { sx = lerp(1, 1.12, q / 0.3); sy = lerp(1, 0.84, q / 0.3); }
+    else if (q < 0.6) { sx = lerp(1.12, 0.94, (q - 0.3) / 0.3); sy = lerp(0.84, 1.1, (q - 0.3) / 0.3); }
+    else if (q < 1) { sx = lerp(0.94, 1, (q - 0.6) / 0.4); sy = lerp(1.1, 1, (q - 0.6) / 0.4); }
+  }
+  const right = t >= END / 2 && t < tR + END / 2;
+  clawd.style.transform = `translate(${x - 80}px, ${GY - 104 + lift}px)`;
+  clawdImg.style.transform = `scale(${(right ? -1 : 1) * sx}, ${sy})`;
+  // berries
+  for (const b of berries) {
+    let ev = b.events[b.events.length - 1], since = t + T - ev[0];
+    for (const e of b.events) if (e[0] <= t) { ev = e; since = t - e[0]; }
+    const k = clamp01(since / 0.3);
+    const shown = ev[1] ? easeOut(k) : 1 - k;
+    b.el.style.opacity = shown; b.el.style.transform = `scale(${lerp(0.2, 1, shown)})`;
+  }
+  for (const c of crumbs) {
+    const q = (t - c.t) / 0.6;
+    if (q < 0 || q > 1) { c.el.style.opacity = 0; continue; }
+    const e = easeOut(q);
+    c.el.style.opacity = 1 - e; c.el.style.transform = `translate(${c.x - 4 + c.dx * e}px, ${GY - 34 + c.dy * e}px)`;
+  }
+};
+window.render(Number(params.get("t") || 0));
+</script>
+</body>
+</html>

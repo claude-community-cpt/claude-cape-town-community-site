@@ -1,0 +1,112 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import PageHead from "../components/PageHead.astro";
+import day from "../assets/downloads/zoom-background-day.png";
+import night from "../assets/downloads/zoom-background-night.png";
+
+// The videos are in public/downloads/. To add another, put the file there,
+// a still picture of it in src/assets/downloads/, and a line in this list.
+const backgrounds = [
+  {
+    name: "Daytime",
+    text: "The sun in the nek beside Lion's Head, on ivory.",
+    image: day,
+    alt: "Table Mountain drawn in dots under a coral sun, with Clawd walking along the shore towards a strawberry.",
+    file: "/downloads/claude-cape-town-zoom-day.mp4",
+    size: "7 MB",
+  },
+  {
+    name: "Night",
+    text: "The moon, stars and city lights, on dark.",
+    image: night,
+    alt: "Table Mountain drawn in dots at night under a crescent moon and stars, with Clawd walking along the shore.",
+    file: "/downloads/claude-cape-town-zoom-night.mp4",
+    size: "7 MB",
+  },
+];
+---
+
+<Base title="Downloads" description="Free animated Zoom backgrounds from Cape Town's Claude community: Table Mountain, the cable cars and Clawd, in a day and a night version.">
+  <PageHead
+    title="Downloads"
+    lede="Free things to take with you."
+    sticker="vibing"
+  />
+
+  <section class="wrap body">
+    <h2 class="heading">Animated Zoom backgrounds</h2>
+    <p class="lede intro">
+      The scene from our home page for your video calls: Table Mountain, the cable cars, drifting clouds, and Clawd strolling the
+      shore eating strawberries. Each one is a 40 second video that loops without a jump.
+    </p>
+
+    <ul class="backgrounds">
+      {
+        backgrounds.map((item) => (
+          <li>
+            <Image class="preview" src={item.image} alt={item.alt} widths={[480, 720, 960]} sizes="(min-width: 50rem) 32rem, 92vw" />
+            <h3 class="title">{item.name}</h3>
+            <p class="muted">{item.text}</p>
+            <p class="small muted">MP4 video, 1920 by 1080, {item.size}</p>
+            <p>
+              <a class="btn btn-primary" href={item.file} download>
+                Download<span class="visually-hidden"> the {item.name.toLowerCase()} background</span>
+              </a>
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="prose howto">
+      <h2>How to use one in Zoom</h2>
+      <ol>
+        <li>Download a video above.</li>
+        <li>In the Zoom app on your computer, open Settings, then Background &amp; effects.</li>
+        <li>Under Virtual backgrounds, choose the plus button, then Add video, and pick the file.</li>
+      </ol>
+      <p>
+        Video backgrounds need the Zoom app on a computer. They work best with an even wall behind you and good light on your face.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .body {
+    padding-block: var(--space-8) var(--section);
+  }
+  .intro {
+    margin-top: var(--space-4);
+  }
+  .backgrounds {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: var(--space-7) var(--space-6);
+    margin: var(--space-7) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .backgrounds li {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+  }
+  .preview {
+    width: 100%;
+    height: auto;
+    margin-bottom: var(--space-3);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+  }
+  .backgrounds .btn {
+    margin-top: var(--space-3);
+  }
+  .howto {
+    margin-top: var(--space-8);
+  }
+  .howto ol {
+    padding-left: 1.4em;
+  }
+</style>

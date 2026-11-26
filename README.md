@@ -44,6 +44,7 @@ src/
   scripts/forms.ts  sends the four forms
   assets/           images that the build resizes
 public/             files copied as they are: CNAME, robots.txt, fonts, favicon
+  downloads/        the Zoom background videos offered on the Downloads page
 tests/              browser tests (Playwright)
 scripts/            link checker, share-image generator, live-site QA
 ```
