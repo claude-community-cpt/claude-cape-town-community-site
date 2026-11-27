@@ -115,7 +115,7 @@ test("the sitemap lists every real page and no short links", async ({ request })
   for (const path of ["/", "/events/", "/events/2026-12-05-claude-and-coffee/", "/join/", "/speak/", "/partner/", "/privacy/"]) {
     expect(sitemap, path).toContain(`<loc>https://claudecapetown.com${path}</loc>`);
   }
-  for (const path of ["/mixer/", "/gallery/", "/demos/", "/404/"]) {
+  for (const path of ["/gallery/", "/demos/", "/404/"]) {
     expect(sitemap, path).not.toContain(`<loc>https://claudecapetown.com${path}</loc>`);
   }
 });
@@ -340,15 +340,6 @@ test("the join page has no form and never links to WhatsApp", async ({ page }) =
   await page.goto("/join/");
   await expect(page.locator("form")).toHaveCount(0);
   await expect(page.locator('a[href*="whatsapp.com"], a[href*="wa.me"]')).toHaveCount(0);
-});
-
-test("the mixer short link forwards to the app, stays out of search and has a preview", async ({ request }) => {
-  // Read as text: opening it in the browser would follow the link to the app, an outside service.
-  const html = await (await request.get("/mixer/")).text();
-  expect(html).toContain('<meta http-equiv="refresh" content="0;url=https://table-mixer.vercel.app/">');
-  expect(html).toContain('<meta name="robots" content="noindex">');
-  expect(html).toContain('<meta property="og:title" content="Table Mixer | Claude Community Cape Town">');
-  expect(html).toContain('<meta property="og:image" content="https://claudecapetown.com/og.png">');
 });
 
 test("the event page lines its sections up on the same two columns", async ({ page }) => {

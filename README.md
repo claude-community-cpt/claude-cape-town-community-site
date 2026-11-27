@@ -103,13 +103,19 @@ If you add a form, list what it collects on the [privacy notice](src/pages/priva
   checks the workflow files themselves for unsafe patterns.
 - Never commit contact details, attendee lists or keys. See [SECURITY.md](SECURITY.md).
 
+## The Table Mixer at /mixer
+
+`claudecapetown.com/mixer` is the Table Mixer app. It is not part of this
+site: it is published from its own repository,
+[mixer](https://github.com/claude-community-cpt/mixer), and GitHub Pages
+serves it under this domain at a path equal to that repository's name. Do not
+add a page or redirect called `mixer` here, because the two would collide.
+
 ## Short links
 
-`claudecapetown.com/mixer` forwards to the Table Mixer app
-([coffee-chat](https://github.com/claude-community-cpt/coffee-chat)). It is a
-small page, `src/pages/mixer.astro`, so the link shows a preview when it is
-shared. Copy it for another short link that people will share. For a plain
-forward nobody shares, add a line under `redirects` in `astro.config.mjs`.
+For a plain forward to another address, add a line under `redirects` in
+`astro.config.mjs`. For a short link that people will share, make a small page
+instead and pass `forwardTo` to the `Base` layout, so the link shows a preview.
 
 ## Search engines, AI assistants and link previews
 

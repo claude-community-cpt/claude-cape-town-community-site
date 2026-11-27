@@ -44,8 +44,9 @@ export default defineConfig({
   site: "https://claudecapetown.com",
   trailingSlash: "always",
   // The old Gallery page forwards to past events; photos are on each event's page.
-  // (claudecapetown.com/mixer also forwards, to the Table Mixer app. It is a
-  // page of its own, src/pages/mixer.astro, so that the link has a preview.)
+  // (claudecapetown.com/mixer is not part of this site. It is the Table Mixer
+  // app, published from its own repository, "mixer". Do not add a /mixer page
+  // or redirect here: the two would collide.)
   redirects: {
     "/gallery": "/events/#past",
     // The Demos page is retired until there are demos to show.
@@ -55,7 +56,7 @@ export default defineConfig({
     devStyleguide,
     sitemap({
       // Utility pages that should not show up in search.
-      filter: (page) => !/\/(mixer|gallery|demos|404)\/?$/.test(page),
+      filter: (page) => !/\/(gallery|demos|404)\/?$/.test(page),
       serialize: (item) => ({ ...item, lastmod: lastChanged(item.url) }),
     }),
   ],
