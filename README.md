@@ -13,6 +13,7 @@ GitHub Pages. There is no server, no database and no secret.
 | --- | --- |
 | Add or update an event, slides or photos | [docs/adding-an-event.md](docs/adding-an-event.md) |
 | Add or change a page | [docs/adding-a-page.md](docs/adding-a-page.md) |
+| Answer WhatsApp group requests | [docs/whatsapp-requests.md](docs/whatsapp-requests.md) |
 | Check colours, type and components | [DESIGN.md](DESIGN.md), and the style guide at `/styleguide/` while running `npm run dev` (it is not on the live site) |
 | Report a security problem | [SECURITY.md](SECURITY.md) |
 
@@ -65,25 +66,27 @@ Pages, and a `CNAME` for `www`.
 
 ## Forms
 
-There are two forms, and both post from the page to Google Forms. No API key
+There are three forms, and all post from the page to Google Forms. No API key
 lives in the site.
 
 | Form | Goes to |
 | --- | --- |
 | Give a talk | Google Form "Speaker pitch" (Responses tab) |
 | Host or support an event | Google Form "Partner application" (Responses tab) |
+| Ask to join the WhatsApp group (Join page) | Google Form "Cape Town Claude Community WhatsApp group join request" (Responses tab). See [docs/whatsapp-requests.md](docs/whatsapp-requests.md) |
 
 The form IDs and Google `entry.*` field IDs are at the top of
-`src/scripts/forms.ts`. If a Google Form question is re-created its `entry` ID
+`src/scripts/form-ids.ts`. If a Google Form question is re-created its `entry` ID
 changes; read the new one from the live form's page source.
 
 Each form has a hidden trap field and ignores submissions made within a few
 seconds of the page loading, which stops most bots.
 
-There is no join form and no newsletter sign-up. The Join page links out
-instead; the Discord invite and the hosts' LinkedIn profiles are in `SITE` in
+There is no newsletter sign-up. The Join page links out to Luma, Discord and
+LinkedIn; the Discord invite and the hosts' LinkedIn profiles are in `SITE` in
 `src/lib.ts`.
-Never publish a WhatsApp invite link.
+Never publish a WhatsApp invite link. People ask to join on the Join page and
+an ambassador messages them the link.
 
 If you add a form, list what it collects on the [privacy notice](src/pages/privacy.astro).
 

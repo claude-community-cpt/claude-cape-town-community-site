@@ -1,7 +1,12 @@
 ---
 import Base from "../layouts/Base.astro";
 import PageHead from "../components/PageHead.astro";
+import FormShell from "../components/FormShell.astro";
 import { SITE } from "../lib";
+import { isLive } from "../scripts/form-ids";
+
+// The WhatsApp request form appears once it has a Google Form to post to.
+const whatsappForm = isLive("whatsapp-form");
 
 // The Discord card appears only while its link is set in src/lib.ts.
 const ways = [
@@ -84,16 +89,58 @@ const ways = [
         ))
       }
     </ul>
-    <p class="small muted note">
-      We also have a WhatsApp group. To keep members' phone numbers away from spammers the link is not public: ask an ambassador at
-      an event and we will add you.
-    </p>
+  </section>
+  <section class="section section-alt" id="whatsapp" aria-labelledby="whatsapp-title">
+    <div class="wrap whatsapp">
+      <div class="whatsapp-words">
+        <h2 class="heading" id="whatsapp-title">The WhatsApp group</h2>
+        <p>
+          We also have a WhatsApp group, where the ambassadors announce upcoming events. To keep members' phone numbers away from spammers
+          the link is not public.
+        </p>
+        {
+          whatsappForm ? (
+            <p>Send us your name and number and an ambassador will message you the link on WhatsApp. It can take a few days: we are volunteers.</p>
+          ) : (
+            <p>Ask an ambassador at an event and we will add you.</p>
+          )
+        }
+      </div>
+      {
+        whatsappForm && (
+          <FormShell
+            id="whatsapp-form"
+            submit="Ask to join"
+            doneTitle="Thanks, we have your request."
+            doneText="An ambassador will message you the link on WhatsApp."
+            note="We only use your number to send you the link, then we delete it. Once you join, other members of the group can see your number."
+          >
+            <label class="field"><span class="field-label">Your name</span>
+              <input class="field-input" type="text" name="name" placeholder="Your name" autocomplete="name" required /></label>
+            <label class="field"><span class="field-label">WhatsApp number</span>
+              <input class="field-input" type="tel" name="phone" placeholder="+27 82 123 4567" autocomplete="tel" inputmode="tel" pattern="\+?[0-9 ]{9,18}" title="A phone number, with the country code if it is not South African" required /></label>
+            {/* The values must match the choices in the Google Form word for word. */}
+            <label class="field"><span class="field-label">How did you find us? (optional)</span>
+              <select class="field-input" name="about">
+                <option value="">Choose one</option>
+                <option value="Event">At an event</option>
+                <option value="Luma">On Luma</option>
+                <option value="LinkedIn">On LinkedIn</option>
+                <option value="Community Website">This website</option>
+              </select></label>
+          </FormShell>
+        )
+      }
+    </div>
   </section>
 </Base>
 
 <style>
   .body {
     padding-block: var(--space-8) var(--section);
+  }
+  #whatsapp {
+    scroll-margin-top: 6rem;
   }
   .ways {
     display: grid;
@@ -149,8 +196,21 @@ const ways = [
     gap: var(--space-2) var(--space-5);
     margin-top: var(--space-2);
   }
-  .note {
+  /* The words on the left, the request form on the right. */
+  .whatsapp {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: var(--space-6) clamp(2rem, 6vw, 5rem);
+    align-items: start;
+  }
+  .whatsapp-words {
+    display: grid;
+    gap: var(--space-4);
     max-width: var(--measure);
-    margin-top: var(--space-7);
+  }
+  @media (max-width: 56rem) {
+    .whatsapp {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 </style>

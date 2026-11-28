@@ -6,15 +6,17 @@ interface Props {
   submit: string;
   doneTitle: string;
   doneText: string;
+  /** The small print under the button. Defaults to "We only use this to reply to you." */
+  note?: string;
 }
-const { id, submit, doneTitle, doneText } = Astro.props;
+const { id, submit, doneTitle, doneText, note = "We only use this to reply to you." } = Astro.props;
 ---
 
 <form class="form card" id={id} novalidate>
   <slot />
   <label class="field-trap" aria-hidden="true">Leave this empty <input type="text" name="company_url" tabindex="-1" autocomplete="off" /></label>
   <p><button class="btn btn-primary" type="submit">{submit}</button></p>
-  <p class="small muted">We only use this to reply to you. See the <a href="/privacy/">privacy note</a>.</p>
+  <p class="small muted">{note} See the <a href="/privacy/">privacy note</a>.</p>
   <p class="form-note" id={`${id}-error`} role="alert" hidden>
     That didn't go through. Check your connection and try again, or <a href="https://www.linkedin.com/in/tessa-verster/" target="_blank" rel="noopener">message Tessa on LinkedIn</a>.
   </p>

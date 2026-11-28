@@ -1,25 +1,8 @@
-/* Sends the site's two forms (Give a talk, Host or support an event) to
-   Google Forms from the page. No API key lives in the site.
-   README.md ("Forms") says where the submissions end up. */
+/* Sends the site's forms (Give a talk, Host or support an event, WhatsApp
+   request) to Google Forms from the page. No API key lives in the site.
+   The form IDs are in form-ids.ts. */
 
-const GOOGLE_FORMS: Record<string, { id: string; entries: Record<string, string> }> = {
-  "speak-form": {
-    id: "1FAIpQLSeNXryk3MagMWZH1J4kcJOTFldGqX17aKOpDQqDPzDNbGpUsQ",
-    entries: { name: "2005313327", email: "1908383360", topic: "1196580280" },
-  },
-  "partner-form": {
-    id: "1FAIpQLScHiLlRrzdcGs9nMdKMrGbwuF21A0K7J457hC87EQnkj7GmGw",
-    entries: {
-      org: "321525456",
-      name: "1241870961",
-      email: "1999320620",
-      phone: "1156286795",
-      website: "219640878",
-      how: "109026469",
-      message: "527276179",
-    },
-  },
-};
+import { GOOGLE_FORMS } from "./form-ids";
 
 const loadedAt = Date.now();
 const value = (form: HTMLFormElement, name: string) =>
@@ -33,9 +16,13 @@ function looksLikeSpam(form: HTMLFormElement): boolean {
 const senders: Record<string, (form: HTMLFormElement) => Promise<void>> = {};
 
 for (const [formId, config] of Object.entries(GOOGLE_FORMS)) {
+  if (!config.id) continue;
   senders[formId] = async (form) => {
     const body = new FormData();
-    for (const [field, entry] of Object.entries(config.entries)) body.append(`entry.${entry}`, value(form, field));
+    // Blank optional answers are left out: Google refuses an empty answer to a multiple-choice question.
+    for (const [field, entry] of Object.entries(config.entries)) {
+      if (value(form, field)) body.append(`entry.${entry}`, value(form, field));
+    }
     // no-cors: the reply cannot be read, so only a network failure counts as an error.
     await fetch(`https://docs.google.com/forms/d/e/${config.id}/formResponse`, { method: "POST", mode: "no-cors", body });
   };
