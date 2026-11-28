@@ -356,12 +356,14 @@ test("the events page invites people to join, with the ways to do it", async ({ 
   await expect(page.locator("#whatsapp-title")).toBeInViewport();
 });
 
-// The request form is hidden until it has a Google Form to post to
-// (src/scripts/form-ids.ts). Until then the page says to ask an ambassador.
+// If the request form ever loses its Google Form (src/scripts/form-ids.ts),
+// the page says to ask an ambassador instead.
 test("the join page takes WhatsApp requests, or says who to ask", async ({ page }) => {
   let posted = "";
+  let sent = "";
   await page.route("https://docs.google.com/forms/**", async (route) => {
     posted = route.request().url();
+    sent = route.request().postData() ?? "";
     await route.fulfill({ status: 200, body: "" });
   });
   await page.goto("/join/");
@@ -378,9 +380,12 @@ test("the join page takes WhatsApp requests, or says who to ask", async ({ page 
   await expect(form).toBeVisible();
   expect(posted).toBe("");
   await form.locator("[name=phone]").fill("+27 82 123 4567");
+  await form.locator("[name=about]").selectOption("Event");
   await form.locator("button[type=submit]").click();
   await expect(page.locator("#whatsapp-form-done")).toBeVisible();
   expect(posted).toContain("/formResponse");
+  expect(sent).toContain("+27 82 123 4567");
+  expect(sent).toContain("Event");
 });
 
 test("the event page lines its sections up on the same two columns", async ({ page }) => {

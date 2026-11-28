@@ -95,7 +95,7 @@ const ways = [
       <div class="whatsapp-words">
         <h2 class="heading" id="whatsapp-title">The WhatsApp group</h2>
         <p>
-          We also have a WhatsApp group for event news and quick questions. To keep members' phone numbers away from spammers
+          We also have a WhatsApp group, where the ambassadors announce upcoming events. To keep members' phone numbers away from spammers
           the link is not public.
         </p>
         {
@@ -119,8 +119,15 @@ const ways = [
               <input class="field-input" type="text" name="name" placeholder="Your name" autocomplete="name" required /></label>
             <label class="field"><span class="field-label">WhatsApp number</span>
               <input class="field-input" type="tel" name="phone" placeholder="+27 82 123 4567" autocomplete="tel" inputmode="tel" pattern="\+?[0-9 ]{9,18}" title="A phone number, with the country code if it is not South African" required /></label>
+            {/* The values must match the choices in the Google Form word for word. */}
             <label class="field"><span class="field-label">How did you find us? (optional)</span>
-              <input class="field-input" type="text" name="about" placeholder="An event you came to, a friend, a search" /></label>
+              <select class="field-input" name="about">
+                <option value="">Choose one</option>
+                <option value="Event">At an event</option>
+                <option value="Luma">On Luma</option>
+                <option value="LinkedIn">On LinkedIn</option>
+                <option value="Community Website">This website</option>
+              </select></label>
           </FormShell>
         )
       }

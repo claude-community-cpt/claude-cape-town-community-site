@@ -19,12 +19,13 @@ export const GOOGLE_FORMS: Record<string, { id: string; entries: Record<string, 
       message: "527276179",
     },
   },
-  // The WhatsApp request form on the Join page. While `id` is empty the page
-  // shows "ask an ambassador" instead of the form. docs/whatsapp-requests.md
-  // says how to create the Google Form and fill these in.
+  // The WhatsApp request form on the Join page. If `id` is ever emptied the
+  // page shows "ask an ambassador" instead of the form. "about" is a
+  // multiple-choice question: the choices on the Join page must match the
+  // Google Form's word for word. See docs/whatsapp-requests.md.
   "whatsapp-form": {
-    id: "",
-    entries: { name: "", phone: "", about: "" },
+    id: "1FAIpQLSfFpNhap3XN4zsUvZRB-i1oXCCJ2smIuaDS8VCCQ1-qIT4a_A",
+    entries: { name: "1429821506", phone: "199850975", about: "951183674" },
   },
 };
 

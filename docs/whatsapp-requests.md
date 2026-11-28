@@ -4,29 +4,34 @@ The WhatsApp invite link is never published. Instead, the Join page has a short
 form: a visitor sends their name and number, and an ambassador messages them
 the link on WhatsApp.
 
-## Turning the form on (once)
+## How it is set up
 
-The form stays hidden, and the page says "ask an ambassador at an event", until
-it has a Google Form to post to.
+The form on the Join page posts to the Google Form **Cape Town Claude Community
+WhatsApp group join request**. Whoever owns that Google Form sees the requests
+in its Responses tab, and gets an email for each one if "Get email
+notifications for new responses" is turned on there (Responses, three-dot
+menu). Share the form with the other ambassadors as editors so they can see the
+requests too. Nobody else.
 
-1. At [forms.google.com](https://forms.google.com), create a form called
-   **WhatsApp group request** with three "Short answer" questions, in this order:
-   1. Your name (required)
-   2. WhatsApp number (required)
-   3. How did you find us?
-2. In **Settings**, leave "Collect email addresses" off and "Limit to 1
-   response" off. Either would make visitors sign in to Google, and the site's
-   form would stop working.
-3. In **Responses**, open the three-dot menu and turn on "Get email
-   notifications for new responses". Whoever owns the form gets an email for
-   each request.
-4. Share the form (the person icon, "Add editors") with the other ambassadors
-   so they can see the requests too. Nobody else.
-5. Click **Send**, copy the link, and open it. In the page source, find the
-   form ID (the long text after `/forms/d/e/` in the link) and the three
-   `entry.` numbers, one per question.
-6. Put them in `"whatsapp-form"` in `src/scripts/form-ids.ts` and open a pull
-   request. Or give the link to Claude Code and ask it to do this step.
+The Google Form has three questions: Your name, WhatsApp number, and "How did
+you find us?" (multiple choice). Its ID and the three `entry` numbers are in
+`"whatsapp-form"` in `src/scripts/form-ids.ts`.
+
+If you change the Google Form:
+
+- Keep "Collect email addresses" set to "Do not collect" and "Limit to 1
+  response" off (Settings, Responses). Either makes Google ask visitors to
+  sign in, and it then refuses every request from the site while the visitor
+  still sees "Thanks".
+- If you rename or add a choice under "How did you find us?", change the
+  matching `<option value="...">` in `src/pages/join.astro` to the same words.
+  Google throws away a request whose choice it does not recognise, and the
+  visitor still sees "Thanks".
+- If you delete and re-create a question, its `entry` number changes. Read the
+  new one from the form's page source, or give the form's link to Claude Code
+  and ask it to update the site.
+- If you empty the `id` in `form-ids.ts`, the Join page hides the form and says
+  "ask an ambassador at an event" instead.
 
 ## Answering a request
 

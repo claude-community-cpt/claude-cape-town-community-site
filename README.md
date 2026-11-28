@@ -13,7 +13,7 @@ GitHub Pages. There is no server, no database and no secret.
 | --- | --- |
 | Add or update an event, slides or photos | [docs/adding-an-event.md](docs/adding-an-event.md) |
 | Add or change a page | [docs/adding-a-page.md](docs/adding-a-page.md) |
-| Turn on or answer WhatsApp group requests | [docs/whatsapp-requests.md](docs/whatsapp-requests.md) |
+| Answer WhatsApp group requests | [docs/whatsapp-requests.md](docs/whatsapp-requests.md) |
 | Check colours, type and components | [DESIGN.md](DESIGN.md), and the style guide at `/styleguide/` while running `npm run dev` (it is not on the live site) |
 | Report a security problem | [SECURITY.md](SECURITY.md) |
 
@@ -73,7 +73,7 @@ lives in the site.
 | --- | --- |
 | Give a talk | Google Form "Speaker pitch" (Responses tab) |
 | Host or support an event | Google Form "Partner application" (Responses tab) |
-| Ask to join the WhatsApp group (Join page) | Google Form "WhatsApp group request" (Responses tab). Hidden until its ID is filled in: see [docs/whatsapp-requests.md](docs/whatsapp-requests.md) |
+| Ask to join the WhatsApp group (Join page) | Google Form "Cape Town Claude Community WhatsApp group join request" (Responses tab). See [docs/whatsapp-requests.md](docs/whatsapp-requests.md) |
 
 The form IDs and Google `entry.*` field IDs are at the top of
 `src/scripts/form-ids.ts`. If a Google Form question is re-created its `entry` ID

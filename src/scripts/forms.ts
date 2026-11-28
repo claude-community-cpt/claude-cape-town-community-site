@@ -19,7 +19,10 @@ for (const [formId, config] of Object.entries(GOOGLE_FORMS)) {
   if (!config.id) continue;
   senders[formId] = async (form) => {
     const body = new FormData();
-    for (const [field, entry] of Object.entries(config.entries)) body.append(`entry.${entry}`, value(form, field));
+    // Blank optional answers are left out: Google refuses an empty answer to a multiple-choice question.
+    for (const [field, entry] of Object.entries(config.entries)) {
+      if (value(form, field)) body.append(`entry.${entry}`, value(form, field));
+    }
     // no-cors: the reply cannot be read, so only a network failure counts as an error.
     await fetch(`https://docs.google.com/forms/d/e/${config.id}/formResponse`, { method: "POST", mode: "no-cors", body });
   };
