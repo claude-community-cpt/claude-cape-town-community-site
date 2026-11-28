@@ -7,11 +7,9 @@ summary: "Claude Community × stub. Alexander Oloo, CTO of stub, explains what a
 venue:
   name: Roamwork Harrington
   address: 50 Harrington St, District Six
-status: Full, waitlist open
 luma:
   url: https://luma.com/claude-011f
   embedId: evt-CgAOyZ4xTjsICrz
-  label: Join the waitlist on Luma
 ---
 
 Claude Community × stub. Alexander Oloo, CTO and co-founder of stub, explains what an agent actually is, builds one live, then helps you build your own with Claude Code. Every participant gets Anthropic API credits.
