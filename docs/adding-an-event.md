@@ -5,6 +5,11 @@ upcoming list, the past list, the event's own page, and the search-engine
 data from it. An event moves from "Upcoming" to "Past" by itself once it has
 ended (the site rebuilds every night).
 
+If you use Claude Code, ask it to "add an event" and give it the Luma link.
+The `add-event` skill in `.claude/skills/add-event/` reads the date, venue and
+description from the Luma page, writes the file the way this page describes,
+and tidies events that have ended.
+
 ## Add an event
 
 1. Copy an existing file in `src/content/events/` and rename it
@@ -82,6 +87,13 @@ galleryAlt:
   through the rest, and the first few show beside the event in the past
   events list. There is no separate gallery page. Photos show in file-name
   order, so name them `01.jpg`, `02.jpg` and so on, best ones first.
+
+Once an event has ended, remove `status` and `luma.label` from its file; they
+only make sense while people can still register. To see which files need it:
+
+```bash
+node .claude/skills/add-event/check-events.mjs
+```
 
 ## What not to put in an event file
 

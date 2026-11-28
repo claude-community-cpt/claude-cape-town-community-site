@@ -28,7 +28,8 @@ Run `npm run verify` before opening a pull request. CI runs the same thing.
 - An event is one Markdown file in `src/content/events/`, named
   `YYYY-MM-DD-short-name.md`. The fields are defined in `src/content.config.ts`.
   See `docs/adding-an-event.md`. Do not hand-sort events into upcoming or past;
-  the build does it by date.
+  the build does it by date. To add or change an event, use the `add-event`
+  skill in `.claude/skills/add-event/`.
 - A page is one file in `src/pages/`. Add new pages to the `pages` list in
   `tests/site.spec.ts` and to the header or footer if they should be linked.
   See `docs/adding-a-page.md`.
