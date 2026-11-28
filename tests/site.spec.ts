@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { isLive } from "../src/scripts/form-ids";
 
 // Every page of the site. Add new pages here.
 const pages = ["/", "/events/", "/speak/", "/partner/", "/join/", "/downloads/", "/privacy/", "/404.html"];
@@ -336,10 +337,50 @@ test("a bot that fills the hidden field is not sent anywhere", async ({ page }) 
   expect(posted).toBe(false);
 });
 
-test("the join page has no form and never links to WhatsApp", async ({ page }) => {
+test("no page ever links to the WhatsApp group itself", async ({ page }) => {
+  for (const path of ["/join/", "/events/"]) {
+    await page.goto(path);
+    await expect(page.locator('a[href*="whatsapp.com"], a[href*="wa.me"]'), path).toHaveCount(0);
+  }
+});
+
+test("the events page invites people to join, with the ways to do it", async ({ page }) => {
+  await page.goto("/events/");
+  const join = page.locator("#upcoming .join");
+  await expect(join.getByRole("heading", { name: "Join the community" })).toBeVisible();
+  await expect(join.getByRole("link", { name: "Luma calendar" })).toHaveAttribute("href", /^https:\/\/luma\.com\//);
+  await expect(join.getByRole("link", { name: "Discord" })).toHaveAttribute("href", /^https:\/\/discord\.gg\//);
+  await expect(join.getByRole("link", { name: /on LinkedIn$/ })).toHaveCount(2);
+  await join.getByRole("link", { name: "WhatsApp group" }).click();
+  await expect(page).toHaveURL(/\/join\/#whatsapp$/);
+  await expect(page.locator("#whatsapp-title")).toBeInViewport();
+});
+
+// The request form is hidden until it has a Google Form to post to
+// (src/scripts/form-ids.ts). Until then the page says to ask an ambassador.
+test("the join page takes WhatsApp requests, or says who to ask", async ({ page }) => {
+  let posted = "";
+  await page.route("https://docs.google.com/forms/**", async (route) => {
+    posted = route.request().url();
+    await route.fulfill({ status: 200, body: "" });
+  });
   await page.goto("/join/");
-  await expect(page.locator("form")).toHaveCount(0);
-  await expect(page.locator('a[href*="whatsapp.com"], a[href*="wa.me"]')).toHaveCount(0);
+  await expect(page.locator("form")).toHaveCount(isLive("whatsapp-form") ? 1 : 0);
+  if (!isLive("whatsapp-form")) {
+    await expect(page.locator("#whatsapp")).toContainText("Ask an ambassador at an event");
+    return;
+  }
+  const form = page.locator("#whatsapp-form");
+  await form.locator("[name=name]").fill("Test Person");
+  await form.locator("[name=phone]").fill("not a number");
+  await page.waitForTimeout(2600); // the form ignores anything faster than a person
+  await form.locator("button[type=submit]").click();
+  await expect(form).toBeVisible();
+  expect(posted).toBe("");
+  await form.locator("[name=phone]").fill("+27 82 123 4567");
+  await form.locator("button[type=submit]").click();
+  await expect(page.locator("#whatsapp-form-done")).toBeVisible();
+  expect(posted).toContain("/formResponse");
 });
 
 test("the event page lines its sections up on the same two columns", async ({ page }) => {
